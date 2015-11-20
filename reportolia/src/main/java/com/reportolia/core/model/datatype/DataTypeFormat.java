@@ -9,6 +9,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
 
 /**
@@ -23,7 +24,7 @@ import com.reportolia.core.model.base.BaseEntity;
 public class DataTypeFormat extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "data_type", nullable = false, length = 10)
+	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
     private DataType dataType;
     
     @NotEmpty

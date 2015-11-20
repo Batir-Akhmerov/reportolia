@@ -2,6 +2,8 @@ package com.reportolia.core.model.table;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -9,7 +11,9 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.util.StringUtils;
 
+import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
+import com.reportolia.core.model.datatype.DataType;
 
 /**
  * 
@@ -26,11 +30,18 @@ public class DbTableColumn extends BaseEntity {
     @JoinColumn(name="table_id", nullable=false)
     private DbTable dbTable;
     
+    @Enumerated(EnumType.STRING)
+	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
+    private DataType dataType;
+    
     @Column(name = "name", nullable = false, length = 128)
     private String name;
     
     @Column(name = "label")
     private String label;
+    
+    @Column(name = "is_calculated")
+    private boolean calculated;
    
 	
 	/**
@@ -64,6 +75,42 @@ public class DbTableColumn extends BaseEntity {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+
+	/**
+	 *
+	 * @return the dataType
+	 */
+	public DataType getDataType() {
+		return this.dataType;
+	}
+
+
+	/**
+	 *
+	 * @param dataType the dataType to set
+	 */
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+
+	/**
+	 *
+	 * @return the calculated
+	 */
+	public boolean isCalculated() {
+		return this.calculated;
+	}
+
+
+	/**
+	 *
+	 * @param calculated the calculated to set
+	 */
+	public void setCalculated(boolean calculated) {
+		this.calculated = calculated;
 	}
 	
 	

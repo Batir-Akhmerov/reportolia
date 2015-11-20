@@ -15,10 +15,10 @@ import com.reportolia.core.model.datatype.DataType;
 
 /**
  * 
- * The SqlItem class
+ * The SqlItemParameter class
  *
  * @author Batir Akhmerov
- * Created on Nov 13, 2015
+ * Created on Nov 20, 2015
  */
 @Entity
 @Table(name="r3p_sql_item_params", 
@@ -43,6 +43,46 @@ public class SqlItemParameter extends BaseEntity {
     
     @Column(name = "order")
     private int order;
+
+	public long getSqlItemId() {
+		return this.sqlItemId;
+	}
+
+	public void setSqlItemId(long sqlItemId) {
+		this.sqlItemId = sqlItemId;
+	}
+
+	public DataType getDataType() {
+		return this.dataType;
+	}
+
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSql() {
+		return this.sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+	public int getOrder() {
+		return this.order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
     
 	
 }
