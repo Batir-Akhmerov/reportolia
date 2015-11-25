@@ -32,7 +32,7 @@ public class QueryColumn {
 		return this.table;
 	}
 	public void setTable(QueryTable table) {
-		this.table = table;
+		this.table = table; 
 	}
 
 }
