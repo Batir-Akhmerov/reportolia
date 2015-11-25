@@ -37,15 +37,22 @@ public class DbTableRelationship extends BaseEntity {
      * Reference to the PK Column in a Parent Table 
      */
     @ManyToOne
-    @JoinColumn(name="parent_column_id", nullable=false)
+    @JoinColumn(name="parent_column_id", nullable=true)
     private DbTableColumn dbColumnParent;
     
     /**
      * Reference to the FK Column in a Child Table 
      */
     @ManyToOne
-    @JoinColumn(name="child_column_id", nullable=false)
+    @JoinColumn(name="child_column_id", nullable=true)
     private DbTableColumn dbColumnChild;
+    
+    /**
+     * Can be used in composite relatioship to filter one of columns by a hard-coded value
+     * Only one column can be filtered using the following rule COALESCE(dbColumnParent, dbColumnChild) = joinValue
+     */
+    @Column(name = "joinValue", length = 128)
+    private String joinValue;
     
     /**
      * List of other joined columns in case if this relationship is composite 
@@ -117,6 +124,16 @@ public class DbTableRelationship extends BaseEntity {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+
+	public String getJoinValue() {
+		return this.joinValue;
+	}
+
+
+	public void setJoinValue(String joinValue) {
+		this.joinValue = joinValue;
 	}
 
 }

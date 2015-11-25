@@ -10,8 +10,11 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.reportolia.core.handler.DbHandler;
+import com.reportolia.core.handler.ReportHandler;
+import com.reportolia.core.model.report.Report;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableRelationship;
+import com.reportolia.core.sql.query.Query;
 
 /**
  * The DbManager class
@@ -23,6 +26,13 @@ import com.reportolia.core.model.table.DbTableRelationship;
 public class SqlGeneratorManager implements SqlGeneratorHandler {
 	 
 	 @Resource protected DbHandler dbManager;
+	 @Resource protected ReportHandler reportManager;
+	 
+	 public Query getReportQuery(Report report) {
+		 Query query = new Query();
+		 
+		 return query;
+	 }
 	 
 	 public List<DbTable> getDbTableList(String name) {
 		 List<DbTable> list = this.dbManager.getTableList(name);

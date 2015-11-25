@@ -10,10 +10,19 @@ package com.reportolia.core.model.datatype;
  * Created on Nov 20, 2015
  */
 public enum DataType {
-	TEXT,
-	NUMBER,
-	INTEGER,
-	DATE,
-	BOOLEAN,
-	CURRENCY;
+	TXT("Text"),
+	NUM("Decimal Number"),
+	INT("Integer Number"),
+	DATE("Date"),
+	BOOL("Boolean"),
+	CURR("Currency");
+	
+	private String name;
+	DataType(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
 }

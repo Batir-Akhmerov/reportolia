@@ -30,7 +30,7 @@ public class OperandColumnPath extends BaseEntity {
     @JoinColumn(name="table_relatioship_id", nullable=false)
     private DbTableRelationship dbTableRelationship;
 	
-	@Column(name = "order")
+	@Column(name = "relationship_order")
 	private int order;
 
 	public long getOperandId() {

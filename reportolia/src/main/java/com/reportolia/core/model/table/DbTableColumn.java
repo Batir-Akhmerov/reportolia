@@ -41,7 +41,7 @@ public class DbTableColumn extends BaseEntity {
     private String label;
     
     @Column(name = "is_calculated")
-    private boolean calculated;
+    private Boolean calculated;
    
 	
 	/**
@@ -78,38 +78,22 @@ public class DbTableColumn extends BaseEntity {
 	}
 
 
-	/**
-	 *
-	 * @return the dataType
-	 */
 	public DataType getDataType() {
 		return this.dataType;
 	}
 
 
-	/**
-	 *
-	 * @param dataType the dataType to set
-	 */
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
 
 
-	/**
-	 *
-	 * @return the calculated
-	 */
-	public boolean isCalculated() {
+	public Boolean isCalculated() {
 		return this.calculated;
 	}
 
 
-	/**
-	 *
-	 * @param calculated the calculated to set
-	 */
-	public void setCalculated(boolean calculated) {
+	public void setCalculated(Boolean calculated) {
 		this.calculated = calculated;
 	}
 	

@@ -69,7 +69,7 @@ public class Operand extends BaseEntity {
     private String value;
     
     @Column(name = "is_desc_sort")
-    private boolean descSort;
+    private Boolean descSort;
 
 	public OperandOwnerType getOperandOwnerType() {
 		return this.operandOwnerType;
@@ -135,11 +135,11 @@ public class Operand extends BaseEntity {
 		this.value = value;
 	}
 
-	public boolean isDescSort() {
+	public Boolean isDescSort() {
 		return this.descSort;
 	}
 
-	public void setDescSort(boolean descSort) {
+	public void setDescSort(Boolean descSort) {
 		this.descSort = descSort;
 	}
 

@@ -48,91 +48,49 @@ public class Variable extends BaseEntity {
     private String name;
 
 
-	/**
-	 *
-	 * @return the ownerType
-	 */
 	public VariableOwnerType getOwnerType() {
 		return this.ownerType;
 	}
 
-
-	/**
-	 *
-	 * @param ownerType the ownerType to set
-	 */
 	public void setOwnerType(VariableOwnerType ownerType) {
 		this.ownerType = ownerType;
 	}
 
 
-	/**
-	 *
-	 * @return the ownerId
-	 */
 	public Long getOwnerId() {
 		return this.ownerId;
 	}
 
 
-	/**
-	 *
-	 * @param ownerId the ownerId to set
-	 */
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
 	}
 
 
-	/**
-	 *
-	 * @return the dataType
-	 */
 	public DataType getDataType() {
 		return this.dataType;
 	}
 
 
-	/**
-	 *
-	 * @param dataType the dataType to set
-	 */
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
 
 
-	/**
-	 *
-	 * @return the valueSourceDbColumn
-	 */
 	public DbTableColumn getValueSourceDbColumn() {
 		return this.valueSourceDbColumn;
 	}
 
 
-	/**
-	 *
-	 * @param valueSourceDbColumn the valueSourceDbColumn to set
-	 */
 	public void setValueSourceDbColumn(DbTableColumn valueSourceDbColumn) {
 		this.valueSourceDbColumn = valueSourceDbColumn;
 	}
 
 
-	/**
-	 *
-	 * @return the name
-	 */
 	public String getName() {
 		return this.name;
 	}
 
-
-	/**
-	 *
-	 * @param name the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}

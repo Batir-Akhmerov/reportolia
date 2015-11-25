@@ -22,7 +22,7 @@ import com.reportolia.core.model.table.DbTableColumn;
  * Created on Nov 13, 2015
  */
 @Entity
-@Table(name="r3p_variable_values", uniqueConstraints = { @UniqueConstraint(columnNames = {"variable_id", "contact_id", "value"}) })
+@Table(name="r3p_variable_values", uniqueConstraints = { @UniqueConstraint(columnNames = {"variable_id", "user_id", "value"}) })
 public class VariableValue extends BaseEntity {
     
 	@Enumerated(EnumType.STRING)
@@ -35,8 +35,8 @@ public class VariableValue extends BaseEntity {
     /**
      * Used for user specific variable - values
      */
-    @Column(name = "contact_id")
-    private Long contactId;
+    @Column(name = "user_id")
+    private Long userId;
     
     @Enumerated(EnumType.STRING)
 	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
@@ -86,14 +86,7 @@ public class VariableValue extends BaseEntity {
 	}
 
 
-	public Long getContactId() {
-		return this.contactId;
-	}
 
-
-	public void setContactId(Long contactId) {
-		this.contactId = contactId;
-	}
 
 
 	public DataType getDataType() {
@@ -143,6 +136,16 @@ public class VariableValue extends BaseEntity {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+
+	public Long getUserId() {
+		return this.userId;
+	}
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 

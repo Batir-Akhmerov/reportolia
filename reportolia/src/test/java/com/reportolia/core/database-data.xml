@@ -1,22 +1,35 @@
 <dataset>
+
+<!-- FOLDERS -->
+	 <r3p_folders id="1" name="Reports" expanded_name="Reports/"/>
+
+<!--  TABLE Customers -->
     <r3p_tables id="1" name="customers" />
-    <r3p_table_columns id="1" table_id="1" name="id" label="customer id"/>
-    <r3p_table_columns id="2" table_id="1" name="name" label="customer name"/>
+    <r3p_table_columns id="1" table_id="1" data_type="INT" name="id"   label="customer id"/>
+    <r3p_table_columns id="2" table_id="1" data_type="TXT"    name="name" label="customer name"/>
     
+<!--  TABLE Products -->    
     <r3p_tables id="50" name="products" />
-    <r3p_table_columns id="50" table_id="50" name="id" label="product id"/>
-    <r3p_table_columns id="51" table_id="50" name="name" label="product name"/>
-    <r3p_table_columns id="52" table_id="50" name="price" label="product price"/>
+    <r3p_table_columns id="50" table_id="50" data_type="INT" 	name="id" 	label="product id"/>
+    <r3p_table_columns id="51" table_id="50" data_type="TXT" 		name="name" label="product name"/>
+    <r3p_table_columns id="52" table_id="50" data_type="NUM" 	name="price" label="product price"/>
     
-    
+<!--  TABLE Orders -->    
     <r3p_tables id="100" name="orders" />
-    <r3p_table_columns id="100" table_id="100" name="id" label="order id"/>
-    <r3p_table_columns id="101" table_id="100" name="customer_id" label="customer"/>
-    <r3p_table_columns id="102" table_id="100" name="product_id" label="product"/>
-    <r3p_table_columns id="103" table_id="100" name="quantity" label="product quantity"/>
+    <r3p_table_columns id="100" table_id="100" data_type="INT" name="id" label="order id"/>
+    <r3p_table_columns id="101" table_id="100" data_type="INT" name="customer_id" label="customer"/>
+    <r3p_table_columns id="102" table_id="100" data_type="INT" name="product_id" label="product"/>
+    <r3p_table_columns id="103" table_id="100" data_type="NUM" 	name="quantity" label="product quantity"/>
     
+<!--  RELATIONSHIPS -->    
     <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" /> <!-- customer -> order -->
     <r3p_table_relationships id="2" parent_column_id="50" child_column_id="102" /> <!-- product -> order -->
+    
+<!--  REPORTS -->
+    <r3p_reports id="1" folder_id="1" table_id="50" name="Product List" />
+    <r3p_report_columns id="1" report_id="1" table_column_id="51" column_order="1" data_type="TXT" name="Name" sort_index="1" sort_desc="true"/>
+    <r3p_report_columns id="2" report_id="1" table_column_id="52" column_order="2" data_type="NUM" name="Price" />
+    
     
 </dataset>
 
