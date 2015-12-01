@@ -9,7 +9,7 @@ import java.util.List;
  * The QueryColumn class
  *
  * @author Batir Akhmerov
- * Created on Nov 25, 2015
+ * Created on Nov 26, 2015
  */
 public class QueryColumn {
 	
@@ -32,7 +32,7 @@ public class QueryColumn {
 		return this.table;
 	}
 	public void setTable(QueryTable table) {
-		this.table = table; 
+		this.table = table;  
 	}
 
 }
