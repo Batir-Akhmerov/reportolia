@@ -5,6 +5,9 @@ package com.reportolia.core.sql.query;
 
 import java.util.List;
 
+import com.reportolia.core.model.table.DbTable;
+import com.reportolia.core.sql.QueryGenerationCommand;
+
 /**
  * The QueryTable class
  *
@@ -18,6 +21,21 @@ public class QueryTable {
 	private boolean main;
 	private JoinType joinType;
 	private List<QueryTable> tableList;
+	
+	public QueryTable() {
+		
+	}
+	
+	public QueryTable(DbTable table, QueryGenerationCommand command, boolean isMain) {
+		this.tableName = table.getName();
+		this.alias = command.nextAlias();
+		this.main = isMain;
+	}
+	
+	public QueryTable(DbTable table, String alias) {
+		this.tableName = table.getName();
+		this.alias = alias;
+	}
 	
 	private List<QueryJoin> joinList;
 	

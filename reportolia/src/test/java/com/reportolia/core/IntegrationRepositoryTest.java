@@ -27,7 +27,7 @@ import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
-import com.reportolia.core.sql.SqlGeneratorHandler;
+import com.reportolia.core.sql.QueryGeneratorHandler;
 
 /**
  * @author Petri Kainulainen
@@ -46,7 +46,7 @@ public class IntegrationRepositoryTest {
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
 	@Resource protected DbHandler dbManager;
-	@Resource protected SqlGeneratorHandler sqlGeneratorManager;
+	@Resource protected QueryGeneratorHandler sqlGeneratorManager;
 	
 	@Test
     public void findTableByName_OneTodoItemEntryFound_ShouldReturnAListOfOneEntry2() {

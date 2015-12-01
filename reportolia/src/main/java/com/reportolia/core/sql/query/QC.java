@@ -11,7 +11,10 @@ package com.reportolia.core.sql.query;
  */
 public class QC {
 
+	public static final String TBL_ALIAS = "tbl";
+	
 	public static final String SPACE = " ";
+	public static final String UNDERSCORE = "_";
 	public static final String DOT = ".";
 	public static final String COMMA = ",";
 	public static final String Q = "?";

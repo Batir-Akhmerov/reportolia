@@ -5,6 +5,8 @@ package com.reportolia.core.sql.query;
 
 import java.util.List;
 
+import com.reportolia.core.model.table.DbTableColumn;
+
 /**
  * The QueryColumn class
  *
@@ -16,6 +18,15 @@ public class QueryColumn {
 	private QueryTable table;
 	private String sql;
 	private List<QueryOperand> operandList;
+	
+	public QueryColumn() {
+		
+	}
+	
+	public QueryColumn(DbTableColumn column, QueryTable table) {
+		this.sql = table.getAlias() + QC.DOT + column.getName();
+	}
+	
 	public String getSql() {
 		return this.sql;
 	}

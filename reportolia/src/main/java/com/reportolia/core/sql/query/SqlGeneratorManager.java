@@ -10,12 +10,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * The QueryManager class
+ * The SqlGeneratorManager class
  *
  * @author Batir Akhmerov
  * Created on Nov 25, 2015
  */
-public class QueryManager implements QueryHandler {
+public class SqlGeneratorManager implements SqlGeneratorHandler {
 	
 	
 	

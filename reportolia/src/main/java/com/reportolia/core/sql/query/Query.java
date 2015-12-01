@@ -3,7 +3,11 @@
  */
 package com.reportolia.core.sql.query;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.Assert;
 
 /**
  * The Query class
@@ -18,6 +22,28 @@ public class Query {
 	private List<QueryOperand> filterList;
 	private List<QueryOperand> sortingList;
 	private List<QueryOperand> groupList;
+	
+	public void addTable(QueryTable table) {
+		if (CollectionUtils.isEmpty(this.tableList)) {
+			this.tableList = new ArrayList<>();
+		}
+		this.tableList.add(table);
+	}
+	
+	public void addColumn(QueryColumn column) {
+		if (CollectionUtils.isEmpty(this.columnList)) {
+			this.columnList = new ArrayList<>();
+		}
+		this.columnList.add(column);
+	}
+	
+	public QueryTable getMainTable() {
+		if (CollectionUtils.isEmpty(this.tableList)) {
+			return null;
+		}
+		Assert.isTrue(this.tableList.get(0).isMain(), "First table in the query must be a main table!");
+		return this.tableList.get(0);
+	}
 	
 	public List<QueryColumn> getColumnList() {
 		return this.columnList;

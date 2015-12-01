@@ -1,4 +1,4 @@
-package com.reportolia.core.model.operand;
+package com.reportolia.core.model.report;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,21 +13,20 @@ import com.reportolia.core.model.table.DbTableRelationship;
 
 /**
  * 
- * The OperandColumnPath class
+ * The ReportColumnPath class
  *
  * @author Batir Akhmerov
  * Created on Nov 20, 2015
  */
 @Entity
-@Table(name="r3p_operand_column_path")
-public class OperandColumnPath extends BaseEntity {
+@Table(name="r3p_report_column_path")
+public class ReportColumnPath extends BaseEntity {
     
 	
-    @NotEmpty
+	@NotEmpty
 	@ManyToOne
-    @JoinColumn(name="operand_id", nullable=false)
-    private Operand operand;
-	
+    @JoinColumn(name="report_column_id", nullable=false)
+    private ReportColumn reportColumn;
 	
 	@ManyToOne
     @JoinColumn(name="table_relatioship_id", nullable=false)
@@ -36,6 +35,7 @@ public class OperandColumnPath extends BaseEntity {
 	@Column(name = "relationship_order")
 	private int order;
 
+	
 
 	public DbTableRelationship getDbTableRelationship() {
 		return this.dbTableRelationship;
@@ -53,13 +53,13 @@ public class OperandColumnPath extends BaseEntity {
 		this.order = order;
 	}
 
-	public Operand getOperand() {
-		return this.operand;
+	public ReportColumn getReportColumn() {
+		return this.reportColumn;
 	}
 
-	public void setOperand(Operand operand) {
-		this.operand = operand;
+	public void setReportColumn(ReportColumn reportColumn) {
+		this.reportColumn = reportColumn;
 	}
-    
+
 	
 }

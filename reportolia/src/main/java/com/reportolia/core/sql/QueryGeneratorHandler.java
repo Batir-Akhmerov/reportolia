@@ -11,12 +11,12 @@ import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.sql.query.Query;
 
 /**
- * The DbHandler class
+ * The QueryGeneratorHandler class
  *
  * @author Batir Akhmerov
  * Created on Nov 13, 2015
  */
-public interface SqlGeneratorHandler {
+public interface QueryGeneratorHandler {
 	
 	public Query getReportQuery(Report report);
 	
