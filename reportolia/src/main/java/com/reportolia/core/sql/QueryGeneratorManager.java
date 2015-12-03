@@ -9,7 +9,9 @@ import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.reportolia.core.handler.DbHandler;
 import com.reportolia.core.handler.ReportHandler;
@@ -46,21 +48,18 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		 QueryTable qTable = new QueryTable(reportTable, command, true);
 		 query.addTable(qTable);
 		 
-		 List<ReportColumn> columnList = this.reportManager.getReportColumns(report.getId());
+		 List<ReportColumn> columnList = this.reportManager.getReportColumns(report);
 		 if (CollectionUtils.isEmpty(columnList)) {
 			 throw new ValidationException("Please add Columns to the Report!");
 		 }
 		 
 		 for (ReportColumn column: columnList) {
-			 // report column associated with table column directly
+			 // 1. Report column associated with table column directly
 			 if (column.getDbTableColumn() != null) {
 				 DbTableColumn tbColumn = column.getDbTableColumn();
-				 QueryTable qColumnTable =  qTable;
-			 
+				 
 				 List<ReportColumnPath> columnPathList = this.reportManager.getReportColumnPaths(column);
-				 if (!CollectionUtils.isEmpty(columnPathList)) {
-					 
-				 }
+				 QueryTable qColumnTable = appendTablesToQuery(query, columnPathList, command);
 				 
 				 QueryColumn qColumn = new QueryColumn(tbColumn, qColumnTable);
 				 query.addColumn(qColumn);
@@ -73,12 +72,17 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	 
 	 protected QueryTable appendTablesToQuery(Query query, List<ReportColumnPath> columnPathList, QueryGenerationCommand command) {
 		 QueryTable qMainTable = query.getMainTable();
-		 QueryTable qTable = null;
+		 QueryTable qTable = qMainTable;
+		 
+		 if (!CollectionUtils.isEmpty(columnPathList)) { // no stamps means main query table is a column table 
+			 return qTable;
+		 }
+		 
+		 
 		 StringBuilder stamp = new StringBuilder(QC.TBL_ALIAS + QC.UNDERSCORE);
 		 
 		 for (ReportColumnPath path: columnPathList) {
 			 DbTableRelationship rel = path.getDbTableRelationship();
-			 stamp.append(rel.getId());
 			 
 			 DbTableColumn childColumn = rel.getDbColumnChild();
 			 DbTable childTable = childColumn.getDbTable();
@@ -86,26 +90,31 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 			 DbTableColumn parentColumn = rel.getDbColumnParent();
 			 DbTable parentTable = parentColumn.getDbTable();
 			 
-			 // first iteration, find out which one of parent/child tables is a main table
-			 if (qTable == null) {
-				 
-				 // TODO: How to track circular relationships???
-				 
-				 DbTable tb = parentTable;
-				 if (qMainTable.getTableName() == childTable.getName()) {
-					 tb = childTable;
-				 }
-				 //else if (qMainTable.getTableName() == parentTable.getName()) {
-					 
-				 //}
-				 
-				 qTable = new QueryTable(tb, stamp.toString());
-				 query.addTable(qTable);
+			 DbTable nextTable = parentTable; // assuming most table path follow from child to parent tables in the path
+			 String fromChildMarker = "";
+			 if (!path.isFromParent()) { // determine which table goes first in the path
+				 Assert.isTrue(childTable.getName() == qTable.getTableName());
+				 nextTable = childTable;
+				 fromChildMarker = QC.MARKER_PATH_FROM_CHILD;
 			 }
 			 else {
-				 
+				 Assert.isTrue(parentTable.getName() == qTable.getTableName());
 			 }
 			 
+			 String alias = stamp.toString() + fromChildMarker + rel.getId();
+			 
+			 qTable = query.findTableByAlias(alias);
+			 if (qTable == null) {
+				 qTable = new QueryTable(nextTable, alias);
+				 query.addTable(qTable);
+				 
+				 // update stamp
+				 if (!StringUtils.isEmpty(fromChildMarker)) {
+					 stamp.append(fromChildMarker);
+				 }
+				 stamp.append(rel.getId());
+				 stamp.append(QC.UNDERSCORE);
+			 }
 		 }
 		 return qTable;
 	 }

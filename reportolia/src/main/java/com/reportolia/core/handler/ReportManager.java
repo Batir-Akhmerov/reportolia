@@ -15,6 +15,7 @@ import com.reportolia.core.model.report.ReportColumn;
 import com.reportolia.core.model.report.ReportColumnPath;
 import com.reportolia.core.repository.report.ReportColumnPathRepository;
 import com.reportolia.core.repository.report.ReportColumnRepository;
+import com.reportolia.core.repository.report.ReportRepository;
 
 /**
  * The ReportManager class
@@ -25,17 +26,25 @@ import com.reportolia.core.repository.report.ReportColumnRepository;
 @Component
 public class ReportManager implements ReportHandler {
 	
+	@Resource protected ReportRepository reportRepository;
 	@Resource protected ReportColumnRepository reportColumnRepository;
 	@Resource protected ReportColumnPathRepository reportColumnPathRepository;
 	
-	private Sort sortByOrder = new Sort(Sort.Direction.ASC, "order");
+	public static Sort sortByOrder = new Sort(Sort.Direction.ASC, "order");
 
 	public List<ReportColumn> getReportColumns(Long reportId) {
-		return this.reportColumnRepository.findByReport(new Report(reportId), this.sortByOrder);
+		Report report = this.reportRepository.findById(reportId);
+		//return this.reportColumnRepository.findByReport(report, sortByOrder);
+		return this.reportColumnRepository.findByReportId(reportId, sortByOrder);
+	}
+	
+	public List<ReportColumn> getReportColumns(Report report) {
+		//return this.reportColumnRepository.findByReport(report, sortByOrder);
+		return this.reportColumnRepository.findByReportId(report.getId(), sortByOrder);
 	}
 	
 	public List<ReportColumnPath> getReportColumnPaths(ReportColumn column) {
-		return this.reportColumnPathRepository.findByReportColumn(column, this.sortByOrder);
+		return this.reportColumnPathRepository.findByReportColumn(column, sortByOrder);
 	}
 	
 }

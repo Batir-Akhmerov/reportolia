@@ -16,5 +16,5 @@ import com.reportolia.core.repository.base.UpdatableRepository;
 public interface ReportRepository extends UpdatableRepository<Report, Long> {
     
     List<Report> findByName(String name);
-    List<Report> findByFolder(Folder folder);
+    //List<Report> findByFolder(Folder folder);
 }

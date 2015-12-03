@@ -1,5 +1,6 @@
 package com.reportolia.core.model.report;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -22,11 +23,11 @@ import com.reportolia.core.model.table.DbTable;
 @Table(name="r3p_reports", uniqueConstraints = { @UniqueConstraint(columnNames = {"folder_id", "name"}) })
 public class Report extends BaseEntity {
     
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="folder_id", nullable=false)
     private Folder folder;
 	
-    @ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="table_id", nullable=false)
     private DbTable dbTable;
     

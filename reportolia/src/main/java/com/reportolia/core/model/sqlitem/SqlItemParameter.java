@@ -41,7 +41,7 @@ public class SqlItemParameter extends BaseEntity {
     @Column(name = "param_sql", nullable = false, length = 128)
     private String sql;
     
-    @Column(name = "order")
+    @Column(name = "param_order")
     private int order;
 
 	public long getSqlItemId() {

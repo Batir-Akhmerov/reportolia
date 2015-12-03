@@ -68,7 +68,7 @@ public class Operand extends BaseEntity {
     @Column(name = "value", length = Constants.LENGTH_VARIABLE_VALUE)
     private String value;
     
-    @Column(name = "is_desc_sort")
+    @Column(name = "is_desc_sort", columnDefinition = "boolean default false")
     private Boolean descSort;
 
 	public OperandOwnerType getOperandOwnerType() {
@@ -140,7 +140,7 @@ public class Operand extends BaseEntity {
 	}
 
 	public void setDescSort(Boolean descSort) {
-		this.descSort = descSort;
+		this.descSort = descSort != null ? descSort : false;
 	}
 
 	public List<OperandColumnPath> getColumnPaths() {

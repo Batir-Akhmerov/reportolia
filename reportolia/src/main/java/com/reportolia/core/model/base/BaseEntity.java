@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -29,14 +31,15 @@ public abstract class BaseEntity {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date",  updatable=false)
-    private Date createDate = new Date();
+    @Column(name = "create_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable=false)
+    private Date createDate;
 
+    // TODO: Test to make sure updateDate is properly handled
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_date")
+    @Column(name = "update_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Version
     private Date updateDate;
-/*
+
     @PrePersist
     protected void onCreate() {
     	this.updateDate = this.createDate = new Date();
@@ -46,7 +49,7 @@ public abstract class BaseEntity {
     protected void onUpdate() {
     	this.updateDate = new Date();
     }
-*/
+
 	/**
 	 *
 	 * @return the id

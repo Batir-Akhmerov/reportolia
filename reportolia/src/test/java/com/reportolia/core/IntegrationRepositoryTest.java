@@ -30,7 +30,11 @@ import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.sql.QueryGeneratorHandler;
 
 /**
- * @author Petri Kainulainen
+ * 
+ * The IntegrationRepositoryTest class
+ *
+ * @author Batir Akhmerov
+ * Created on Dec 3, 2015
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {PersistenceContext.class})
@@ -46,11 +50,11 @@ public class IntegrationRepositoryTest {
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
 	@Resource protected DbHandler dbManager;
-	@Resource protected QueryGeneratorHandler sqlGeneratorManager;
+	@Resource protected QueryGeneratorHandler queryGeneratorManager;
 	
 	@Test
     public void findTableByName_OneTodoItemEntryFound_ShouldReturnAListOfOneEntry2() {
-        List<DbTable> list = sqlGeneratorManager.getDbTableList("customers");
+        List<DbTable> list = queryGeneratorManager.getDbTableList("customers");
 
         assertThat(list.size(), is(1));
         DbTable table = list.get(0);
@@ -76,7 +80,10 @@ public class IntegrationRepositoryTest {
                 hasProperty("label", is("customer name"))
         ));
         
-        List<DbTableRelationship> relList = sqlGeneratorManager.getDbTableChildRelationshipList(table.getId());
+        this.tableColumnRepository.findAll();
+        this.tableColumnRepository.findByDbTable(table);
+        
+        List<DbTableRelationship> relList = queryGeneratorManager.getDbTableChildRelationshipList(table.getId());
         assertThat(relList.size(), is(1));
         DbTableRelationship relBean = relList.get(0);
         assertThat(relBean, 

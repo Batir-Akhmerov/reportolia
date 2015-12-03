@@ -34,6 +34,12 @@ public class ReportColumnPath extends BaseEntity {
 	
 	@Column(name = "relationship_order")
 	private int order;
+	
+	/**
+	 * True when parent table in the relationship is a first table in this Path 
+	 */
+	@Column(name = "is_from_parent", columnDefinition = "boolean default false")
+    private Boolean fromParent;
 
 	
 
@@ -59,6 +65,14 @@ public class ReportColumnPath extends BaseEntity {
 
 	public void setReportColumn(ReportColumn reportColumn) {
 		this.reportColumn = reportColumn;
+	}
+
+	public Boolean isFromParent() {
+		return this.fromParent;
+	}
+
+	public void setFromParent(Boolean fromParent) {
+		this.fromParent = fromParent != null ? fromParent : false;
 	}
 
 	

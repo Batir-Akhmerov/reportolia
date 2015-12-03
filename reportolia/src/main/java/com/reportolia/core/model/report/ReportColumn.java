@@ -25,11 +25,12 @@ import com.reportolia.core.model.table.DbTableColumn;
 @Table(name="r3p_report_columns", uniqueConstraints = { @UniqueConstraint(columnNames = {"report_id", "name"}) })
 public class ReportColumn extends BaseEntity {
     
+	
 	@ManyToOne
     @JoinColumn(name="report_id", nullable=false)
     private Report report;
-	
-    @ManyToOne
+		
+	@ManyToOne
     @JoinColumn(name="table_column_id")
     private DbTableColumn dbTableColumn;
     
@@ -45,13 +46,13 @@ public class ReportColumn extends BaseEntity {
     private String description;
     
     @Column(name = "column_order")
-    private int order;
+    private Integer order;
     
     @Column(name = "sort_index")
-    private int sort_index;
+    private Integer sort_index;
     
-    @Column(name = "sort_desc")
-    private boolean sort_desc;
+    @Column(name = "sort_desc", columnDefinition = "boolean default false")
+    private Boolean sort_desc;
     
    
 	public String getName() {
@@ -86,22 +87,22 @@ public class ReportColumn extends BaseEntity {
 	}
 
 
-	public int getOrder() {
+	public Integer getOrder() {
 		return this.order;
 	}
 
 
-	public void setOrder(int order) {
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 
 
-	public int getSort_index() {
+	public Integer getSort_index() {
 		return this.sort_index;
 	}
 
 
-	public void setSort_index(int sort_index) {
+	public void setSort_index(Integer sort_index) {
 		this.sort_index = sort_index;
 	}
 
@@ -116,13 +117,13 @@ public class ReportColumn extends BaseEntity {
 	}
 
 
-	public boolean isSort_desc() {
+	public Boolean isSort_desc() {
 		return this.sort_desc;
 	}
 
 
-	public void setSort_desc(boolean sort_desc) {
-		this.sort_desc = sort_desc;
+	public void setSort_desc(Boolean sort_desc) {
+		this.sort_desc = sort_desc != null ? sort_desc : false;
 	}
 
 

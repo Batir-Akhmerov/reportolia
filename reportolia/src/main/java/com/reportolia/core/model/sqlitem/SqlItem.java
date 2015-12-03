@@ -65,32 +65,34 @@ public class SqlItem extends BaseEntity {
     /**
      * True for a beginning element of a function or a block
      */
-    @Column(name = "is_block")
-    private boolean block;
+    @Column(name = "is_block", columnDefinition = "Boolean default false")
+    private Boolean block;
     
     /**
      * True for an end element of a function or a block
      */
-    @Column(name = "is_block_end")
-    private boolean blockEnd;
+    @Column(name = "is_block_end", columnDefinition = "Boolean default false")
+    private Boolean blockEnd;
     
     /**
      * True if the element is an aggregated function
      */
-    @Column(name = "is_aggregate_function")
-    private boolean aggregateFunction;
+    @Column(name = "is_aggregate_function", columnDefinition = "Boolean default false")
+    private Boolean aggregateFunction;
     
     /**
      * True if the element is a block/function that hides data types of nested content
      */
-    @Column(name = "is_isolated")
-    private boolean isolated;
+    @Column(name = "is_isolated", columnDefinition = "Boolean default false")
+    private Boolean isolated;
     
     /**
      * True if the element is a nested sub function of a top level composite function
      */
-    @Column(name = "is_nested")
-    private boolean nestedElement;
+    @Column(name = "is_nested", columnDefinition = "Boolean default false")
+    private Boolean nestedElement;
+    
+    
 
 	public DatabaseType getDatabaseType() {
 		return this.databaseType;
@@ -140,44 +142,44 @@ public class SqlItem extends BaseEntity {
 		this.sql = sql;
 	}
 
-	public boolean isBlock() {
+	public Boolean isBlock() {
 		return this.block;
 	}
 
-	public void setBlock(boolean block) {
-		this.block = block;
+	public void setBlock(Boolean block) {
+		this.block = block != null ? block : false;
 	}
 
-	public boolean isBlockEnd() {
+	public Boolean isBlockEnd() {
 		return this.blockEnd;
 	}
 
-	public void setBlockEnd(boolean blockEnd) {
-		this.blockEnd = blockEnd;
+	public void setBlockEnd(Boolean blockEnd) {
+		this.blockEnd = blockEnd != null ? blockEnd : false;
 	}
 
-	public boolean isAggregateFunction() {
+	public Boolean isAggregateFunction() {
 		return this.aggregateFunction;
 	}
 
-	public void setAggregateFunction(boolean aggregateFunction) {
-		this.aggregateFunction = aggregateFunction;
+	public void setAggregateFunction(Boolean aggregateFunction) {
+		this.aggregateFunction = aggregateFunction != null ? aggregateFunction : false;
 	}
 
-	public boolean isIsolated() {
+	public Boolean isIsolated() {
 		return this.isolated;
 	}
 
-	public void setIsolated(boolean isolated) {
-		this.isolated = isolated;
+	public void setIsolated(Boolean isolated) {
+		this.isolated = isolated != null ? isolated : false;
 	}
 
-	public boolean isNestedElement() {
+	public Boolean isNestedElement() {
 		return this.nestedElement;
 	}
 
-	public void setNestedElement(boolean nestedElement) {
-		this.nestedElement = nestedElement;
+	public void setNestedElement(Boolean nestedElement) {
+		this.nestedElement = nestedElement != null ? nestedElement : false;
 	}
 
 	public List<SqlItemParameter> getSqlItemParameters() {

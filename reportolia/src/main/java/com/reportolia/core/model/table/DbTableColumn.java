@@ -40,7 +40,7 @@ public class DbTableColumn extends BaseEntity {
     @Column(name = "label")
     private String label;
     
-    @Column(name = "is_calculated")
+    @Column(name = "is_calculated", columnDefinition = "boolean default false")
     private Boolean calculated;
    
 	
@@ -94,7 +94,7 @@ public class DbTableColumn extends BaseEntity {
 
 
 	public void setCalculated(Boolean calculated) {
-		this.calculated = calculated;
+		this.calculated = calculated != null ? calculated : false;
 	}
 	
 	

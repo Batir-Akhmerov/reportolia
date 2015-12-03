@@ -17,6 +17,8 @@ import com.reportolia.core.repository.base.UpdatableRepository;
  */
 public interface ReportColumnRepository extends UpdatableRepository<ReportColumn, Long> {
     
-    List<ReportColumn> findByReport(Report report, Sort sort);
+    List<ReportColumn> findByReport(Report report, Sort sort); 
+    
+    List<ReportColumn> findByReportId(Long reportId, Sort sort);
     
 }

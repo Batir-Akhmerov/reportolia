@@ -38,8 +38,8 @@ public class Folder extends BaseEntity {
     @Column(name = "description", nullable = true, length = 500)
     private String description;
     
-    @Column(name = "is_system")
-    private boolean system;
+    @Column(name = "is_system", columnDefinition = "boolean default false")
+    private Boolean system;
     
     /**
      * Used for user specific folder
@@ -85,13 +85,13 @@ public class Folder extends BaseEntity {
 	}
 
 
-	public boolean isSystem() {
+	public Boolean isSystem() {
 		return this.system;
 	}
 
 
-	public void setSystem(boolean system) {
-		this.system = system;
+	public void setSystem(Boolean system) {
+		this.system = system != null ? system : false;
 	}
 
 

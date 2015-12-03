@@ -6,6 +6,7 @@ package com.reportolia.core.sql.query;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
  * @author Batir Akhmerov
  * Created on Nov 25, 2015
  */
+@Component
 public class SqlGeneratorManager implements SqlGeneratorHandler {
 	
 	
