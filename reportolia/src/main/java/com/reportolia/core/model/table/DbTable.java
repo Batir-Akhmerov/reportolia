@@ -41,6 +41,10 @@ public class DbTable extends BaseEntity {
     @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DbTableColumn> dbTableColumns;
 
+    @Override
+	public String toString() {
+		return this.name;
+	}
     
     /**
      * System Table Name

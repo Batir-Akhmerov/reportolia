@@ -1,14 +1,17 @@
 package com.reportolia.core.model.table;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
+import com.reportolia.core.sql.query.JoinType;
 
 /**
  * 
@@ -32,6 +36,14 @@ public class DbTableRelationship extends BaseEntity {
     
     @Column(name = "label", length = 100)
     private String label;
+    
+    /**
+     * This Join Type is only used when Parent joins its Child.
+     * Note: Child to Parent joins are always INNER 
+     */
+    @Enumerated(EnumType.STRING)
+	@Column(name = "join_type_to_child", nullable = true, length = Constants.LENGTH_JOIN_TYPE)
+    private JoinType joinTypeToChild = JoinType.INNER;
     
     /**
      * Reference to the PK Column in a Parent Table 
@@ -51,14 +63,15 @@ public class DbTableRelationship extends BaseEntity {
      * Can be used in composite relatioship to filter one of columns by a hard-coded value
      * Only one column can be filtered using the following rule COALESCE(dbColumnParent, dbColumnChild) = joinValue
      */
-    @Column(name = "joinValue", length = 128)
+    @Column(name = "join_value", length = 128)
     private String joinValue;
     
     /**
      * List of other joined columns in case if this relationship is composite 
      */
     @OneToMany(targetEntity=DbTableRelationship.class, mappedBy="dbTableRelationshipGroup", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<DbTableRelationship> dbTableRelationshipGroupList;
+    @OrderBy("order")
+    private List<DbTableRelationship> dbTableRelationshipGroupList;
     
     /**
      * Reference to the primary Table Relationship bean in a Group of composite column joins 
@@ -66,6 +79,11 @@ public class DbTableRelationship extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="group_relationship_id", nullable=true)
     private DbTableRelationship dbTableRelationshipGroup;
+    //@Column(name = "group_relationship_id")
+    //private Long groupRelationshipId;
+    
+    @Column(name = "group_relationship_order")
+    private Integer order;
    
 	
 	/**
@@ -102,15 +120,6 @@ public class DbTableRelationship extends BaseEntity {
 	}
 
 
-	public Set<DbTableRelationship> getDbTableRelationshipGroupList() {
-		return this.dbTableRelationshipGroupList;
-	}
-
-
-	public void setDbTableRelationshipGroupList(Set<DbTableRelationship> dbTableRelationshipGroupList) {
-		this.dbTableRelationshipGroupList = dbTableRelationshipGroupList;
-	}
-
 
 	public DbTableRelationship getDbTableRelationshipGroup() {
 		return this.dbTableRelationshipGroup;
@@ -134,6 +143,36 @@ public class DbTableRelationship extends BaseEntity {
 
 	public void setJoinValue(String joinValue) {
 		this.joinValue = joinValue;
+	}
+
+
+	public JoinType getJoinTypeToChild() {
+		return this.joinTypeToChild;
+	}
+
+
+	public void setJoinTypeToChild(JoinType joinTypeToChild) {
+		this.joinTypeToChild = joinTypeToChild;
+	}
+
+
+	public List<DbTableRelationship> getDbTableRelationshipGroupList() {
+		return this.dbTableRelationshipGroupList;
+	}
+
+
+	public void setDbTableRelationshipGroupList(List<DbTableRelationship> dbTableRelationshipGroupList) {
+		this.dbTableRelationshipGroupList = dbTableRelationshipGroupList;
+	}
+
+
+	public Integer getOrder() {
+		return this.order;
+	}
+
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
 }

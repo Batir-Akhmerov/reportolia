@@ -3,7 +3,10 @@
  */
 package com.reportolia.core.sql.query;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.util.CollectionUtils;
 
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.sql.QueryGenerationCommand;
@@ -21,6 +24,7 @@ public class QueryTable {
 	private boolean main;
 	private JoinType joinType;
 	private List<QueryTable> tableList;
+	private List<QueryJoin> joinList;
 	
 	public QueryTable() {
 		
@@ -28,7 +32,9 @@ public class QueryTable {
 	
 	public QueryTable(DbTable table, QueryGenerationCommand command, boolean isMain) {
 		this.tableName = table.getName();
-		this.alias = command.nextAlias();
+		if (isMain) {
+			this.alias = QC.TBL_ALIAS + table.getId();
+		}
 		this.main = isMain;
 	}
 	
@@ -37,7 +43,17 @@ public class QueryTable {
 		this.alias = alias;
 	}
 	
-	private List<QueryJoin> joinList;
+	@Override
+	public String toString() {
+		return this.tableName + " " + this.alias;
+	}
+	
+	public void addQueryJoin(QueryJoin join) {
+		if (CollectionUtils.isEmpty(this.joinList)) {
+			this.joinList = new ArrayList<>();
+		}
+		this.joinList.add(join);
+	}
 	
 	public String getTableName() {
 		return this.tableName;

@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,12 +21,15 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.reportolia.core.config.ColumnDetectorXmlDataSetLoader;
 import com.reportolia.core.config.PersistenceContext;
 import com.reportolia.core.handler.DbHandler;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
+import com.reportolia.core.repository.table.DbTableRelationshipRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.sql.QueryGeneratorHandler;
 
@@ -44,14 +48,19 @@ import com.reportolia.core.sql.QueryGeneratorHandler;
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 //@DatabaseSetup("/com/reportolia/core/toDoData1.xml")
+@DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
 @DatabaseSetup("database-data.xml")
 public class IntegrationRepositoryTest {
 
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
+	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
+	
 	@Resource protected DbHandler dbManager;
 	@Resource protected QueryGeneratorHandler queryGeneratorManager;
 	
+	
+	/*
 	@Test
     public void findTableByName_OneTodoItemEntryFound_ShouldReturnAListOfOneEntry2() {
         List<DbTable> list = queryGeneratorManager.getDbTableList("customers");
@@ -87,15 +96,32 @@ public class IntegrationRepositoryTest {
         assertThat(relList.size(), is(1));
         DbTableRelationship relBean = relList.get(0);
         assertThat(relBean, 
-                hasProperty("id", is(1L))/*,
+                hasProperty("id", is(1L)),
                 hasProperty("dbColumnParent.id", is(1L)),
-                hasProperty("dbColumnChild.id", is(101L))*/
+                hasProperty("dbColumnChild.id", is(101L))
         );
         
         assertThat(relBean.getDbColumnParent(), hasProperty("id", is(1L)));
         assertThat(relBean.getDbColumnChild(), hasProperty("id", is(101L)));
     }
-    
+*/
+   
+	@Test
+    public void testCompositeRelationshipGroup() {
+		DbTableRelationship rel = this.tableRelationshipRepository.findById(4L);
+		assertThat(CollectionUtils.isEmpty(rel.getDbTableRelationshipGroupList()), is(false));
+		assertThat(rel.getDbTableRelationshipGroupList().size(), is(3));
+		assertThat(rel.getDbTableRelationshipGroupList().get(0).getOrder(), is(1));
+		assertThat(rel.getDbTableRelationshipGroupList().get(1).getOrder(), is(2));
+		assertThat(rel.getDbTableRelationshipGroupList().get(2).getOrder(), is(3));
+	}
+	 /*
+	@Test
+    public void testCompositeRelationshipGroupParent() {
+		DbTableRelationship rel = this.tableRelationshipRepository.findById(5L);
+		assertThat(rel.getDbTableRelationshipGroup() != null, is(true));
+	}
+	*/
 	/*
     @Test
     public void findTableByName_OneTodoItemEntryFound_ShouldReturnAListOfOneEntry1() {

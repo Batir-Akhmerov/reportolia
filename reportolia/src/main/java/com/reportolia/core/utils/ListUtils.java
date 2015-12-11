@@ -24,7 +24,8 @@ public class ListUtils {
 		int i = 0;
 		try {
 			for (T bean: list) {
-				if (BeanUtils.getProperty(bean, property) == value) {
+				Object v = BeanUtils.getProperty(bean, property);
+				if (v == value || (value.equals(v))) {
 					return i;
 				}
 				i++;

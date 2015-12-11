@@ -2,13 +2,15 @@ package com.reportolia.core.model.sqlitem;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -33,20 +35,23 @@ public class SqlItem extends BaseEntity {
 
     
     @Enumerated(EnumType.STRING)
-	@Column(name = "datatabse_type", nullable = false, length = Constants.LENGTH_DATABASE_TYPE)
+	@Column(name = "datatabse_type", length = Constants.LENGTH_DATABASE_TYPE)
     private DatabaseType databaseType;
     
     @Enumerated(EnumType.STRING)
-	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
+	@Column(name = "data_type", length = Constants.LENGTH_DATA_TYPE)
     private DataType dataType;
         
     @Enumerated(EnumType.STRING)
 	@Column(name = "sql_item_type", nullable = false, length = Constants.LENGTH_SQL_ITEM_TYPE)
     private SqlItemType sqlItemType;
     
-    @OneToOne
-    @JoinColumn(name="end_block_sql_item_id")
-    private SqlItem endBlockSqlItem;
+    @OneToMany(targetEntity=SqlItem.class, mappedBy="parentSqlItem", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<SqlItem> nestedSqlItems;
+    
+    @ManyToOne
+    @JoinColumn(name="parent_sql_item_id")
+    private SqlItem parentSqlItem;
     
     
     @OneToMany
@@ -118,14 +123,6 @@ public class SqlItem extends BaseEntity {
 		this.sqlItemType = sqlItemType;
 	}
 
-	public SqlItem getEndBlockSqlItem() {
-		return this.endBlockSqlItem;
-	}
-
-	public void setEndBlockSqlItem(SqlItem endBlockSqlItem) {
-		this.endBlockSqlItem = endBlockSqlItem;
-	}
-
 	public String getLabel() {
 		return this.label;
 	}
@@ -188,6 +185,22 @@ public class SqlItem extends BaseEntity {
 
 	public void setSqlItemParameters(List<SqlItemParameter> sqlItemParameters) {
 		this.sqlItemParameters = sqlItemParameters;
+	}
+
+	public List<SqlItem> getNestedSqlItems() {
+		return this.nestedSqlItems;
+	}
+
+	public void setNestedSqlItems(List<SqlItem> nestedSqlItems) {
+		this.nestedSqlItems = nestedSqlItems;
+	}
+
+	public SqlItem getParentSqlItem() {
+		return this.parentSqlItem;
+	}
+
+	public void setParentSqlItem(SqlItem parentSqlItem) {
+		this.parentSqlItem = parentSqlItem;
 	}
   
 

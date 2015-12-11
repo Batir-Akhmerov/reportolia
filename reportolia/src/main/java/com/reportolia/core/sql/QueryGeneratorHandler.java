@@ -5,10 +5,11 @@ package com.reportolia.core.sql;
 
 import java.util.List;
 
-import com.reportolia.core.model.report.Report;
+import com.reportolia.core.model.report.ReportColumnPath;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.sql.query.Query;
+import com.reportolia.core.sql.query.QueryTable;
 
 /**
  * The QueryGeneratorHandler class
@@ -18,11 +19,9 @@ import com.reportolia.core.sql.query.Query;
  */
 public interface QueryGeneratorHandler {
 	
-	public Query getReportQuery(Report report);
+	//public Query getReportQuery(Report report);
 	
+	public QueryTable appendTablesToQuery(Query query, List<ReportColumnPath> columnPathList, QueryGenerationCommand command);
 	
-	public List<DbTable> getDbTableList(String name);
-	
-	public List<DbTableRelationship> getDbTableChildRelationshipList(long tableId);
 
 }

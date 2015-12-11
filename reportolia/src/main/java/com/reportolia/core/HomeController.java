@@ -2,7 +2,6 @@ package com.reportolia.core;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Resource;
@@ -14,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.sql.QueryGeneratorHandler;
 
 /**
@@ -41,8 +39,8 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		List<DbTable> list = sqlGeneratorManager.getDbTableList("milk");
-		model.addAttribute("tableList", list);
+		//List<DbTable> list = sqlGeneratorManager.getDbTableList("milk");
+		//model.addAttribute("tableList", list);
 		
 		return "home";
 	}

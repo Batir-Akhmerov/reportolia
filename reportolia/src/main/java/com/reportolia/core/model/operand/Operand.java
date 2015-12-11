@@ -33,15 +33,15 @@ public class Operand extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "owner_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
-    private OperandOwnerType operandOwnerType;
+	private OperandOwnerType operandOwnerType;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "content_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
-    private ContentType contentType;
+	private ContentType contentType;
    
 	@NotEmpty
     @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+	private Long ownerId;
 	
 	// SQL ITEM
 	@Enumerated(EnumType.STRING)
@@ -70,6 +70,9 @@ public class Operand extends BaseEntity {
     
     @Column(name = "is_desc_sort", columnDefinition = "boolean default false")
     private Boolean descSort;
+    
+    @Column(name = "operand_order")
+    private Integer order;
 
 	public OperandOwnerType getOperandOwnerType() {
 		return this.operandOwnerType;
@@ -149,6 +152,14 @@ public class Operand extends BaseEntity {
 
 	public void setColumnPaths(List<OperandColumnPath> columnPaths) {
 		this.columnPaths = columnPaths;
+	}
+
+	public Integer getOrder() {
+		return this.order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
 	

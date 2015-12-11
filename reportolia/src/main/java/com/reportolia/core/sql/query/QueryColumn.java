@@ -5,6 +5,8 @@ package com.reportolia.core.sql.query;
 
 import java.util.List;
 
+import org.springframework.util.CollectionUtils;
+
 import com.reportolia.core.model.table.DbTableColumn;
 
 /**
@@ -24,7 +26,16 @@ public class QueryColumn {
 	}
 	
 	public QueryColumn(DbTableColumn column, QueryTable table) {
-		this.sql = table.getAlias() + QC.DOT + column.getName();
+		this.sql = column.getName();//table.getAlias() + QC.DOT + column.getName();
+		this.table = table;
+	}
+	
+	@Override
+	public String toString() {
+		if (CollectionUtils.isEmpty(operandList)) {
+			return (table != null ? table.getAlias() + QC.DOT : "") + getSql();
+		}
+		return "OPERAND LIST";
 	}
 	
 	public String getSql() {
@@ -45,5 +56,6 @@ public class QueryColumn {
 	public void setTable(QueryTable table) {
 		this.table = table;  
 	}
+
 
 }

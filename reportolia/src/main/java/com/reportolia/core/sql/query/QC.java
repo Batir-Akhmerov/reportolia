@@ -13,6 +13,8 @@ public class QC {
 
 	public static final String TBL_ALIAS = "tbl";
 	public static final String MARKER_PATH_FROM_CHILD = "x";
+	public static final String TBL_ALIAS_PARENT = "/*${TBL_ALIAS_PARENT}*/";
+	public static final String TBL_ALIAS_CHILD = "/*${TBL_ALIAS_CHILD}*/";
 	
 	public static final String SPACE = " ";
 	public static final String UNDERSCORE = "_";

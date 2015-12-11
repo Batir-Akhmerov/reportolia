@@ -108,7 +108,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			}
 			if (StringUtils.isEmpty(join.getJoinValue())) {
 				builder.append(QC.SPACE);
-				builder.append(table.getAlias());
+				builder.append(join.getPkColumn().getTable().getAlias());
 				builder.append(QC.DOT);
 				builder.append(join.getPkColumn().getSql());
 				builder.append(QC.EG);
@@ -120,14 +120,14 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			else {
 				builder.append(QC.SPACE);
 				if (join.getPkColumn() != null) {
-					builder.append(table.getAlias());
+					builder.append(join.getPkColumn().getTable().getAlias());
 					builder.append(QC.DOT);
-					toSqlColumn(join.getPkColumn(), builder, valueList);
+					builder.append(join.getPkColumn().getSql());
 				}
 				else if (join.getJoinColumn() != null) {
 					builder.append(join.getJoinColumn().getTable().getAlias());
 					builder.append(QC.DOT);
-					toSqlColumn(join.getJoinColumn(), builder, valueList);
+					builder.append(join.getJoinColumn().getSql());
 				}
 				else {
 					Assert.isTrue(false, "One of QueryJoin Columns is expected!");

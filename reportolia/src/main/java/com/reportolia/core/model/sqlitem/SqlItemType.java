@@ -8,10 +8,10 @@ package com.reportolia.core.model.sqlitem;
  * Created on Nov 13, 2015
  */
 public enum SqlItemType {
-	LOGIC("Logic Operators"),
-	OPERATOR("Arithmetical Operators and Parenthesis"),
-	COMPARATOR("Comparators"),
-	FUNCTION("Functions");
+	LOGI("Logic Operators"),
+	OPER("Arithmetical Operators and Parenthesis"),
+	COMP("Comparators"),
+	FUNC("Functions");
 	
 	private String description;
 	

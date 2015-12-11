@@ -22,5 +22,10 @@ public interface DbTableRelationshipRepository extends UpdatableRepository<DbTab
 			"select r FROM DbTableRelationship r WHERE r.dbColumnParent.dbTable.id = :tableId"
     )
     public List<DbTableRelationship> findByParentTable(@Param("tableId") long tableId);
+	
+	//List<DbTableRelationship> findByDbTableRelationshipGroup(DbTableRelationship dbTableRelationshipGroup);
+	
+	//public List<DbTableRelationship> findByGroupRelationshipId(Long groupRelationshipId);
+	
     
 }

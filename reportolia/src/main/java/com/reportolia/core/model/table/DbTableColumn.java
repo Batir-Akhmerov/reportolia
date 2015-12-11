@@ -43,7 +43,11 @@ public class DbTableColumn extends BaseEntity {
     @Column(name = "is_calculated", columnDefinition = "boolean default false")
     private Boolean calculated;
    
-	
+    @Override
+   	public String toString() {
+   		return this.name;
+   	}
+    
 	/**
 	 * Optional column label
 	 * @return
