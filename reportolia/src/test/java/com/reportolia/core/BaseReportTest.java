@@ -19,18 +19,17 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.reportolia.core.config.ColumnDetectorXmlDataSetLoader;
-import com.reportolia.core.config.PersistenceContext;
 import com.reportolia.core.handler.DbHandler;
-import com.reportolia.core.handler.ReportHandler;
+import com.reportolia.core.handler.report.ReportHandler;
 import com.reportolia.core.model.report.Report;
 import com.reportolia.core.repository.report.ReportColumnRepository;
 import com.reportolia.core.repository.report.ReportRepository;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
-import com.reportolia.core.sql.QueryGeneratorHandler;
 import com.reportolia.core.sql.ReportQueryGeneratorHandler;
-import com.reportolia.core.sql.query.Query;
-import com.reportolia.core.sql.query.SqlGeneratorHandler;
+import com.reportolia.core.sql.SqlGeneratorHandler;
+import com.reportolia.core.sql.query.QueryGeneratorHandler;
+import com.reportolia.core.sql.query.model.Query;
 
 /**
  * 
@@ -40,7 +39,8 @@ import com.reportolia.core.sql.query.SqlGeneratorHandler;
  * Created on Dec 3, 2015
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {PersistenceContext.class})
+//@ContextConfiguration(classes = {PersistenceContext.class})
+@ContextConfiguration(locations = {"classpath:/com/reportolia/core/testContext-persistence.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,

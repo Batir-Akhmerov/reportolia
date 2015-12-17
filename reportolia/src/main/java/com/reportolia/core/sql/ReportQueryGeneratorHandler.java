@@ -4,7 +4,7 @@
 package com.reportolia.core.sql;
 
 import com.reportolia.core.model.report.Report;
-import com.reportolia.core.sql.query.Query;
+import com.reportolia.core.sql.query.model.Query;
 
 /**
  * The QueryGeneratorHandler class

@@ -20,4 +20,6 @@ public interface DbTableColumnRepository extends UpdatableRepository<DbTableColu
     
     List<DbTableColumn> findByDbTable(DbTable dbTable);
     
+    List<DbTableColumn> findByDbTableAndPk(DbTable dbTable, Boolean pk);
+    
 }

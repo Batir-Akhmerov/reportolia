@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.sql.query;
+package com.reportolia.core.sql;
 
 import java.util.List;
 
@@ -9,6 +9,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import com.reportolia.core.sql.query.model.QC;
+import com.reportolia.core.sql.query.model.Query;
+import com.reportolia.core.sql.query.model.QueryColumn;
+import com.reportolia.core.sql.query.model.QueryJoin;
+import com.reportolia.core.sql.query.model.QueryOperand;
+import com.reportolia.core.sql.query.model.QueryTable;
 
 /**
  * The SqlGeneratorManager class
@@ -19,14 +26,23 @@ import org.springframework.util.StringUtils;
 @Component
 public class SqlGeneratorManager implements SqlGeneratorHandler {
 	
-	
-	
 	public String toSql(Query query, List<Object> valueList) {
 		StringBuilder builder = new StringBuilder();
+		return toSql(query, builder, valueList);
+	}
+	
+	public String toSql(Query query, StringBuilder builder, List<Object> valueList) {
 		
 		builder.append(QC.SELECT);
 		builder.append(QC.NL);
 		builder.append(QC.TAB);
+		
+		if (query.getTop() > 0) {
+			builder.append(QC.TOP);
+			builder.append(QC.SPACE);
+			builder.append(query.getTop());
+			builder.append(QC.SPACE);
+		}
 		
 		// column projection
 		toSqlColumns(query.getColumnList(), builder, valueList);
@@ -111,7 +127,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				builder.append(join.getPkColumn().getTable().getAlias());
 				builder.append(QC.DOT);
 				builder.append(join.getPkColumn().getSql());
-				builder.append(QC.EG);
+				builder.append(QC.EQ);
 				builder.append(join.getJoinColumn().getTable().getAlias());
 				builder.append(QC.DOT);
 				builder.append(join.getJoinColumn().getSql());
@@ -132,7 +148,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				else {
 					Assert.isTrue(false, "One of QueryJoin Columns is expected!");
 				}
-				builder.append(QC.EG);
+				builder.append(QC.EQ);
 				builder.append(QC.Q);
 				valueList.add(join.getJoinValue());
 				builder.append(QC.SPACE);
@@ -157,27 +173,33 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	}
 	
 	protected void toSqlColumn(QueryColumn column, StringBuilder builder, List<Object> valueList) {
-		if (!StringUtils.isEmpty(column.getSql())) {
+		if (CollectionUtils.isEmpty(column.getOperandList()) && column.getNestedQuery() == null) {
 			if (column.getTable() != null) {
 				builder.append(column.getTable().getAlias());
 				builder.append(QC.DOT);
 			}
 			builder.append(column.getSql());
 		}
-		else if (!CollectionUtils.isEmpty(column.getOperandList())) {
+		else if (column.getNestedQuery() == null) {
 			toSqlOperands(column.getOperandList(), builder, valueList);
+		}
+		else {
+			builder.append(QC.PL);
+			toSql(column.getNestedQuery(), builder, valueList);
+			builder.append(QC.PR);
 		}
 	}
 	
 	protected void toSqlOperands(List<QueryOperand> operandList, StringBuilder builder, List<Object> valueList) {
-		if (!CollectionUtils.isEmpty(operandList)) {
+		if (CollectionUtils.isEmpty(operandList)) {
 			return;
 		}
-		builder.append(QC.PL);
+		//builder.append(QC.PL);
 		for (QueryOperand operand: operandList) {
 			toSqlOperand(operand, builder, valueList);
+			builder.append(QC.SPACE);
 		}
-		builder.append(QC.PR);
+		//builder.append(QC.PR);
 	}
 	
 	protected void toSqlOperand(QueryOperand operand, StringBuilder builder, List<Object> valueList) {

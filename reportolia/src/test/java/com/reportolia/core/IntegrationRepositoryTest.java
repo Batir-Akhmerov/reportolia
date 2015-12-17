@@ -31,7 +31,7 @@ import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
-import com.reportolia.core.sql.QueryGeneratorHandler;
+import com.reportolia.core.sql.query.QueryGeneratorHandler;
 
 /**
  * 

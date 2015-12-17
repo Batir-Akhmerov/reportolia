@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.handler;
+package com.reportolia.core.handler.report;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ReportManager implements ReportHandler {
 	public static Sort sortByOrder = new Sort(Sort.Direction.ASC, "order");
 
 	public List<ReportColumn> getReportColumns(Long reportId) {
-		Report report = this.reportRepository.findById(reportId);
+		//Report report = this.reportRepository.findById(reportId);
 		//return this.reportColumnRepository.findByReport(report, sortByOrder);
 		return this.reportColumnRepository.findByReportId(reportId, sortByOrder);
 	}

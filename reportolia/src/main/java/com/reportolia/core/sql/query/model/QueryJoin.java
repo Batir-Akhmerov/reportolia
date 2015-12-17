@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.sql.query;
+package com.reportolia.core.sql.query.model;
 
 /**
  * The QueryJoin class

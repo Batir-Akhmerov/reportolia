@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
-import com.reportolia.core.sql.query.JoinType;
+import com.reportolia.core.sql.query.model.JoinType;
 
 /**
  * 

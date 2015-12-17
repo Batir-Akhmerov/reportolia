@@ -54,7 +54,7 @@ public class SqlItem extends BaseEntity {
     private SqlItem parentSqlItem;
     
     
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="sql_item_id")
     private List<SqlItemParameter> sqlItemParameters;
     

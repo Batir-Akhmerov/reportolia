@@ -1,20 +1,18 @@
 package com.reportolia.core.model.operand;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
+import com.reportolia.core.model.sqlitem.SqlItem;
 import com.reportolia.core.model.sqlitem.SqlItemType;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.variable.Variable;
@@ -33,7 +31,7 @@ public class Operand extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "owner_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
-	private OperandOwnerType operandOwnerType;
+	private OperandOwnerType ownerType;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "content_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
@@ -48,17 +46,26 @@ public class Operand extends BaseEntity {
 	@Column(name = "sql_item_type", length = Constants.LENGTH_SQL_ITEM_TYPE)
     private SqlItemType sqlItemType;
 	
+	/*
     @Column(name = "sql_item_id")
     private Long sqlItemId;
+    */
+	
+    @ManyToOne
+    @JoinColumn(name="sql_item_id")
+    private SqlItem sqlItem;
+    
     
     // COLUMN
     @ManyToOne
     @JoinColumn(name="column_id")
     private DbTableColumn dbColumn;
-    
+    /* 
+     * TODO: Implement order sorting through annotations
     @OneToMany
     @JoinColumn(name="operand_id")
     private List<OperandColumnPath> columnPaths;
+    */
     
     // VARIABLE
     @ManyToOne
@@ -74,12 +81,12 @@ public class Operand extends BaseEntity {
     @Column(name = "operand_order")
     private Integer order;
 
-	public OperandOwnerType getOperandOwnerType() {
-		return this.operandOwnerType;
+	public OperandOwnerType getOwnerType() {
+		return this.ownerType;
 	}
 
-	public void setOperandOwnerType(OperandOwnerType operandOwnerType) {
-		this.operandOwnerType = operandOwnerType;
+	public void setOwnerType(OperandOwnerType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	public ContentType getContentType() {
@@ -104,14 +111,6 @@ public class Operand extends BaseEntity {
 
 	public void setSqlItemType(SqlItemType sqlItemType) {
 		this.sqlItemType = sqlItemType;
-	}
-
-	public Long getSqlItemId() {
-		return this.sqlItemId;
-	}
-
-	public void setSqlItemId(Long sqlItemId) {
-		this.sqlItemId = sqlItemId;
 	}
 
 	public DbTableColumn getDbColumn() {
@@ -146,13 +145,6 @@ public class Operand extends BaseEntity {
 		this.descSort = descSort != null ? descSort : false;
 	}
 
-	public List<OperandColumnPath> getColumnPaths() {
-		return this.columnPaths;
-	}
-
-	public void setColumnPaths(List<OperandColumnPath> columnPaths) {
-		this.columnPaths = columnPaths;
-	}
 
 	public Integer getOrder() {
 		return this.order;
@@ -160,6 +152,14 @@ public class Operand extends BaseEntity {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public SqlItem getSqlItem() {
+		return this.sqlItem;
+	}
+
+	public void setSqlItem(SqlItem sqlItem) {
+		this.sqlItem = sqlItem;
 	}
 
 	

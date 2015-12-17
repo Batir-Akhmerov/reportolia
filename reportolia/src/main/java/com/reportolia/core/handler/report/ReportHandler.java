@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.handler;
+package com.reportolia.core.handler.report;
 
 import java.util.List;
 

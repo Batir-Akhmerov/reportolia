@@ -42,6 +42,9 @@ public class DbTableColumn extends BaseEntity {
     
     @Column(name = "is_calculated", columnDefinition = "boolean default false")
     private Boolean calculated;
+    
+    @Column(name = "is_pk", columnDefinition = "boolean default false")
+    private Boolean pk;
    
     @Override
    	public String toString() {
@@ -99,6 +102,10 @@ public class DbTableColumn extends BaseEntity {
 
 	public void setCalculated(Boolean calculated) {
 		this.calculated = calculated != null ? calculated : false;
+	}
+
+	public Boolean getPk() {
+		return this.pk;
 	}
 	
 	

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.sql.query;
+package com.reportolia.core.sql.query.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
 
+import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.utils.ListUtils;
 
 
@@ -25,6 +26,8 @@ public class Query {
 	private List<QueryOperand> filterList;
 	private List<QueryOperand> sortingList;
 	private List<QueryOperand> groupList;
+	private DataType dataType;
+	private int top;
 	
 	public void addTable(QueryTable table) {
 		if (CollectionUtils.isEmpty(this.tableList)) {
@@ -85,6 +88,30 @@ public class Query {
 	}
 	public void setGroupList(List<QueryOperand> groupList) {
 		this.groupList = groupList;
+	}
+
+	public DataType getDataType() {
+		return this.dataType;
+	}
+
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+	public int getTop() {
+		return this.top;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
+	}
+	
+	public boolean isTop1() {
+		return this.top == 1; 
+	}
+	
+	public void setTop1() {
+		setTop(1);
 	}
 
 }

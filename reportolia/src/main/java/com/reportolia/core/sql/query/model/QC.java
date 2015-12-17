@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.sql.query;
+package com.reportolia.core.sql.query.model;
 
 /**
  * The Query Constants class
@@ -12,6 +12,7 @@ package com.reportolia.core.sql.query;
 public class QC {
 
 	public static final String TBL_ALIAS = "tbl";
+	public static final String TBL_ALIAS_NESTED = "_";
 	public static final String MARKER_PATH_FROM_CHILD = "x";
 	public static final String TBL_ALIAS_PARENT = "/*${TBL_ALIAS_PARENT}*/";
 	public static final String TBL_ALIAS_CHILD = "/*${TBL_ALIAS_CHILD}*/";
@@ -26,12 +27,13 @@ public class QC {
 	
 	public static final String AND = " AND ";
 	public static final String ON = " ON ";
-	public static final String EG = " = ";
+	public static final String EQ = " = ";
 	public static final String PL = " ( ";
 	public static final String PR = " ) ";
 	
 	
 	public static final String TOP1 = " TOP 1 ";
+	public static final String TOP = " TOP ";
 	public static final String SELECT = " SELECT ";
 	public static final String FROM = " FROM ";
 	public static final String WHERE = " WHERE ";

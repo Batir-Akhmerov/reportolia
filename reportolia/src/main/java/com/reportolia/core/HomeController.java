@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.reportolia.core.sql.QueryGeneratorHandler;
+import com.reportolia.core.sql.query.QueryGeneratorHandler;
 
 /**
  * Handles requests for the application home page.
@@ -23,7 +23,7 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
-	@Resource protected QueryGeneratorHandler sqlGeneratorManager;
+	//@Resource protected QueryGeneratorHandler sqlGeneratorManager;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.

@@ -2,7 +2,6 @@ package com.reportolia.core.repository.report;
 
 import java.util.List;
 
-import com.reportolia.core.model.folder.Folder;
 import com.reportolia.core.model.report.Report;
 import com.reportolia.core.repository.base.UpdatableRepository;
 

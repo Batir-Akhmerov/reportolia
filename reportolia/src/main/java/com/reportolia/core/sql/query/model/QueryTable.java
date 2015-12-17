@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.sql.query;
+package com.reportolia.core.sql.query.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.util.CollectionUtils;
 
 import com.reportolia.core.model.table.DbTable;
-import com.reportolia.core.sql.QueryGenerationCommand;
+import com.reportolia.core.sql.query.QueryGenerationCommand;
 
 /**
  * The QueryTable class
@@ -19,6 +19,7 @@ import com.reportolia.core.sql.QueryGenerationCommand;
  */
 public class QueryTable {
 	
+	private DbTable table;
 	private String tableName;
 	private String alias;
 	private boolean main;
@@ -29,16 +30,23 @@ public class QueryTable {
 	public QueryTable() {
 		
 	}
-	
 	public QueryTable(DbTable table, QueryGenerationCommand command, boolean isMain) {
+		this(table, command, isMain, false);
+	}
+	public QueryTable(DbTable table, QueryGenerationCommand command, boolean isMain, boolean isNested) {
+		this.table = table;
 		this.tableName = table.getName();
 		if (isMain) {
 			this.alias = QC.TBL_ALIAS + table.getId();
+		}
+		if (isNested) {
+			this.alias = QC.TBL_ALIAS_NESTED + this.alias;
 		}
 		this.main = isMain;
 	}
 	
 	public QueryTable(DbTable table, String alias) {
+		this.table = table;
 		this.tableName = table.getName();
 		this.alias = alias;
 	}
@@ -90,6 +98,12 @@ public class QueryTable {
 	}
 	public void setJoinList(List<QueryJoin> joinList) {
 		this.joinList = joinList;
+	}
+	public DbTable getTable() {
+		return this.table;
+	}
+	public void setTable(DbTable table) {
+		this.table = table;
 	}
 
 }

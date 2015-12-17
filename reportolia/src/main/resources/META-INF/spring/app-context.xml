@@ -14,7 +14,38 @@
 
 	<context:component-scan base-package="com.reportolia.core" />
 	
-	<bean name="reportStaticFilterOperandHandler" class="com.reportolia.core.handler.OperandManager">
+	<bean name="columnContentOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
+		<property name="operandOwnerType">
+			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.COLUMN"/>
+		</property>
+		<property name="contentType">
+			<util:constant static-field="com.reportolia.core.model.operand.ContentType.CONTENT"/>
+		</property>
+	</bean>	
+	<bean name="columnStaticFilterOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
+		<property name="operandOwnerType">
+			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.COLUMN"/>
+		</property>
+		<property name="contentType">
+			<util:constant static-field="com.reportolia.core.model.operand.ContentType.FILTER"/>
+		</property>
+	</bean>
+	<bean name="columnSortingOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
+		<property name="operandOwnerType">
+			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.COLUMN"/>
+		</property>
+		<property name="contentType">
+			<util:constant static-field="com.reportolia.core.model.operand.ContentType.SORTING"/>
+		</property>
+	</bean>
+	
+	<bean name="columnQueryGeneratorHandler" class="com.reportolia.core.sql.query.QueryGeneratorManager">
+		<property name="contentOperandHandler" 	ref="columnContentOperandHandler" />
+		<property name="filterOperandHandler" 	ref="columnStaticFilterOperandHandler" />
+		<property name="sortingOperandHandler" 	ref="columnSortingOperandHandler" />
+	</bean>
+	
+	<bean name="reportStaticFilterOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
 		<property name="operandOwnerType">
 			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.REPORT"/>
 		</property>
