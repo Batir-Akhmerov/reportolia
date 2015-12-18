@@ -54,6 +54,7 @@ public class QueryOperand {
 		this.variable = variable;
 		this.dataType = variable.getDataType();
 	}
+	@SuppressWarnings("unused")
 	public QueryOperand(List<Object> valueList, DataType dataType) {
 		this.valueList = valueList;
 		this.dataType = dataType;

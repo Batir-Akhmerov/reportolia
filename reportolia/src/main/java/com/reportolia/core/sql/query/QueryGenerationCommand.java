@@ -3,7 +3,9 @@
  */
 package com.reportolia.core.sql.query;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.sql.query.model.Query;
@@ -22,7 +24,15 @@ public class QueryGenerationCommand {
 	private QueryTable mainQueryTable;
 	private DbTable mainTable;
 	private List<QueryOperand> groupByList;
+	private Map<String, QueryTable> cachedAliases;
 	private boolean notCorrelated;
+	
+	public void cacheAlias(QueryTable table) {
+		getCachedAliases().put(table.getAlias(), table);
+	}
+	public QueryTable containsCachedAlias(String alias) {
+		return getCachedAliases().get(alias);
+	}
 
 
 	public Query getTopQuery() {
@@ -69,5 +79,16 @@ public class QueryGenerationCommand {
 
 	public void setMainTable(DbTable mainTable) {
 		this.mainTable = mainTable;
+	}
+
+	public Map<String, QueryTable> getCachedAliases() {
+		if (this.cachedAliases == null) {
+			this.cachedAliases = new HashMap<>();
+		}
+		return this.cachedAliases;
+	}
+
+	public void setCachedAliases(Map<String, QueryTable> cachedAliases) {
+		this.cachedAliases = cachedAliases;
 	}
 }

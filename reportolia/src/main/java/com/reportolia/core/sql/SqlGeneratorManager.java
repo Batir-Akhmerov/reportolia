@@ -103,13 +103,34 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				
 				builder.append(table.getJoinType().getSql());
 				builder.append(QC.SPACE);
-				builder.append(table.getTableName());
-				builder.append(QC.SPACE);
-				builder.append(table.getAlias());
-				builder.append(QC.ON);
-				toSqlJoins(table, builder, valueList);
-				builder.append(QC.NL);
-				builder.append(QC.TAB);
+				
+				if (CollectionUtils.isEmpty(table.getTableList())) {
+					builder.append(table.getTableName());
+					builder.append(QC.SPACE);
+					builder.append(table.getAlias());
+					builder.append(QC.ON);
+					
+					toSqlJoins(table, builder, valueList);
+					
+					builder.append(QC.NL);
+					builder.append(QC.TAB);
+				}
+				else {
+					builder.append(QC.PL);
+					builder.append(QC.SPACE);
+					builder.append(table.getTableName());
+					builder.append(QC.SPACE);
+					builder.append(table.getAlias());
+					builder.append(QC.SPACE);
+					
+					toSqlTables(table.getTableList(), builder, valueList, true);
+					
+					builder.append(QC.PR);
+					builder.append(QC.ON);
+					toSqlJoins(table, builder, valueList);
+					builder.append(QC.NL);
+					builder.append(QC.TAB);
+				}
 			}
 		}
 	}

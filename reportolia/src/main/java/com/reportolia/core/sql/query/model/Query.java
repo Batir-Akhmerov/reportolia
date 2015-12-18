@@ -10,7 +10,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
 
 import com.reportolia.core.model.datatype.DataType;
-import com.reportolia.core.utils.ListUtils;
 
 
 /**
@@ -50,7 +49,7 @@ public class Query {
 		Assert.isTrue(this.tableList.get(0).isMain(), "First table in the query must be a main table!");
 		return this.tableList.get(0);
 	}
-	
+	/*
 	public boolean containsTableAlias(String alias) {
 		return ListUtils.containsByProperty(this.tableList, "alias", alias);
 	}
@@ -58,7 +57,7 @@ public class Query {
 	public QueryTable findTableByAlias(String alias) {
 		return ListUtils.findByProperty(this.tableList, "alias", alias);
 	}
-	
+	*/
 	public List<QueryColumn> getColumnList() {
 		return this.columnList;
 	}

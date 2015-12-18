@@ -63,6 +63,13 @@ public class QueryTable {
 		this.joinList.add(join);
 	}
 	
+	public void addTable(QueryTable table) {
+		if (CollectionUtils.isEmpty(this.tableList)) {
+			this.tableList = new ArrayList<>();
+		}
+		this.tableList.add(table);
+	}
+	
 	public String getTableName() {
 		return this.tableName;
 	}

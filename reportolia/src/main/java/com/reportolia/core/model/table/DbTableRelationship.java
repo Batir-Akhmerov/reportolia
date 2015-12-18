@@ -39,11 +39,17 @@ public class DbTableRelationship extends BaseEntity {
     
     /**
      * This Join Type is only used when Parent joins its Child.
-     * Note: Child to Parent joins are always INNER 
      */
     @Enumerated(EnumType.STRING)
 	@Column(name = "join_type_to_child", nullable = true, length = Constants.LENGTH_JOIN_TYPE)
     private JoinType joinTypeToChild = JoinType.INNER;
+    
+    /**
+     * This Join Type is only used when Child joins its Parent.
+     */
+    @Enumerated(EnumType.STRING)
+	@Column(name = "join_type_to_parent", nullable = true, length = Constants.LENGTH_JOIN_TYPE)
+    private JoinType joinTypeToParent = JoinType.INNER;
     
     /**
      * Reference to the PK Column in a Parent Table 
@@ -173,6 +179,16 @@ public class DbTableRelationship extends BaseEntity {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+
+	public JoinType getJoinTypeToParent() {
+		return this.joinTypeToParent;
+	}
+
+
+	public void setJoinTypeToParent(JoinType joinTypeToParent) {
+		this.joinTypeToParent = joinTypeToParent;
 	}
 
 }

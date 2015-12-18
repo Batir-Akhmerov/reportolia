@@ -59,24 +59,24 @@ public class BaseReportTest {
 	@Resource protected ReportQueryGeneratorHandler reportQueryGeneratorManager;
 	@Resource protected SqlGeneratorHandler sqlGeneratorManager;
 	
-	protected void testReportSql(Long reportId, String expectedSql) {
+	protected void testReportSql(String testName, Long reportId, String expectedSql) {
 		List<Object> valueList = new ArrayList<>();
-		testReportSql(reportId, expectedSql, valueList); 
+		testReportSql(testName, reportId, expectedSql, valueList); 
 	}
 	
-	protected void testReportSql(Long reportId, String expectedSql, Object... expectedValues) {
+	protected void testReportSql(String testName, Long reportId, String expectedSql, Object... expectedValues) {
 		List<Object> valueList = new ArrayList<>();
-		testReportSql(reportId, expectedSql, valueList); 
+		testReportSql(testName, reportId, expectedSql, valueList); 
 		if (expectedValues != null) {
-			assertEquals("Value list size should match!", expectedValues.length, valueList.size());
+			assertEquals(testName + ". Message: Value list size should match!", expectedValues.length, valueList.size());
 			int i = 0;
 			for (Object v: expectedValues) {
-				assertEquals("Sql Value should match!", v, valueList.get(i++));
+				assertEquals(testName + ". Message: Sql Value should match!", v, valueList.get(i++));
 			}
 		}
 	}
 	
-    protected void testReportSql(Long reportId, String expectedSql, List<Object> valueList) {
+    protected void testReportSql(String testName, Long reportId, String expectedSql, List<Object> valueList) {
 		Report report = this.reportRepository.findById(reportId);
 		
         Query query = this.reportQueryGeneratorManager.getReportQuery(report);
@@ -86,7 +86,7 @@ public class BaseReportTest {
         sql = cleanSpecialSymbols(sql);
         
 
-        assertEquals(expectedSql, sql);
+        assertEquals(testName + "!", expectedSql, sql);
         
     }
 	

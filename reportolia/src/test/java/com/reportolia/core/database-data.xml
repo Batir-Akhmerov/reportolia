@@ -39,6 +39,7 @@
     <r3p_sql_items id="43" sql_item_type="FUNC" sql="ELSE" label="ELSE"  parent_sql_item_id="40" is_isolated="true" is_nested="true"/>
     <r3p_sql_items id="44" sql_item_type="FUNC" sql="END" label=")"  parent_sql_item_id="40" is_block_end="true" is_isolated="true"/>	 
 
+<!-- ************************************************************************************************** -->
 <!--  TABLE Customers -->
     <r3p_tables id="1" name="customers" />
     <r3p_table_columns id="1" table_id="1" data_type="INT" name="id"   label="customer id" is_pk="true"/>
@@ -50,6 +51,7 @@
     <r3p_table_columns id="51" table_id="50" data_type="TXT" 	name="name" label="product name"/>
     <r3p_table_columns id="52" table_id="50" data_type="NUM" 	name="price" label="product price"/>
     <r3p_table_columns id="53" table_id="50" data_type="TXT" 	name="isOutOfStockInProduct" label="is out of stock"/>
+    <r3p_table_columns id="55" table_id="50" data_type="INT" 	name="category_id" label="category id"/>
     
     
 <!--  TABLE Orders -->    
@@ -64,18 +66,31 @@
 <!--  TABLE Order Status -->
     <r3p_tables id="150" name="order_status" />
     <r3p_table_columns id="150" table_id="150" data_type="INT" name="id"   label="status id"  is_pk="true"/>
-    <r3p_table_columns id="151" table_id="150" data_type="TXT" name="name" label="status name" />    
+    <r3p_table_columns id="151" table_id="150" data_type="TXT" name="name" label="status name" /> 
+    
+<!--  TABLE Product Category -->
+    <r3p_tables id="200" name="product_category" />
+    <r3p_table_columns id="200" table_id="200" data_type="INT" name="id"   label="category id"  is_pk="true"/>
+    <r3p_table_columns id="201" table_id="200" data_type="INT" name="type_id"   label="category type id" />
+    <r3p_table_columns id="202" table_id="200" data_type="TXT" name="name" label="category name" />
+    
+<!--  TABLE Product Category Type-->
+    <r3p_tables id="220" name="product_category_type" />
+    <r3p_table_columns id="220" table_id="220" data_type="INT" name="id"   label="category type id"  is_pk="true"/>
+    <r3p_table_columns id="221" table_id="220" data_type="TXT" name="name" label="category type name" />            
     
 <!--  RELATIONSHIPS -->    
     <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" join_type_to_child="LEFT" /> <!-- customer -> order -->
-    <r3p_table_relationships id="2" parent_column_id="50" child_column_id="102" join_type_to_child="INNER" /> <!-- product -> order -->
-    <r3p_table_relationships id="3" parent_column_id="150" child_column_id="104" join_type_to_child="LEFT" /> <!-- order status -> order -->
+    <r3p_table_relationships id="2" parent_column_id="50" child_column_id="102" join_type_to_child="INNER" /> <!-- product <- order -->
+    <r3p_table_relationships id="3" parent_column_id="150" child_column_id="104" join_type_to_child="LEFT" /> <!-- order status <- order -->
     
     <r3p_table_relationships id="4" label="Composite relationship with external table join" parent_column_id="50" child_column_id="102" join_type_to_child="INNER" />  <!-- GROUP product -> order -->
     	<r3p_table_relationships id="5" group_relationship_id="4" parent_column_id="53" child_column_id="105" group_relationship_order="1"/> <!-- order status -> order -->
     	<r3p_table_relationships id="6" group_relationship_id="4" parent_column_id="51" join_value="TEST PRODUCT" group_relationship_order="2"  /> <!-- productName == TEXT PRODUCT -->
     	<r3p_table_relationships id="7" group_relationship_id="4" child_column_id="104" join_value="123" group_relationship_order="3" /> <!-- productName == TEXT PRODUCT -->
-    	
+    
+    <r3p_table_relationships id="8" parent_column_id="200" child_column_id="55" join_type_to_child="LEFT" join_type_to_parent="LEFT"/> <!-- product -> category -->
+    <r3p_table_relationships id="9" parent_column_id="220" child_column_id="201" join_type_to_child="INNER" join_type_to_parent="INNER"/> <!-- category -> category type -->
     
 <!--  TABLE Products 50 CALC COLUMNS--> 
 	<r3p_table_columns id="54" table_id="50" data_type="INT" 	name="calcRandomQuantity" label="quantity from random order" is_calculated="true" />
@@ -104,16 +119,33 @@
     <r3p_report_columns id="20" report_id="3" table_column_id="51" column_order="1" data_type="TXT" name="Name" sort_index="1" sort_desc="true"/>
     <r3p_report_columns id="22" report_id="3" table_column_id="103" column_order="3" data_type="TXT" name="Quantity" sort_index="2" />
     	<r3p_report_column_path id="20" report_column_id="22" table_relatioship_id="4" is_from_parent="true" relationship_order="1" />  <!-- GROUP product -> order -->
+    	
+	<!-- Test 4: Simple report with LEFT JOIN -->
+    <r3p_reports id="4" folder_id="1" table_id="1" name="Customer List" />
+    <r3p_report_columns id="40" report_id="4" table_column_id="2" column_order="1" data_type="TXT" name="Customer Name" sort_index="1" sort_desc="true"/>
+    <r3p_report_columns id="41" report_id="4" table_column_id="51" column_order="2" data_type="TXT" name="Product Name" />  
+    	<r3p_report_column_path id="40" report_column_id="41" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />
+    	<r3p_report_column_path id="41" report_column_id="41" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />
+    <r3p_report_columns id="42" report_id="4" table_column_id="52" column_order="3" data_type="INT" name="Product Price" />  
+    	<r3p_report_column_path id="42" report_column_id="42" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />
+    	<r3p_report_column_path id="43" report_column_id="42" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />
+    <r3p_report_columns id="43" report_id="4" table_column_id="221" column_order="4" data_type="TXT" name="Product Category Type" />  
+    	<r3p_report_column_path id="44" report_column_id="43" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />
+    	<r3p_report_column_path id="45" report_column_id="43" table_relatioship_id="2" is_from_parent="false" relationship_order="2" /> 
+    	<r3p_report_column_path id="46" report_column_id="43" table_relatioship_id="8" is_from_parent="false" relationship_order="3" />
+    	<r3p_report_column_path id="47" report_column_id="43" table_relatioship_id="9" is_from_parent="false" relationship_order="4" />
+    
+      	
    	
-   	<!-- Test 4: Simple nested select table column and  report static filter  -->
-    <r3p_reports id="4" folder_id="1" table_id="50" name="Table Calc Column and Static Filter Operands Test" />
-    <r3p_report_columns id="41" report_id="4" table_column_id="51" column_order="1" data_type="TXT" name="Name" sort_index="1" sort_desc="true"/>
-    <r3p_report_columns id="42" report_id="4" table_column_id="52" column_order="2" data_type="NUM" name="Price" />
-    <r3p_report_columns id="43" report_id="4" table_column_id="54" column_order="3" data_type="NUM" name="Product Quantity from Random Order" />
+   	<!-- Test 40: Simple nested select table column and  report static filter  -->
+    <r3p_reports id="40" folder_id="1" table_id="50" name="Table Calc Column and Static Filter Operands Test" />
+    <r3p_report_columns id="401" report_id="40" table_column_id="51" column_order="1" data_type="TXT" name="Name" sort_index="1" sort_desc="true"/>
+    <r3p_report_columns id="402" report_id="40" table_column_id="52" column_order="2" data_type="NUM" name="Price" />
+    <r3p_report_columns id="403" report_id="40" table_column_id="54" column_order="3" data_type="NUM" name="Product Quantity from Random Order" />
     <!-- report filter -->
-   	<r3p_operands id="4000" owner_type="REPORT" content_type="FILTER" owner_id="4" column_id="51" operand_order="1"/>   	
-   	<r3p_operands id="4001" owner_type="REPORT" content_type="FILTER" owner_id="4" sql_item_type="COMP" sql_item_id="10" operand_order="2"/>
-   	<r3p_operands id="4002" owner_type="REPORT" content_type="FILTER" owner_id="4" value="Test Product" operand_order="3"/>
+   	<r3p_operands id="4000" owner_type="REPORT" content_type="FILTER" owner_id="40" column_id="51" operand_order="1"/>   	
+   	<r3p_operands id="4001" owner_type="REPORT" content_type="FILTER" owner_id="40" sql_item_type="COMP" sql_item_id="10" operand_order="2"/>
+   	<r3p_operands id="4002" owner_type="REPORT" content_type="FILTER" owner_id="40" value="Test Product" operand_order="3"/>
     
     
     <!-- <r3p_operands id="40" owner_type="REPORT" content_type="FILTER" owner_id="4" sql_item_type="" sql_item_id="" column_id="51" value="" operand_order="1"/> -->

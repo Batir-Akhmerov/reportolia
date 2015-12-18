@@ -246,16 +246,21 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		}
 		 
 		StringBuilder stamp = new StringBuilder(qMainTable.getAlias() + QC.UNDERSCORE);
-		 
+		
+		QueryTable leftJoinedQTable = null;
 		for (T path: columnPathList) {
 			DbTableRelationship rel = path.getDbTableRelationship();
 			 
-			qTable = appendTableJoin(query, qTable, path, rel, stamp);
+			qTable = appendTableJoin(query, qTable, path, rel, stamp, leftJoinedQTable, command);
+			
+			if (qTable.getJoinType() == JoinType.LEFT) {
+				leftJoinedQTable = qTable;
+			}
 		}
 		return qTable;
 	}
 	 
-	protected <T extends BaseColumnPath> QueryTable appendTableJoin(Query query, QueryTable qTable, T path, DbTableRelationship rel, StringBuilder stamp) {
+	protected <T extends BaseColumnPath> QueryTable appendTableJoin(Query query, QueryTable qTable, T path, DbTableRelationship rel, StringBuilder stamp, QueryTable parentQTable, QueryGenerationCommand command) {
 			 
 		DbTableColumn childColumn = rel.getDbColumnChild();
 		DbTable childTable = childColumn.getDbTable();
@@ -272,36 +277,48 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		String fromChildMarker = "";
 		JoinType joinType = JoinType.INNER;
 		if (isParentTableFirst) { // determine which table goes first in the path
-			 joinType = rel.getJoinTypeToChild();				 
-			 Assert.isTrue(parentTable.getName() == qTable.getTableName());
-			 nextTable = childTable;
-			 nextColumn = childColumn;
-			 prevColumn = parentColumn;
+			if (rel.getJoinTypeToChild() != null) {
+				joinType = rel.getJoinTypeToChild();
+			}
+			Assert.isTrue(parentTable.getName() == qTable.getTableName());
+			nextTable = childTable;
+			nextColumn = childColumn;
+			prevColumn = parentColumn;
 		}
 		else {
-			 Assert.isTrue(childTable.getName() == qTable.getTableName());				 
-			 fromChildMarker = QC.MARKER_PATH_FROM_CHILD;
+			if (rel.getJoinTypeToParent() != null) {
+				joinType = rel.getJoinTypeToParent();
+			}
+			Assert.isTrue(childTable.getName() == qTable.getTableName());				 
+			fromChildMarker = QC.MARKER_PATH_FROM_CHILD;
 		}
 		 
 		String alias = stamp.toString() + fromChildMarker + rel.getId();
 		 
 		QueryTable prevQTable = qTable;
-		qTable = query.findTableByAlias(alias);
+		qTable = command.containsCachedAlias(alias);//query.findTableByAlias(alias);
 		if (qTable == null) {
 			 qTable = new QueryTable(nextTable, alias);
 			 qTable.setJoinType(joinType);
 			 
 			 appendQueryJoin(prevQTable, prevColumn, qTable, nextColumn, rel, isParentTableFirst);
 			 
-			 query.addTable(qTable);
-			 
-			 // update stamp
-			 if (!StringUtils.isEmpty(fromChildMarker)) {
-				 stamp.append(fromChildMarker);
+			 if (parentQTable != null) {
+				 parentQTable.addTable(qTable);
 			 }
-			 stamp.append(rel.getId());
-			 stamp.append(QC.UNDERSCORE);
+			 else {
+				 query.addTable(qTable);
+			 }
+			 command.cacheAlias(qTable);
 		}
+		
+		// update stamp
+		if (!StringUtils.isEmpty(fromChildMarker)) {
+			 stamp.append(fromChildMarker);
+		}
+		stamp.append(rel.getId());
+		stamp.append(QC.UNDERSCORE);
+		 
 		return qTable;
 	}
 	 
