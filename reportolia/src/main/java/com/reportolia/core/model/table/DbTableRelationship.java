@@ -90,7 +90,10 @@ public class DbTableRelationship extends BaseEntity {
     
     @Column(name = "group_relationship_order")
     private Integer order;
-   
+    
+    @Column(name = "is_link_to_security_filter", columnDefinition = "boolean default false")
+    private Boolean linkToSecurityFilter;
+    
 	
 	/**
 	 * Optional Relationship Label, helps to differentiate relationships when there are more than one relationships between 2 tables
@@ -103,6 +106,14 @@ public class DbTableRelationship extends BaseEntity {
 	
 	public String getLabelFull() {
 		return StringUtils.isEmpty(getLabel()) ? this.dbColumnParent.getDbTable().getName() +  Constants.ARROW_RIGHT + this.dbColumnChild.getDbTable().getName() : getLabel();
+	}
+	
+	public DbTable getParentTable() {
+		return this.dbColumnParent.getDbTable();
+	}
+	
+	public DbTable getChildTable() {
+		return this.dbColumnChild.getDbTable();
 	}
 
 
@@ -189,6 +200,16 @@ public class DbTableRelationship extends BaseEntity {
 
 	public void setJoinTypeToParent(JoinType joinTypeToParent) {
 		this.joinTypeToParent = joinTypeToParent;
+	}
+
+
+	public Boolean getLinkToSecurityFilter() {
+		return this.linkToSecurityFilter;
+	}
+
+
+	public void setLinkToSecurityFilter(Boolean linkToSecurityFilter) {
+		this.linkToSecurityFilter = linkToSecurityFilter;
 	}
 
 }

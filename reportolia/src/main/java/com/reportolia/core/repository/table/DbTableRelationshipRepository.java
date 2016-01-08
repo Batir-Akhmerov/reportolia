@@ -23,6 +23,11 @@ public interface DbTableRelationshipRepository extends UpdatableRepository<DbTab
     )
     public List<DbTableRelationship> findByParentTable(@Param("tableId") long tableId);
 	
+	@Query(
+			"select r FROM DbTableRelationship r WHERE r.dbColumnChild.dbTable.id = :tableId AND r.linkToSecurityFilter = true"
+    )
+    public List<DbTableRelationship> findSecuredByChildTable(@Param("tableId") long tableId);
+	
 	//List<DbTableRelationship> findByDbTableRelationshipGroup(DbTableRelationship dbTableRelationshipGroup);
 	
 	//public List<DbTableRelationship> findByGroupRelationshipId(Long groupRelationshipId);

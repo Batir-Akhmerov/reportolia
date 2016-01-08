@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.reportolia.core.handler.operand.OperandHandler;
+import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
 import com.reportolia.core.model.base.BaseColumnPath;
 import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.operand.Operand;
@@ -50,7 +51,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	
 	
 	@Resource protected DbTableColumnRepository tableColumnRepository;
-	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
+	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;	
+	@Resource protected ReportoliaSecurityHandler reportoliaSecurityHandler;
 	
 	public OperandHandler getContentOperandHandler() {
 		return this.contentOperandHandler;
@@ -83,10 +85,16 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	 
 	public Query getQuery(Long ownerId, QueryTable pkQueryTable, QueryGenerationCommand command) {
 		Query query = new Query();
+		if (command.getTopQuery() != null) {
+			query.setTopQuery(command.getTopQuery());
+		}
 		query.setTop1();
 		
 		QueryTable qMainTable = new QueryTable(command.getMainTable(), command, true, true);
 		query.addTable(qMainTable);
+		if (query.isSecured()) {
+			appendFilterByQueryTable(query, qMainTable, "", command);
+		}
 		
 		// 1. Column Content
 		List<Operand> contentList = this.contentOperandHandler.getOperandsByOwner(ownerId);
@@ -195,6 +203,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		else {
 			Assert.isTrue(this.nestedQueryGeneratorHandler != null, "NestedQueryGeneratorHandler is expected!");
 			QueryGenerationCommand nestedCommand = new QueryGenerationCommand();
+			nestedCommand.setTopQuery(query);
 			nestedCommand.setMainTable(qColumnTable.getTable());
 			Query nestedQuery = this.nestedQueryGeneratorHandler.getQuery(tbColumn.getId(), qColumnTable, nestedCommand);
 			qOperand = new QueryOperand(nestedQuery);
@@ -251,7 +260,11 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		for (T path: columnPathList) {
 			DbTableRelationship rel = path.getDbTableRelationship();
 			 
-			qTable = appendTableJoin(query, qTable, path, rel, stamp, leftJoinedQTable, command);
+			qTable = appendTableJoin(query, qTable, path.isFromParent(), rel, stamp, leftJoinedQTable, command);
+			
+			if (query.isSecured()) {
+				appendFilterByQueryTable(query, qTable, stamp.toString(), command);
+			}
 			
 			if (qTable.getJoinType() == JoinType.LEFT) {
 				leftJoinedQTable = qTable;
@@ -259,8 +272,42 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		}
 		return qTable;
 	}
+		
+	public void appendFilterByQueryTable(Query query, QueryTable qTable, String stamp, QueryGenerationCommand command) {
+		DbTable table = qTable.getTable();
+		if (!table.isSecured() || table.isSecurityFilter()) { // || !StringUtils.isEmpty(table.getSecurityFilterSql())) {
+			return;
+		}
+		SecurityFilterConfig conf = new SecurityFilterConfig();
+		
+		findLinksToSecurityFilters(table, conf);
+		
+		if (CollectionUtils.isEmpty(conf.getListOfLinksToFilters())) {  
+			throw new ValidationException("Table [" + table.getName() + "] is secured. However there are no parent relatioships leading to parent tables with security filters!");
+		}
+		
+		
+		for (List<DbTableRelationship> linksToFilters: conf.getListOfLinksToFilters()) {
+			
+			StringBuilder filterStamp = new StringBuilder(stamp);
+			QueryTable leftJoinedQTable = null;
+			
+			for (DbTableRelationship rel: linksToFilters) {
+				
+				qTable = appendTableJoin(query, qTable, false, rel, filterStamp, leftJoinedQTable, command);
+				if (table.isSecurityFilter()) {
+					break;
+				}
+				
+				if (qTable.getJoinType() == JoinType.LEFT) {
+					leftJoinedQTable = qTable;
+				}
+			}
+		}
+		
+	}
 	 
-	protected <T extends BaseColumnPath> QueryTable appendTableJoin(Query query, QueryTable qTable, T path, DbTableRelationship rel, StringBuilder stamp, QueryTable parentQTable, QueryGenerationCommand command) {
+	protected <T extends BaseColumnPath> QueryTable appendTableJoin(Query query, QueryTable qTable, boolean isParentTableFirst, DbTableRelationship rel, StringBuilder stamp, QueryTable parentQTable, QueryGenerationCommand command) {
 			 
 		DbTableColumn childColumn = rel.getDbColumnChild();
 		DbTable childTable = childColumn.getDbTable();
@@ -272,9 +319,10 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		DbTableColumn nextColumn = parentColumn;
 		DbTableColumn prevColumn = childColumn;
 		 
-		boolean isParentTableFirst = path.isFromParent();
+		//boolean isParentTableFirst = path.isFromParent();
 		 
 		String fromChildMarker = "";
+		String aliasPrefix = "";
 		JoinType joinType = JoinType.INNER;
 		if (isParentTableFirst) { // determine which table goes first in the path
 			if (rel.getJoinTypeToChild() != null) {
@@ -292,24 +340,27 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 			Assert.isTrue(childTable.getName() == qTable.getTableName());				 
 			fromChildMarker = QC.MARKER_PATH_FROM_CHILD;
 		}
+		
+		if (nextTable.isSecurityFilterTable()) {
+			aliasPrefix = QC.SEC_FILTER_ALIAS;
+		}
 		 
-		String alias = stamp.toString() + fromChildMarker + rel.getId();
+		String alias = aliasPrefix + stamp.toString() + fromChildMarker + rel.getId();
 		 
 		QueryTable prevQTable = qTable;
-		qTable = command.containsCachedAlias(alias);//query.findTableByAlias(alias);
+		qTable = command.getCachedTable(alias);
 		if (qTable == null) {
-			 qTable = new QueryTable(nextTable, alias);
-			 qTable.setJoinType(joinType);
-			 
-			 appendQueryJoin(prevQTable, prevColumn, qTable, nextColumn, rel, isParentTableFirst);
-			 
-			 if (parentQTable != null) {
-				 parentQTable.addTable(qTable);
-			 }
-			 else {
-				 query.addTable(qTable);
-			 }
-			 command.cacheAlias(qTable);
+			qTable = new QueryTable(nextTable, alias);
+			
+			qTable.setJoinType(joinType);				 
+			appendQueryJoin(prevQTable, prevColumn, qTable, nextColumn, rel, isParentTableFirst);
+			
+			addTableToOwner(qTable, query, parentQTable, command);
+			
+			if (nextTable.isSecurityFilterSql()) {
+				addSqlFilterToOwner(nextTable, alias, prevQTable, query, parentQTable, command);
+			}
+			
 		}
 		
 		// update stamp
@@ -320,6 +371,29 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		stamp.append(QC.UNDERSCORE);
 		 
 		return qTable;
+	}
+	
+	public void addSqlFilterToOwner(DbTable filterTable, String alias, QueryTable prevQTable, Query query, QueryTable parentQTable, QueryGenerationCommand command) {
+		if (!filterTable.isSecurityFilterSql()) {
+			return;
+		}
+		String filterAlias = QC.SEC_FILTER_ALIAS + alias;
+		QueryTable qTableSecFilter = command.getCachedTable(filterAlias);
+		if (qTableSecFilter == null) {
+			qTableSecFilter = new QueryTable(filterTable, filterAlias);
+			qTableSecFilter.setSecurityFilterSql(replaceTableAliasMarkers(filterTable.getSecurityFilterSql(), prevQTable, qTableSecFilter));
+			addTableToOwner(qTableSecFilter, query, parentQTable, command);
+		}
+	}
+	
+	protected void addTableToOwner(QueryTable qTable, Query query, QueryTable parentQTable, QueryGenerationCommand command) {
+		if (parentQTable != null) {
+			 parentQTable.addTable(qTable);
+		}
+		else {
+			 query.addTable(qTable);
+		}
+		command.cacheAlias(qTable);
 	}
 	 
 	protected void appendQueryJoin(QueryTable prevQTable, DbTableColumn prevColumn, QueryTable nextQTable, DbTableColumn nextColumn, DbTableRelationship rel, boolean isParentTableFirst){
@@ -375,19 +449,69 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		return qJoin;
 	}
 	 
-	protected String replaceTableAliasMarkers(String sql, QueryTable parentQTable, QueryTable childQTable){
+	protected String replaceTableAliasMarkers(String sql, QueryTable prevQTable, QueryTable nextQTable){
 		
 		if (StringUtils.isEmpty(sql)) {
 			 return sql;
 		}
-		sql = sql.replace(QC.TBL_ALIAS_PARENT, parentQTable.getAlias());
-		sql = sql.replace(QC.TBL_ALIAS_CHILD, childQTable.getAlias());
+		sql = sql.replace(QC.TBL_ALIAS_PARENT, prevQTable.getAlias());
+		sql = sql.replace(QC.TBL_ALIAS_CHILD, nextQTable.getAlias());
+		sql = sql.replace(QC.TBL_ALIAS_FILTER, nextQTable.getAlias());
+		if (this.reportoliaSecurityHandler != null) {
+			sql = sql.replace(QC.MARKER_USER_ID, String.valueOf(reportoliaSecurityHandler.getUserId()));
+		}
 			
 		return sql;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// QUERY TABLE LIST end /////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SECURITY FILTER begin ////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	protected void findLinksToSecurityFilters(DbTable table, SecurityFilterConfig conf){
+		List<DbTableRelationship> linksToFilter = new ArrayList<>();
+		findLinksToSecurityFilters(table, conf, linksToFilter);
+	}
+	
+	protected void findLinksToSecurityFilters(DbTable table, SecurityFilterConfig conf, List<DbTableRelationship> linksToFilter){
+		if (table.isSecurityFilter()) { // || !StringUtils.isEmpty(table.getSecurityFilterSql())) {
+			return; // security filter is found stop searching
+		}
+			
+		List<DbTableRelationship> securedRelatioships = this.tableRelationshipRepository.findSecuredByChildTable(table.getId());
+		if (CollectionUtils.isEmpty(securedRelatioships)) { // no stamps means main query table is a column table 
+			throw new ValidationException("Table [" + table.getName() + "] is secured. However there are no parent relatioships leading to parent tables with security filters!");
+		}
+		boolean isFirst = true;
+		for (DbTableRelationship rel: securedRelatioships) {
+			List<DbTableRelationship> links = null;
+			if (!conf.addToUniqueSet(rel.getId())) {
+				throw new ValidationException("Circular relationships is detected when trying to find security filters for table [" + table.getName() + "]!"
+						+ " Relationship with ID ["+rel.getId()+"] from child table ["+rel.getChildTable().getName()
+						+"] to parent table ["+rel.getParentTable().getName()+"] was already processed! "
+								+ "Please remove circularity in table relationships to security filters and make all links straight!");
+			}
+			if (isFirst) {
+				linksToFilter.add(rel);
+				links = linksToFilter;
+				isFirst = false;
+			}
+			else {
+				links = new ArrayList<>();
+				links.addAll(linksToFilter);
+				conf.addAnotherListOfLinks(links);
+			}
+			findLinksToSecurityFilters(rel.getParentTable(), conf, links);
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SECURITY FILTER end /////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	 

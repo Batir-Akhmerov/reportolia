@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.sql.query.QueryGenerationCommand;
@@ -24,6 +25,7 @@ public class QueryTable {
 	private String alias;
 	private boolean main;
 	private JoinType joinType;
+	private String securityFilterSql;
 	private List<QueryTable> tableList;
 	private List<QueryJoin> joinList;
 	
@@ -111,6 +113,15 @@ public class QueryTable {
 	}
 	public void setTable(DbTable table) {
 		this.table = table;
+	}
+	public String getSecurityFilterSql() {
+		return this.securityFilterSql;
+	}
+	public void setSecurityFilterSql(String securityFilterSql) {
+		this.securityFilterSql = QC.SPACE + securityFilterSql + QC.SPACE;
+	}
+	public boolean isSecurityFilterSql() {
+		return !StringUtils.isEmpty(this.getSecurityFilterSql()); 
 	}
 
 }

@@ -98,6 +98,9 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				builder.append(QC.TAB);
 				isMainFound = true;
 			}
+			else if (table.isSecurityFilterSql()) {
+				builder.append(table.getSecurityFilterSql());
+			}
 			else {
 				Assert.isTrue(isMainFound, "Main QueryTable must be the first table in the list!");
 				

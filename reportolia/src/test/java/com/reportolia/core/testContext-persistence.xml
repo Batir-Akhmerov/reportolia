@@ -44,4 +44,6 @@
     </bean>
 
     <jpa:repositories base-package="com.reportolia.core.repository"/>
+    
+    <bean id="reportoliaSecurityHandler" class="com.reportolia.core.config.ReportoliaTestSecurityManager"/>
 </beans>

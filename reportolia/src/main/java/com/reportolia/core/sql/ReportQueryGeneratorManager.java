@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.reportolia.core.handler.DbHandler;
@@ -52,6 +53,15 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 		DbTable reportTable = report.getDbTable();
 		QueryTable qTable = new QueryTable(reportTable, command, true);
 		query.addTable(qTable);
+		if (query.isSecured()) {
+			if (reportTable.isSecurityFilter()){
+				Assert.isTrue(reportTable.isSecurityFilterSql(), "Main query table ["+reportTable.getName()+"] cannot be a security filter of a table type!");
+				this.columnQueryGeneratorHandler.addSqlFilterToOwner(reportTable, reportTable.getName(), qTable, query, null, command);
+			}
+			else {
+				this.columnQueryGeneratorHandler.appendFilterByQueryTable(query, qTable, "", command);
+			}
+		}
 		 
 		List<ReportColumn> columnList = this.reportManager.getReportColumns(report);
 		if (CollectionUtils.isEmpty(columnList)) {
@@ -73,6 +83,7 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 				}
 				else {
 					QueryGenerationCommand nestedCommand = new QueryGenerationCommand();
+					nestedCommand.setTopQuery(query);
 					nestedCommand.setMainTable(qColumnTable.getTable());
 					Query nestedQuery = this.columnQueryGeneratorHandler.getQuery(column.getDbTableColumn().getId(), qColumnTable, nestedCommand);
 					qColumn = new QueryColumn(nestedQuery);

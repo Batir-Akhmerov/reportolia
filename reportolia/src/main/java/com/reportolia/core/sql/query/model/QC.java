@@ -12,10 +12,14 @@ package com.reportolia.core.sql.query.model;
 public class QC {
 
 	public static final String TBL_ALIAS = "tbl";
+	public static final String SEC_FILTER_ALIAS = "sf_";
 	public static final String TBL_ALIAS_NESTED = "_";
 	public static final String MARKER_PATH_FROM_CHILD = "x";
-	public static final String TBL_ALIAS_PARENT = "/*${TBL_ALIAS_PARENT}*/";
-	public static final String TBL_ALIAS_CHILD = "/*${TBL_ALIAS_CHILD}*/";
+	public static final String TBL_ALIAS_PARENT = "#[{ALIAS_PARENT}]#";
+	public static final String TBL_ALIAS_CHILD =  "#[{ALIAS_CHILD}]#";
+	public static final String TBL_ALIAS_FILTER = "#[{ALIAS_FILTER}]#";
+	public static final String MARKER_USER_ID = "#[{USER_ID}]#";
+	
 	
 	public static final String SPACE = " ";
 	public static final String UNDERSCORE = "_";

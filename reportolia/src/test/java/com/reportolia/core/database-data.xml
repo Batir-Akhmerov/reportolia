@@ -41,12 +41,17 @@
 
 <!-- ************************************************************************************************** -->
 <!--  TABLE Customers -->
-    <r3p_tables id="1" name="customers" />
+    <r3p_tables id="1" name="customers" is_secured="true" is_security_filter="true"
+    	security_filter_sql="INNER JOIN SecurityMatrix #[{ALIAS_FILTER}]# ON #[{ALIAS_PARENT}]#.ID = #[{ALIAS_FILTER}]#.SecurityRowID AND #[{ALIAS_FILTER}]#.SectionName = 'Customers' AND #[{ALIAS_FILTER}]#.UserID = #[{USER_ID}]#" 
+    />
+    	
     <r3p_table_columns id="1" table_id="1" data_type="INT" name="id"   label="customer id" is_pk="true"/>
     <r3p_table_columns id="2" table_id="1" data_type="TXT" name="name" label="customer name" />
     
 <!--  TABLE Products -->    
-    <r3p_tables id="50" name="products" />
+    <r3p_tables id="50" name="products"  is_secured="true" is_security_filter="true"
+    	security_filter_sql="INNER JOIN SecurityMatrix #[{ALIAS_FILTER}]# ON #[{ALIAS_PARENT}]#.ID = #[{ALIAS_FILTER}]#.SecurityRowID AND #[{ALIAS_FILTER}]#.SectionName = 'Products' AND #[{ALIAS_FILTER}]#.UserID = #[{USER_ID}]#"
+    /> 
     <r3p_table_columns id="50" table_id="50" data_type="INT" 	name="id" 	label="product id"  is_pk="true"/>
     <r3p_table_columns id="51" table_id="50" data_type="TXT" 	name="name" label="product name"/>
     <r3p_table_columns id="52" table_id="50" data_type="NUM" 	name="price" label="product price"/>
@@ -80,8 +85,8 @@
     <r3p_table_columns id="221" table_id="220" data_type="TXT" name="name" label="category type name" />            
     
 <!--  RELATIONSHIPS -->    
-    <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" join_type_to_child="LEFT" /> <!-- customer -> order -->
-    <r3p_table_relationships id="2" parent_column_id="50" child_column_id="102" join_type_to_child="INNER" /> <!-- product <- order -->
+    <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" join_type_to_child="LEFT" is_link_to_security_filter="true"/> <!-- customer -> order -->
+    <r3p_table_relationships id="2" parent_column_id="50" child_column_id="102" join_type_to_child="INNER"  is_link_to_security_filter="true"/> <!-- product <- order -->
     <r3p_table_relationships id="3" parent_column_id="150" child_column_id="104" join_type_to_child="LEFT" /> <!-- order status <- order -->
     
     <r3p_table_relationships id="4" label="Composite relationship with external table join" parent_column_id="50" child_column_id="102" join_type_to_child="INNER" />  <!-- GROUP product -> order -->

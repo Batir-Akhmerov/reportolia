@@ -27,6 +27,8 @@ public class Query {
 	private List<QueryOperand> groupList;
 	private DataType dataType;
 	private int top;
+	private SecurityType securityType = SecurityType.MAIN;
+	private Query topQuery;
 	
 	public void addTable(QueryTable table) {
 		if (CollectionUtils.isEmpty(this.tableList)) {
@@ -111,6 +113,37 @@ public class Query {
 	
 	public void setTop1() {
 		setTop(1);
+	}
+
+	public boolean isSecured() {
+		SecurityType type = getSecurityType();
+		return type == SecurityType.FULL || (type == SecurityType.MAIN && !isNested());
+	}
+	
+	public SecurityType getSecurityType() {
+		if (isNested()) {
+			return getTopQuery().getSecurityType();
+		}
+		return this.securityType;
+	}
+
+	public void setSecurityType(SecurityType securityType) {
+		if (isNested()) {
+			return;
+		}
+		this.securityType = securityType;
+	}
+
+	public boolean isNested() {
+		return this.topQuery != null;
+	}
+
+	public Query getTopQuery() {
+		return this.topQuery;
+	}
+
+	public void setTopQuery(Query topQuery) {
+		this.topQuery = topQuery;
 	}
 
 }

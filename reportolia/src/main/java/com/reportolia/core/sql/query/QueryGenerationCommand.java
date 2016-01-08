@@ -30,7 +30,7 @@ public class QueryGenerationCommand {
 	public void cacheAlias(QueryTable table) {
 		getCachedAliases().put(table.getAlias(), table);
 	}
-	public QueryTable containsCachedAlias(String alias) {
+	public QueryTable getCachedTable(String alias) {
 		return getCachedAliases().get(alias);
 	}
 
