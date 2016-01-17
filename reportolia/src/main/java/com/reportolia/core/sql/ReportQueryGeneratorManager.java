@@ -45,9 +45,13 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 	@Resource protected ReportHandler reportManager;
 	@Resource protected ReportColumnRepository reportColumnRepository;
 	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
-	 
+	
 	public Query getReportQuery(Report report) {
 		Query query = new Query();
+		return getReportQuery(report, query);
+	}
+	 
+	public Query getReportQuery(Report report, Query query) {
 		QueryGenerationCommand command = new QueryGenerationCommand();
 		 
 		DbTable reportTable = report.getDbTable();
@@ -56,10 +60,10 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 		if (query.isSecured()) {
 			if (reportTable.isSecurityFilter()){
 				Assert.isTrue(reportTable.isSecurityFilterSql(), "Main query table ["+reportTable.getName()+"] cannot be a security filter of a table type!");
-				this.columnQueryGeneratorHandler.addSqlFilterToOwner(reportTable, reportTable.getName(), qTable, query, null, command);
+				this.columnQueryGeneratorHandler.addSqlFilterToOwner(reportTable, this.columnQueryGeneratorHandler.getSecurityFilterAlias(reportTable, null), qTable, query, null, command);
 			}
 			else {
-				this.columnQueryGeneratorHandler.appendFilterByQueryTable(query, qTable, "", command);
+				this.columnQueryGeneratorHandler.appendFilterByQueryTable(query, qTable, this.columnQueryGeneratorHandler.getBeginningAlias(qTable), null, command);
 			}
 		}
 		 

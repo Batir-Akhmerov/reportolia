@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.reportolia.core.model.table.DbTableRelationship;
-
 /**
  * The SecurityFilterConfig class
  *
@@ -18,8 +16,9 @@ import com.reportolia.core.model.table.DbTableRelationship;
  */
 public class SecurityFilterConfig {
 	
-	private List<List<DbTableRelationship>> listOfLinksToFilters = new ArrayList<>();
+	private List<SecurityFilterLink> linkList = new ArrayList<>();
 	private Set<Long> uniqueSetOfRelationships = new HashSet<>();
+	private boolean filterFoundButRemoved;
 	
 	
 	
@@ -30,13 +29,27 @@ public class SecurityFilterConfig {
 		this.uniqueSetOfRelationships.add(relationshipId);
 		return true;
 	}
-	
-	public void addAnotherListOfLinks(List<DbTableRelationship> list) {
-		this.listOfLinksToFilters.add(list);
+
+	public void removeLinkFromList(SecurityFilterLink link){
+		if (this.linkList != null) {
+			this.linkList.remove(link);
+			this.filterFoundButRemoved = true;
+		}
 	}
-	
-	public List<List<DbTableRelationship>> getListOfLinksToFilters() {
-		return this.listOfLinksToFilters;
+
+
+	public List<SecurityFilterLink> getLinkList() {
+		return this.linkList;
+	}
+
+
+
+	public void setLinkList(List<SecurityFilterLink> linkList) {
+		this.linkList = linkList;
+	}
+
+	public boolean isFilterFoundButRemoved() {
+		return this.filterFoundButRemoved;
 	}
 	
 	

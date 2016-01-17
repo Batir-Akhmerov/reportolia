@@ -16,4 +16,6 @@ public interface ReportQueryGeneratorHandler {
 	
 	public Query getReportQuery(Report report);
 	
+	public Query getReportQuery(Report report, Query query);
+	
 }

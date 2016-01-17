@@ -30,6 +30,14 @@ public class Query {
 	private SecurityType securityType = SecurityType.MAIN;
 	private Query topQuery;
 	
+	public Query(){
+		
+	}
+	
+	public Query(SecurityType securityType){
+		this.securityType = securityType;
+	}
+
 	public void addTable(QueryTable table) {
 		if (CollectionUtils.isEmpty(this.tableList)) {
 			this.tableList = new ArrayList<>();

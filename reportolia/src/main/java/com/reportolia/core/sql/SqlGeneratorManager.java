@@ -5,11 +5,14 @@ package com.reportolia.core.sql;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
 import com.reportolia.core.sql.query.model.QC;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryColumn;
@@ -25,6 +28,8 @@ import com.reportolia.core.sql.query.model.QueryTable;
  */
 @Component
 public class SqlGeneratorManager implements SqlGeneratorHandler {
+	
+	@Resource protected ReportoliaSecurityHandler reportoliaSecurityHandler;
 	
 	public String toSql(Query query, List<Object> valueList) {
 		StringBuilder builder = new StringBuilder();
@@ -99,7 +104,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				isMainFound = true;
 			}
 			else if (table.isSecurityFilterSql()) {
-				builder.append(table.getSecurityFilterSql());
+				builder.append( replaceSqlMarkers(table.getSecurityFilterSql(), valueList) );
 			}
 			else {
 				Assert.isTrue(isMainFound, "Main QueryTable must be the first table in the list!");
@@ -173,12 +178,29 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 					Assert.isTrue(false, "One of QueryJoin Columns is expected!");
 				}
 				builder.append(QC.EQ);
-				builder.append(QC.Q);
-				valueList.add(join.getJoinValue());
+				//builder.append(QC.Q);
+				builder.append( replaceSqlMarkers(join.getJoinValue(), valueList) );
 				builder.append(QC.SPACE);
 			}
 			isFirst = false;
 		}
+	}
+	
+	protected String replaceSqlMarkers(String sql, List<Object> valueList) {
+		if (this.reportoliaSecurityHandler != null) {
+			int count = StringUtils.countOccurrencesOf(sql, QC.MARKER_USER_ID);
+			if (count > 0) {
+				sql = sql.replace(QC.MARKER_USER_ID, QC.Q);
+				for(; count-- != 0;) {
+					valueList.add(this.reportoliaSecurityHandler.getUserId());
+				}
+			}
+			else {
+				valueList.add(sql);
+				sql = QC.Q;
+			}
+		}
+		return sql;
 	}
 	
 	

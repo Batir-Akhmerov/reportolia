@@ -30,6 +30,7 @@ import com.reportolia.core.sql.ReportQueryGeneratorHandler;
 import com.reportolia.core.sql.SqlGeneratorHandler;
 import com.reportolia.core.sql.query.QueryGeneratorHandler;
 import com.reportolia.core.sql.query.model.Query;
+import com.reportolia.core.sql.query.model.SecurityType;
 
 /**
  * 
@@ -48,6 +49,8 @@ import com.reportolia.core.sql.query.model.Query;
 @DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
 @DatabaseSetup("database-data.xml")
 public class BaseReportTest {
+	
+	private SecurityType securityType = SecurityType.NONE; 
 
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
@@ -78,8 +81,8 @@ public class BaseReportTest {
 	
     protected void testReportSql(String testName, Long reportId, String expectedSql, List<Object> valueList) {
 		Report report = this.reportRepository.findById(reportId);
-		
-        Query query = this.reportQueryGeneratorManager.getReportQuery(report);
+		Query query = new Query(getSecurityType());
+        query = this.reportQueryGeneratorManager.getReportQuery(report, query);
         
         String sql = this.sqlGeneratorManager.toSql(query, valueList);
         
@@ -96,6 +99,14 @@ public class BaseReportTest {
 		sql = sql.replace("  ", " ");
 		sql = sql.replace("  ", " ");
 		return sql;
+	}
+
+	public SecurityType getSecurityType() {
+		return this.securityType;
+	}
+
+	public void setSecurityType(SecurityType securityType) {
+		this.securityType = securityType;
 	}
     
 	

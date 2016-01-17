@@ -57,10 +57,10 @@
     <r3p_table_columns id="52" table_id="50" data_type="NUM" 	name="price" label="product price"/>
     <r3p_table_columns id="53" table_id="50" data_type="TXT" 	name="isOutOfStockInProduct" label="is out of stock"/>
     <r3p_table_columns id="55" table_id="50" data_type="INT" 	name="category_id" label="category id"/>
-    
+          
     
 <!--  TABLE Orders -->    
-    <r3p_tables id="100" name="orders" />
+    <r3p_tables id="100" name="orders" is_secured="true"  />
     <r3p_table_columns id="100" table_id="100" data_type="INT" name="id" label="order id" is_pk="true"/>
     <r3p_table_columns id="101" table_id="100" data_type="INT" name="customer_id" label="customer"/>
     <r3p_table_columns id="102" table_id="100" data_type="INT" name="product_id" label="product"/>
@@ -82,7 +82,14 @@
 <!--  TABLE Product Category Type-->
     <r3p_tables id="220" name="product_category_type" />
     <r3p_table_columns id="220" table_id="220" data_type="INT" name="id"   label="category type id"  is_pk="true"/>
-    <r3p_table_columns id="221" table_id="220" data_type="TXT" name="name" label="category type name" />            
+    <r3p_table_columns id="221" table_id="220" data_type="TXT" name="name" label="category type name" />   
+    
+<!-- TABLE SECURITY MATRIX -->    
+    <r3p_tables id="240" name="security_matrix" is_secured="true" is_security_filter="true"/> 
+    <r3p_table_columns id="240" table_id="240" data_type="INT" name="id" label="security matrix id"  is_pk="true"/>
+    <r3p_table_columns id="241" table_id="240" data_type="INT" name="security_row_id" label="security row id"/>
+    <r3p_table_columns id="242" table_id="240" data_type="TXT" name="section_name" label="section name"/>  
+    <r3p_table_columns id="243" table_id="240" data_type="INT" name="user_id" label="user id"/>        
     
 <!--  RELATIONSHIPS -->    
     <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" join_type_to_child="LEFT" is_link_to_security_filter="true"/> <!-- customer -> order -->
@@ -97,6 +104,12 @@
     <r3p_table_relationships id="8" parent_column_id="200" child_column_id="55" join_type_to_child="LEFT" join_type_to_parent="LEFT"/> <!-- product -> category -->
     <r3p_table_relationships id="9" parent_column_id="220" child_column_id="201" join_type_to_child="INNER" join_type_to_parent="INNER"/> <!-- category -> category type -->
     
+    <r3p_table_relationships id="10" label="Composite relationship to Security Filter" parent_column_id="241" child_column_id="100" join_type_to_child="INNER" is_link_to_security_filter="true"/>  <!-- GROUP security row id <- order id -->
+    	<r3p_table_relationships id="11" group_relationship_id="10" parent_column_id="242" join_value="Security Section: Orders" group_relationship_order="1"  /> <!-- section_name == Security Section: Orders -->
+		<r3p_table_relationships id="12" group_relationship_id="10" parent_column_id="243" join_value="#[{USER_ID}]#" group_relationship_order="2"  /> <!-- section_name == Security Section: Orders -->
+		
+
+<!-- TABLE CALCULATED COLUMNS -->    
 <!--  TABLE Products 50 CALC COLUMNS--> 
 	<r3p_table_columns id="54" table_id="50" data_type="INT" 	name="calcRandomQuantity" label="quantity from random order" is_calculated="true" />
     	<r3p_operands id="50" owner_type="COLUMN" content_type="CONTENT" owner_id="54" column_id="103" operand_order="1"/>
@@ -140,6 +153,10 @@
     	<r3p_report_column_path id="46" report_column_id="43" table_relatioship_id="8" is_from_parent="false" relationship_order="3" />
     	<r3p_report_column_path id="47" report_column_id="43" table_relatioship_id="9" is_from_parent="false" relationship_order="4" />
     
+    <!-- Test 5: Simple report with columns from same main table to test table security filter -->
+    <r3p_reports id="5" folder_id="1" table_id="100" name="Order List" />
+    <r3p_report_columns id="50" report_id="5" table_column_id="100" column_order="1" data_type="INT" name="Order Id"/>
+    <r3p_report_columns id="51" report_id="5" table_column_id="103" column_order="2" data_type="INT" name="Quantity" />
       	
    	
    	<!-- Test 40: Simple nested select table column and  report static filter  -->

@@ -49,5 +49,12 @@ public class ListUtils {
 		int index = indexByProperty(list,property, value);
 		return index != -1;
 	}
+	
+	public static<T extends Object> int getSize(List<T> list) {
+		if (list == null) {
+			return -1;
+		}
+		return list.size();
+	}
 
 }

@@ -212,4 +212,10 @@ public class DbTableRelationship extends BaseEntity {
 		this.linkToSecurityFilter = linkToSecurityFilter;
 	}
 
+
+	@Override
+	public String toString() {		
+		return getLabelFull();
+	}
+
 }
