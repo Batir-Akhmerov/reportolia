@@ -4,6 +4,7 @@
 package com.reportolia.core.sql;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -18,6 +19,7 @@ import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryColumn;
 import com.reportolia.core.sql.query.model.QueryJoin;
 import com.reportolia.core.sql.query.model.QueryOperand;
+import com.reportolia.core.sql.query.model.QuerySortColumn;
 import com.reportolia.core.sql.query.model.QueryTable;
 
 /**
@@ -72,15 +74,15 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			builder.append(QC.ORDER_BY);
 			builder.append(QC.NL);
 			builder.append(QC.TAB);
-			toSqlOperands(query.getSortingList(), builder, valueList);
+			toSqlSortColumns(query.getSortingList(), builder, valueList);
 		}
 		// GROUP BY clause
-		if (!CollectionUtils.isEmpty(query.getSortingList())) {
+		if (!CollectionUtils.isEmpty(query.getGroupList())) {
 			builder.append(QC.NL);
 			builder.append(QC.GROUP_BY);
 			builder.append(QC.NL);
 			builder.append(QC.TAB);
-			toSqlOperands(query.getSortingList(), builder, valueList);
+			toSqlOperands(query.getGroupList(), builder, valueList);
 		}
 		
 		return builder.toString();
@@ -260,6 +262,37 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			valueList.addAll(operand.getValueList());
 		}
 	}
+	
+	protected void toSqlSortColumns(TreeSet<QuerySortColumn> list, StringBuilder builder, List<Object> valueList) {
+		if (CollectionUtils.isEmpty(list)) {
+			return;
+		}
+		boolean isFirst = true;
+		for (QuerySortColumn sortColumns: list) {
+			builder.append(QC.NL);
+			builder.append(QC.TAB);
+			if (!isFirst) {
+				builder.append(QC.COMMA);
+			}
+			toSqlSortColumn(sortColumns, builder, valueList);
+			isFirst = false;
+		}
+	}
+	
+	protected void toSqlSortColumn(QuerySortColumn sortColumn, StringBuilder builder, List<Object> valueList) {
+		if (sortColumn.getColumn() != null) {
+			toSqlColumn(sortColumn.getColumn(), builder, valueList);
+		}
+		else {
+			builder.append(sortColumn.getProjectionIndex());			
+		}
+		if (sortColumn.isSortDesc()) {
+			builder.append(QC.ORDER_BY_DESC);
+		}
+		
+	}
+	
+	
 	
 
 }

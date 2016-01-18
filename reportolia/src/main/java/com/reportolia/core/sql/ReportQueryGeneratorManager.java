@@ -71,8 +71,12 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 		if (CollectionUtils.isEmpty(columnList)) {
 			throw new ValidationException("Please add Columns to the Report!");
 		}
-		 
+		
+	// SELECT: column projection
+		int projectionIndex = 1;
 		for (ReportColumn column: columnList) {
+			QueryColumn qColumn = null;
+			
 			// 1. Report column associated with table column directly
 			if (column.getDbTableColumn() != null) {
 				DbTableColumn tbColumn = column.getDbTableColumn();
@@ -80,7 +84,7 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 				List<ReportColumnPath> columnPathList = this.reportManager.getReportColumnPaths(column);
 				QueryTable qColumnTable = this.columnQueryGeneratorHandler.appendTablesToQuery(query, columnPathList, command);
 				
-				QueryColumn qColumn = null;
+				
 				
 				if (tbColumn.isCalculated() == null || !tbColumn.isCalculated()) {
 					qColumn = new QueryColumn(tbColumn, qColumnTable);
@@ -94,12 +98,24 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 				}
 				query.addColumn(qColumn);
 			}
+			
+			qColumn.populateFromReportColumn(column);
+			if (column.isSorted()) {
+				// add to ORDER BY clause
+				query.addSortColumn(column, qColumn, projectionIndex);				
+			}
+			
+			if (column.isExcluded()) {
+				projectionIndex++;
+			}
+			
 		}
-		
+	// WHERE clause	
 		List<Operand> filterList = this.reportStaticFilterOperandHandler.getOperandsByOwner(report.getId());
 		if (!CollectionUtils.isEmpty(filterList)) { 
 			query.setFilterList(this.columnQueryGeneratorHandler.createQueryOperands(query, filterList, command));
 		}
+		
 		 
 		return query;
 	}

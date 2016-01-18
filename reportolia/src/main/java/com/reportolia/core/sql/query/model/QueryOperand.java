@@ -27,6 +27,8 @@ public class QueryOperand {
 	private DataType dataType;
 	private Variable variable;
 	
+	
+	
 	public QueryOperand() {
 		//
 	}
@@ -72,6 +74,15 @@ public class QueryOperand {
 			this.sql = buff.toString();
 		}
 		
+	}
+	
+	public QueryOperand(QueryOperand op) {
+		this.table = op.getTable();
+		this.sql = op.getSql();
+		this.valueList = op.getValueList();
+		this.nestedQuery = op.getNestedQuery();
+		this.dataType = op.getDataType();
+		this.variable = op.getVariable();
 	}
 	
 	@Override

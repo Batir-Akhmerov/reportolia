@@ -21,7 +21,8 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 				" SELECT  "
 						+ "tbl50.name ,tbl50.price "
 				+ "FROM products tbl50 "
-				+ "INNER JOIN SecurityMatrix sf_products ON tbl50.ID = sf_products.SecurityRowID AND sf_products.SectionName = 'Products' AND sf_products.UserID = ? ",
+				+ "INNER JOIN SecurityMatrix sf_products ON tbl50.ID = sf_products.SecurityRowID AND sf_products.SectionName = 'Products' AND sf_products.UserID = ? "
+				+ "ORDER BY  tbl50.name DESC ",
 				13);
 		
 		
@@ -40,7 +41,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 					
 					+ "INNER JOIN security_matrix sf_security_matrix_10 ON tbl50_2.id = sf_security_matrix_10.security_row_id "
 						+ "AND sf_security_matrix_10.section_name = ? AND sf_security_matrix_10.user_id = ? "
-					,
+				+ " ORDER BY  tbl50.name DESC ,tbl50_2.quantity ,tbl50_2_x1.name",
 					13, 13, "Security Section: Orders", 13);
 					
         
@@ -59,7 +60,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 				+ "INNER JOIN SecurityMatrix sf_customers ON tbl50_4_x1.ID = sf_customers.SecurityRowID AND sf_customers.SectionName = 'Customers' AND sf_customers.UserID = ? "
 				+ "INNER JOIN security_matrix sf_security_matrix_10 ON tbl50_4.id = sf_security_matrix_10.security_row_id "
 					+ "AND sf_security_matrix_10.section_name = ? AND sf_security_matrix_10.user_id = ? "
-				, 
+				+ " ORDER BY  tbl50.name DESC ,tbl50_4.quantity",
 				13, "TEST PRODUCT", "123", 13, "Security Section: Orders", 13);
 		
 		testReportSql("LEFT JOIN Test", 
@@ -83,6 +84,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 						+ "INNER JOIN product_category_type tbl1_1_x2_x8_x9 ON tbl1_1_x2_x8.type_id = tbl1_1_x2_x8_x9.id "
 					+ ") ON tbl1_1_x2.category_id = tbl1_1_x2_x8.id "
 				+ ") ON tbl1.id = tbl1_1.customer_id "
+				+ " ORDER BY  tbl1.name DESC "
 				
 				);
 				

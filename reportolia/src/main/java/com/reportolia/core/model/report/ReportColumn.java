@@ -54,18 +54,20 @@ public class ReportColumn extends BaseEntity {
     @Column(name = "sort_desc", columnDefinition = "boolean default false")
     private Boolean sort_desc;
     
+    @Column(name = "hidden", columnDefinition = "boolean default false")
+    private Boolean hidden;
+    
+    @Column(name = "excluded", columnDefinition = "boolean default false")
+    private Boolean excluded;
+    
    
 	public String getName() {
 		return this.name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-
 
 	public String getDescription() {
 		return this.description;
@@ -96,6 +98,10 @@ public class ReportColumn extends BaseEntity {
 		this.order = order;
 	}
 
+	
+	public boolean isSorted() {
+    	return this.getSort_index() != null;
+    }
 
 	public Integer getSort_index() {
 		return this.sort_index;
@@ -118,7 +124,7 @@ public class ReportColumn extends BaseEntity {
 
 
 	public Boolean isSort_desc() {
-		return this.sort_desc;
+		return this.sort_desc != null ? this.sort_desc : false;
 	}
 
 
@@ -134,6 +140,26 @@ public class ReportColumn extends BaseEntity {
 
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
+	}
+
+
+	public Boolean isHidden() {
+		return this.hidden != null ? this.hidden : false;
+	}
+
+
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
+
+
+	public Boolean isExcluded() {
+		return this.excluded != null ? this.excluded : false;
+	}
+
+
+	public void setExcluded(Boolean excluded) {
+		this.excluded = excluded;
 	}
 
 

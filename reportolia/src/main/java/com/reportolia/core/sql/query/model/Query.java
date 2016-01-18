@@ -4,12 +4,15 @@
 package com.reportolia.core.sql.query.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
 
 import com.reportolia.core.model.datatype.DataType;
+import com.reportolia.core.model.report.ReportColumn;
 
 
 /**
@@ -23,7 +26,7 @@ public class Query {
 	private List<QueryColumn> columnList;
 	private List<QueryTable> tableList;
 	private List<QueryOperand> filterList;
-	private List<QueryOperand> sortingList;
+	private TreeSet<QuerySortColumn> sortingList;
 	private List<QueryOperand> groupList;
 	private DataType dataType;
 	private int top;
@@ -50,6 +53,13 @@ public class Query {
 			this.columnList = new ArrayList<>();
 		}
 		this.columnList.add(column);
+	}
+	
+	public void addSortColumn(ReportColumn column, QueryColumn qColumn, int projectionIndex) {
+		this.getSortingList().add(new QuerySortColumn(column, qColumn, projectionIndex));
+	}
+	public void addSortColumn(QueryColumn qColumn, int sortIndex, boolean isDesc) {
+		this.getSortingList().add(new QuerySortColumn(qColumn, sortIndex, sortIndex, isDesc));
 	}
 	
 	public QueryTable getMainTable() {
@@ -86,10 +96,18 @@ public class Query {
 	public void setFilterList(List<QueryOperand> filterList) {
 		this.filterList = filterList;
 	}
-	public List<QueryOperand> getSortingList() {
+	public TreeSet<QuerySortColumn> getSortingList() {
+		if (this.sortingList == null) {
+			this.sortingList = new TreeSet<>(new Comparator<QuerySortColumn>(){		
+				@Override
+				public int compare(QuerySortColumn o1, QuerySortColumn o2) {
+					return o1.getSortIndex() - o2.getSortIndex();
+				}
+			});
+		}
 		return this.sortingList;
 	}
-	public void setSortingList(List<QueryOperand> sortingList) {
+	public void setSortingList(TreeSet<QuerySortColumn> sortingList) {
 		this.sortingList = sortingList;
 	}
 	public List<QueryOperand> getGroupList() {

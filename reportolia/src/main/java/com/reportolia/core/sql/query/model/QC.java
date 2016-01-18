@@ -34,6 +34,7 @@ public class QC {
 	public static final String EQ = " = ";
 	public static final String PL = " ( ";
 	public static final String PR = " ) ";
+	public static final String ORDER_BY_DESC = " DESC ";
 	
 	
 	public static final String TOP1 = " TOP 1 ";

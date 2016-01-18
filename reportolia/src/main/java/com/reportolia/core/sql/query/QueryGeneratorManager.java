@@ -117,9 +117,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		 
 		// 3. Sorting
 		List<Operand> sortingList = this.sortingOperandHandler.getOperandsByOwner(ownerId);
-		qList = createQueryOperands(query, sortingList, command);
-		query.setSortingList(qList);
-		 
+		populateQuerySortColumns(query, sortingList, command);				 
 		
 		// 4. Group By
 		if (CollectionUtils.isEmpty(command.getGroupByList())) {
@@ -187,6 +185,22 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		}
 		
 		return qOperandList;
+	}
+	
+	public void populateQuerySortColumns(Query query, List<Operand> operandList, QueryGenerationCommand command) {		
+		if (CollectionUtils.isEmpty(operandList)) {
+			return;
+		}
+		int sortIndex = 1;
+		for (Operand operand: operandList) {		
+			if (operand.getDbColumn() == null) {
+				continue;
+			}
+			QueryColumn col = new QueryColumn(createQueryOperandFromColumn(query, operand, command));
+			query.addSortColumn(col, sortIndex, operand.isDescSort());
+		}
+		
+		return;
 	}
 	
 	protected QueryOperand createQueryOperandFromColumn(Query query, Operand operand, QueryGenerationCommand command) {

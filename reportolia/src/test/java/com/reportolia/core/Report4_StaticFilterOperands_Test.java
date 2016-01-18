@@ -26,7 +26,8 @@ public class Report4_StaticFilterOperands_Test extends BaseReportTest{
 							+ "WHERE _tbl50.id = tbl50.id "
 						+ ") "
 			+ "FROM products tbl50 "
-			+ "WHERE tbl50.name = ? "
+			+ "WHERE tbl50.name = ?"
+			+ " ORDER BY  tbl50.name DESC "
 		, "Test Product");
 		
     }
