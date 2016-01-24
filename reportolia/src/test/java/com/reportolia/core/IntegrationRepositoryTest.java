@@ -1,11 +1,7 @@
 package com.reportolia.core;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -23,10 +19,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.reportolia.core.config.ColumnDetectorXmlDataSetLoader;
-import com.reportolia.core.config.PersistenceContext;
 import com.reportolia.core.handler.DbHandler;
-import com.reportolia.core.model.table.DbTable;
-import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
@@ -40,6 +33,7 @@ import com.reportolia.core.sql.query.QueryGeneratorHandler;
  * @author Batir Akhmerov
  * Created on Dec 3, 2015
  */
+/*
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {PersistenceContext.class})
 //@ContextConfiguration(locations = {"classpath:ExampleConfigurationTests-context.xml"})
@@ -48,6 +42,16 @@ import com.reportolia.core.sql.query.QueryGeneratorHandler;
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 //@DatabaseSetup("/com/reportolia/core/toDoData1.xml")
+@DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
+@DatabaseSetup("database-data.xml")
+*/
+@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = {PersistenceContext.class})
+@ContextConfiguration(locations = {"classpath:/com/reportolia/core/testContext-persistence.xml"})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+      DirtiesContextTestExecutionListener.class,
+      TransactionalTestExecutionListener.class,
+      DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
 @DatabaseSetup("database-data.xml")
 public class IntegrationRepositoryTest {

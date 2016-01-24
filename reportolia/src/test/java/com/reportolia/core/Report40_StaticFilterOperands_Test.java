@@ -9,7 +9,7 @@ import org.junit.Test;
  * @author Batir Akhmerov
  * Created on Dec 11, 2015
  */
-public class Report4_StaticFilterOperands_Test extends BaseReportTest{
+public class Report40_StaticFilterOperands_Test extends BaseReportTest{
 
 	@Test
     public void reportTest() {
@@ -20,14 +20,14 @@ public class Report4_StaticFilterOperands_Test extends BaseReportTest{
 					+ "tbl50.name "
 					+ ",tbl50.price "
 					+ ", ( SELECT TOP 1 "
-						+ "_tbl50_2.quantity "
-							+ "FROM products _tbl50 "
-								+ "INNER JOIN orders _tbl50_2 ON _tbl50.id = _tbl50_2.product_id  "
-							+ "WHERE _tbl50.id = tbl50.id "
-						+ ") "
+							+ "_tbl50_2.quantity "
+						+ "FROM orders _tbl50_2 "
+						+ "WHERE _tbl50_2.product_id = tbl50.id "
+					+ ") "
+					+ ", ( SELECT TOP 1 _tbl50_2.quantity FROM orders _tbl50_2 ) "
 			+ "FROM products tbl50 "
-			+ "WHERE tbl50.name = ?"
-			+ " ORDER BY  tbl50.name DESC "
+			+ "WHERE tbl50.name = ? "
+			+ "ORDER BY  tbl50.name DESC "
 		, "Test Product");
 		
     }

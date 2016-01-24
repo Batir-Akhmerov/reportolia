@@ -43,6 +43,9 @@ public class DbTableColumn extends BaseEntity {
     @Column(name = "is_calculated", columnDefinition = "boolean default false")
     private Boolean calculated;
     
+    @Column(name = "is_not_correlated", columnDefinition = "boolean default false")
+    private Boolean notCorrelated;
+    
     @Column(name = "is_pk", columnDefinition = "boolean default false")
     private Boolean pk;
    
@@ -104,8 +107,16 @@ public class DbTableColumn extends BaseEntity {
 		this.calculated = calculated != null ? calculated : false;
 	}
 
-	public Boolean getPk() {
+	public Boolean isPk() {
 		return this.pk;
+	}
+	
+	public Boolean isNotCorrelated() {
+		return this.notCorrelated != null ? this.notCorrelated : false;
+	}
+
+	public void setNotCorrelated(Boolean notCorrelated) {
+		this.notCorrelated = notCorrelated;
 	}
 	
 	

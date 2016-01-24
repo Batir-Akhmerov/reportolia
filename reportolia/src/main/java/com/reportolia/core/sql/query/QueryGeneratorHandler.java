@@ -33,7 +33,7 @@ public interface QueryGeneratorHandler {
 	
 	
 	
-	public Query getQuery(Long ownerId, QueryTable pkQueryTable, QueryGenerationCommand command);
+	public Query getQuery(Long ownerId, QueryGenerationCommand command);
 	
 	public <T extends BaseColumnPath> QueryTable appendTablesToQuery(Query query, List<T> columnPathList, QueryGenerationCommand command);
 	

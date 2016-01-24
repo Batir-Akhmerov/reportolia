@@ -113,7 +113,11 @@
 <!--  TABLE Products 50 CALC COLUMNS--> 
 	<r3p_table_columns id="54" table_id="50" data_type="INT" 	name="calcRandomQuantity" label="quantity from random order" is_calculated="true" />
     	<r3p_operands id="50" owner_type="COLUMN" content_type="CONTENT" owner_id="54" column_id="103" operand_order="1"/>
-    		<r3p_operand_column_path id="50" operand_id="50" table_relatioship_id="2" is_from_parent="true" relationship_order="1" />  <!-- GROUP product -> order -->     
+    		<r3p_operand_column_path id="50" operand_id="50" table_relatioship_id="2" is_from_parent="true" relationship_order="1" />  <!--  product -> order -->  
+    		
+    <r3p_table_columns id="56" table_id="50" data_type="INT" 	name="calcRandomQuantityNotCorrelated" label="quantity from random order" is_calculated="true" is_not_correlated="true" />
+    	<r3p_operands id="56" owner_type="COLUMN" content_type="CONTENT" owner_id="56" column_id="103" operand_order="1"/>
+    		<r3p_operand_column_path id="56" operand_id="56" table_relatioship_id="2" is_from_parent="true" relationship_order="1" />  <!--  product -> order -->    
     
 <!--  REPORTS BEGIN -->
 
@@ -164,6 +168,7 @@
     <r3p_report_columns id="401" report_id="40" table_column_id="51" column_order="1" data_type="TXT" name="Name" sort_index="1" sort_desc="true"/>
     <r3p_report_columns id="402" report_id="40" table_column_id="52" column_order="2" data_type="NUM" name="Price" />
     <r3p_report_columns id="403" report_id="40" table_column_id="54" column_order="3" data_type="NUM" name="Product Quantity from Random Order" />
+    <r3p_report_columns id="404" report_id="40" table_column_id="56" column_order="4" data_type="NUM" name="Product Quantity from Random Order Not Correlated" />
     <!-- report filter -->
    	<r3p_operands id="4000" owner_type="REPORT" content_type="FILTER" owner_id="40" column_id="51" operand_order="1"/>   	
    	<r3p_operands id="4001" owner_type="REPORT" content_type="FILTER" owner_id="40" sql_item_type="COMP" sql_item_id="10" operand_order="2"/>

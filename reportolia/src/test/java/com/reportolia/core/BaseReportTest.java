@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -61,6 +62,11 @@ public class BaseReportTest {
 	@Resource protected QueryGeneratorHandler queryGeneratorManager;
 	@Resource protected ReportQueryGeneratorHandler reportQueryGeneratorManager;
 	@Resource protected SqlGeneratorHandler sqlGeneratorManager;
+	
+	@Test
+    public void reportTest() {
+		
+	}
 	
 	protected void testReportSql(String testName, Long reportId, String expectedSql) {
 		List<Object> valueList = new ArrayList<>();

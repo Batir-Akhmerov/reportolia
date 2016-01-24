@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.reportolia.core.model.table.DbTable;
+import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryOperand;
 import com.reportolia.core.sql.query.model.QueryTable;
@@ -27,6 +28,17 @@ public class QueryGenerationCommand {
 	private Map<String, QueryTable> cachedAliases;
 	private boolean notCorrelated;
 	
+	public QueryGenerationCommand() {
+		
+	}
+	
+	public QueryGenerationCommand(Query topQuery, QueryTable mainQueryTable, DbTableColumn column) {
+		this.topQuery = topQuery;
+		this.setMainQueryTable(mainQueryTable, true);
+		this.mainTable = mainQueryTable.getTable();
+		this.notCorrelated = column.isNotCorrelated();
+	}
+
 	public void cacheAlias(QueryTable table) {
 		getCachedAliases().put(table.getAlias(), table);
 	}
@@ -47,8 +59,13 @@ public class QueryGenerationCommand {
 		return this.mainQueryTable;
 	}
 
-	public void setMainQueryTable(QueryTable mainQueryTable) {
-		this.mainQueryTable = mainQueryTable;
+	public void setMainQueryTable(QueryTable mainQueryTable, boolean external) {
+		if (external) {
+			this.mainQueryTable = new QueryTable(mainQueryTable, external);
+		}
+		else {
+			this.mainQueryTable = mainQueryTable;
+		}
 	}
 
 	public List<QueryOperand> getGroupByList() {

@@ -24,6 +24,7 @@ public class QueryTable {
 	private String tableName;
 	private String alias;
 	private boolean main;
+	private boolean external; // indicates that this table is a table from the top level query object
 	private JoinType joinType;
 	private String securityFilterSql;
 	private List<QueryTable> tableList;
@@ -51,6 +52,19 @@ public class QueryTable {
 		this.table = table;
 		this.tableName = table.getName();
 		this.alias = alias;
+	}
+	
+	public QueryTable(QueryTable tb, boolean external) {
+		this.table = tb.getTable();
+		this.tableName = tb.getTableName();
+		this.alias = tb.getAlias();
+		this.main = tb.isMain();
+		this.joinType = tb.getJoinType();
+		this.joinList = tb.getJoinList();
+		this.securityFilterSql = tb.getSecurityFilterSql();
+		this.tableList = tb.getTableList();
+		this.external = external;
+		
 	}
 	
 	@Override
@@ -122,6 +136,12 @@ public class QueryTable {
 	}
 	public boolean isSecurityFilterSql() {
 		return !StringUtils.isEmpty(this.getSecurityFilterSql()); 
+	}
+	public boolean isExternal() {
+		return this.external;
+	}
+	public void setExternal(boolean external) {
+		this.external = external;
 	}
 
 }

@@ -21,6 +21,7 @@ public class QC {
 	public static final String MARKER_USER_ID = "#[{USER_ID}]#";
 	
 	
+	public static final String BLANK = "";
 	public static final String SPACE = " ";
 	public static final String UNDERSCORE = "_";
 	public static final String DOT = ".";

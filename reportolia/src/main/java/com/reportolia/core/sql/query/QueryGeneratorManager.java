@@ -83,14 +83,14 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	
 	
 	 
-	public Query getQuery(Long ownerId, QueryTable pkQueryTable, QueryGenerationCommand command) {
+	public Query getQuery(Long ownerId, QueryGenerationCommand command) {
 		Query query = new Query();
 		if (command.getTopQuery() != null) {
 			query.setTopQuery(command.getTopQuery());
 		}
 		query.setTop1();
 		
-		QueryTable qMainTable = new QueryTable(command.getMainTable(), command, true, true);
+		QueryTable qMainTable = command.getMainQueryTable();
 		query.addTable(qMainTable);
 		if (query.isSecured()) {
 			appendFilterByQueryTable(query, qMainTable, getBeginningAlias(qMainTable), null, command);
@@ -110,8 +110,9 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		 
 		// 2. Static Filter
 		List<Operand> filterList = this.filterOperandHandler.getOperandsByOwner(ownerId);
-		qList = createFilterCorrelation(query, qMainTable, pkQueryTable, command);
+		qList = createFilterCorrelation(query, qMainTable, null, command); //pkQueryTable, command);
 		qList.addAll(createQueryOperands(query, filterList, command));
+		//qList = createQueryOperands(query, filterList, command);
 		query.setFilterList(qList);
 		 
 		 
@@ -134,23 +135,47 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	
 	protected List<QueryOperand> createFilterCorrelation(Query query, QueryTable qMainTable, QueryTable pkQueryTable, QueryGenerationCommand command) {
 		List<QueryOperand> qOperandList = new ArrayList<>();
-		if (command.isNotCorrelated()) {
-			return qOperandList;
-		}
-		Assert.isTrue(qMainTable != null, "qMainTable is required!");
-		Assert.isTrue(pkQueryTable != null, "pkQueryTable is required!");
 		
-		List<DbTableColumn> pkColumns = tableColumnRepository.findByDbTableAndPk(qMainTable.getTable(), true);
-		Assert.isTrue(!CollectionUtils.isEmpty(pkColumns), "Cannot find PK Column for table " + qMainTable.getTable().getName());
-		boolean isFirst = true;
-		for (DbTableColumn pk: pkColumns) {
-			if (!isFirst) {
-				qOperandList.add(new QueryOperand(QC.AND));
+		if (qMainTable.isExternal()) {
+			List<QueryTable> list = query.getTableList();
+			if (list.size() > 1){
+				list.remove(0); // remove external main table
+				
+				QueryTable newMainTable = list.get(0); // previously the second table
+				newMainTable.setMain(true);
+				List<QueryJoin> joins = newMainTable.getJoinList();
+				if (!command.isNotCorrelated()) {					
+					boolean isFirst = true;
+					for (QueryJoin join: joins) {
+						if (!isFirst) {
+							qOperandList.add(new QueryOperand(QC.AND));
+						}
+						qOperandList.add(join.getJoinColumn());
+						qOperandList.add(new QueryOperand(QC.EQ));
+						qOperandList.add(join.getPkColumn());
+						
+						isFirst = false;
+					}
+				}
+				newMainTable.setJoinList(null);
 			}
-			qOperandList.add(new QueryOperand(pk, qMainTable));
-			qOperandList.add(new QueryOperand(QC.EQ));
-			qOperandList.add(new QueryOperand(pk, pkQueryTable));
-			isFirst = false;
+		}
+		else if (!command.isNotCorrelated()) {
+			Assert.isTrue(qMainTable != null, "qMainTable is required!");
+			Assert.isTrue(pkQueryTable != null, "pkQueryTable is required!");
+			
+			List<DbTableColumn> pkColumns = tableColumnRepository.findByDbTableAndPk(qMainTable.getTable(), true);
+			Assert.isTrue(!CollectionUtils.isEmpty(pkColumns), "Cannot find PK Column for table " + qMainTable.getTable().getName());
+			boolean isFirst = true;
+			for (DbTableColumn pk: pkColumns) {
+				if (!isFirst) {
+					qOperandList.add(new QueryOperand(QC.AND));
+				}
+				qOperandList.add(new QueryOperand(pk, qMainTable));
+				qOperandList.add(new QueryOperand(QC.EQ));
+				qOperandList.add(new QueryOperand(pk, pkQueryTable));
+				isFirst = false;
+			}
 		}
 		
 		return qOperandList;
@@ -216,10 +241,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		}
 		else {
 			Assert.isTrue(this.nestedQueryGeneratorHandler != null, "NestedQueryGeneratorHandler is expected!");
-			QueryGenerationCommand nestedCommand = new QueryGenerationCommand();
-			nestedCommand.setTopQuery(query);
-			nestedCommand.setMainTable(qColumnTable.getTable());
-			Query nestedQuery = this.nestedQueryGeneratorHandler.getQuery(tbColumn.getId(), qColumnTable, nestedCommand);
+			QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, tbColumn);			
+			Query nestedQuery = this.nestedQueryGeneratorHandler.getQuery(tbColumn.getId(), nestedCommand);
 			qOperand = new QueryOperand(nestedQuery);
 		}
 		return qOperand;
@@ -350,8 +373,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		DbTableColumn nextColumn = parentColumn;
 		DbTableColumn prevColumn = childColumn;
 		 		 
-		String fromChildMarker = "";
-		String aliasPrefix = "";
+		String fromChildMarker = QC.BLANK;
+		String aliasPrefix = QC.BLANK;
 		JoinType joinType = JoinType.INNER;
 		if (isParentTableFirst) { // determine which table goes first in the path
 			if (rel.getJoinTypeToChild() != null) {
@@ -368,6 +391,10 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 			}
 			Assert.isTrue(childTable.getName() == qTable.getTableName());				 
 			fromChildMarker = QC.MARKER_PATH_FROM_CHILD;
+		}
+		
+		if (query.isNested()) {
+			aliasPrefix = QC.UNDERSCORE;
 		}
 		
 		String alias = aliasPrefix + stamp.toString() + fromChildMarker + rel.getId();
