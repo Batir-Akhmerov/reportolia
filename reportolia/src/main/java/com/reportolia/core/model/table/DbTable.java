@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.StringUtils;
 
 import com.reportolia.core.model.base.BaseEntity;
@@ -29,7 +28,6 @@ public class DbTable extends BaseEntity {
     public static final int MAX_LENGTH_DESCRIPTION = 500;
     public static final int MAX_LENGTH_NAME = 128;
     
-    @NotEmpty
     @Column(name = "name", nullable = false, length = MAX_LENGTH_NAME)
     private String name;
     

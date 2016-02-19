@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.model.base.BaseEntity;
 
 /**
@@ -21,8 +19,6 @@ import com.reportolia.core.model.base.BaseEntity;
 public class DataTypeBean extends BaseEntity {
 
    
-    
-    @NotEmpty
     @Column(name = "name", nullable = false, length = 128)
     private String name;
   

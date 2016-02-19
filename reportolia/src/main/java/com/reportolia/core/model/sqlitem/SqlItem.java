@@ -14,8 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.DatabaseType;
 import com.reportolia.core.model.base.BaseEntity;
@@ -59,11 +57,9 @@ public class SqlItem extends BaseEntity {
     private List<SqlItemParameter> sqlItemParameters;
     
     
-    @NotEmpty
     @Column(name = "label", nullable = false, length = 128)
     private String label;
     
-    @NotEmpty
     @Column(name = "sql", nullable = false, length = 255)
     private String sql;
     
@@ -156,7 +152,7 @@ public class SqlItem extends BaseEntity {
 	}
 
 	public Boolean isAggregateFunction() {
-		return this.aggregateFunction;
+		return this.aggregateFunction != null ? this.aggregateFunction : false;
 	}
 
 	public void setAggregateFunction(Boolean aggregateFunction) {

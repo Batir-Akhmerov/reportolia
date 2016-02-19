@@ -32,6 +32,7 @@ public class Query {
 	private int top;
 	private SecurityType securityType = SecurityType.MAIN;
 	private Query topQuery;
+	private boolean aggregated;
 	
 	public Query(){
 		
@@ -170,6 +171,14 @@ public class Query {
 
 	public void setTopQuery(Query topQuery) {
 		this.topQuery = topQuery;
+	}
+
+	public boolean isAggregated() {
+		return this.aggregated;
+	}
+
+	public void setAggregated(boolean aggregated) {
+		this.aggregated = aggregated;
 	}
 
 }

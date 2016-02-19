@@ -3,6 +3,7 @@
  */
 package com.reportolia.core.sql.query;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +28,22 @@ public class QueryGenerationCommand {
 	private List<QueryOperand> groupByList;
 	private Map<String, QueryTable> cachedAliases;
 	private boolean notCorrelated;
+	private QueryGenerationCommand topQueryGenerationCommand;
+	private List<QueryGenerationCommand> nestedQueryGenerationCommands;
 	
 	public QueryGenerationCommand() {
 		
 	}
 	
-	public QueryGenerationCommand(Query topQuery, QueryTable mainQueryTable, DbTableColumn column) {
+	public QueryGenerationCommand(Query topQuery, QueryTable mainQueryTable, DbTableColumn column, QueryGenerationCommand topCommand) {
 		this.topQuery = topQuery;
 		this.setMainQueryTable(mainQueryTable, true);
 		this.mainTable = mainQueryTable.getTable();
 		this.notCorrelated = column.isNotCorrelated();
+		this.topQueryGenerationCommand = topCommand;
+		topCommand.addNestedQueryGenerationCommand(this);
 	}
+	
 
 	public void cacheAlias(QueryTable table) {
 		getCachedAliases().put(table.getAlias(), table);
@@ -67,8 +73,21 @@ public class QueryGenerationCommand {
 			this.mainQueryTable = mainQueryTable;
 		}
 	}
-
+	
+	
+	public void addGroupByOperandToTopQuery(QueryOperand operand) {
+		if (getTopQueryGenerationCommand() == null) {
+			return;
+		}
+		getTopQueryGenerationCommand().getGroupByList().add(operand);
+	}
+	public void addGroupByOperand(QueryOperand operand) {
+		getGroupByList().add(operand);
+	}
 	public List<QueryOperand> getGroupByList() {
+		if (this.groupByList == null) {
+			this.groupByList = new ArrayList<>();
+		}
 		return this.groupByList;
 	}
 
@@ -108,4 +127,25 @@ public class QueryGenerationCommand {
 	public void setCachedAliases(Map<String, QueryTable> cachedAliases) {
 		this.cachedAliases = cachedAliases;
 	}
+
+	public QueryGenerationCommand getTopQueryGenerationCommand() {
+		return this.topQueryGenerationCommand;
+	}
+
+	public void setTopQueryGenerationCommand(QueryGenerationCommand topQueryGenerationCommand) {
+		this.topQueryGenerationCommand = topQueryGenerationCommand;
+	}
+
+	public void addNestedQueryGenerationCommand(QueryGenerationCommand command) {
+		getNestedQueryGenerationCommands().add(command);
+	}
+	
+	public List<QueryGenerationCommand> getNestedQueryGenerationCommands() {
+		if (this.nestedQueryGenerationCommands == null) {
+			this.nestedQueryGenerationCommands = new ArrayList<>();
+		}
+		return this.nestedQueryGenerationCommands;
+	}
+
+	
 }

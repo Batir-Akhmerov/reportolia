@@ -48,6 +48,7 @@
     <r3p_table_columns id="1" table_id="1" data_type="INT" name="id"   label="customer id" is_pk="true"/>
     <r3p_table_columns id="2" table_id="1" data_type="TXT" name="name" label="customer name" />
     
+    
 <!--  TABLE Products -->    
     <r3p_tables id="50" name="products"  is_secured="true" is_security_filter="true"
     	security_filter_sql="INNER JOIN SecurityMatrix #[{ALIAS_FILTER}]# ON #[{ALIAS_PARENT}]#.ID = #[{ALIAS_FILTER}]#.SecurityRowID AND #[{ALIAS_FILTER}]#.SectionName = 'Products' AND #[{ALIAS_FILTER}]#.UserID = #[{USER_ID}]#"
@@ -110,6 +111,18 @@
 		
 
 <!-- TABLE CALCULATED COLUMNS -->    
+<!-- TBLE Customers: Calc Columns -->
+	<r3p_table_columns id="3" table_id="1" data_type="TXT" name="calcProductTotalAmountSpent" label="productName + total amount" is_calculated="true"/>
+		<r3p_operands id="3" owner_type="COLUMN" content_type="CONTENT" owner_id="3" column_id="51" operand_order="1"/> <!-- Product Name -->
+    		<r3p_operand_column_path id="3" operand_id="3" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="4" operand_id="3" table_relatioship_id="2" is_from_parent="false" relationship_order="3" />  <!--  order -> product -->
+    	<r3p_operands id="4" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="1" operand_order="2"/> <!-- + -->
+    	<r3p_operands id="5" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="31" operand_order="3"/> <!-- SUM( -->
+    	<r3p_operands id="6" owner_type="COLUMN" content_type="CONTENT" owner_id="3" column_id="52" operand_order="4"/> <!-- Product Name -->
+    		<r3p_operand_column_path id="5" operand_id="6" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="6" operand_id="6" table_relatioship_id="2" is_from_parent="false" relationship_order="3" />  <!--  order -> product -->
+    	<r3p_operands id="7" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="32" operand_order="5"/> <!-- )SUM -->
+	
 <!--  TABLE Products 50 CALC COLUMNS--> 
 	<r3p_table_columns id="54" table_id="50" data_type="INT" 	name="calcRandomQuantity" label="quantity from random order" is_calculated="true" />
     	<r3p_operands id="50" owner_type="COLUMN" content_type="CONTENT" owner_id="54" column_id="103" operand_order="1"/>
@@ -161,6 +174,12 @@
     <r3p_reports id="5" folder_id="1" table_id="100" name="Order List" />
     <r3p_report_columns id="50" report_id="5" table_column_id="100" column_order="1" data_type="INT" name="Order Id"/>
     <r3p_report_columns id="51" report_id="5" table_column_id="103" column_order="2" data_type="INT" name="Quantity" />
+    
+    
+    <!-- Test 15: Simple report with aggregated column to test nested select's GROUP BY -->
+    <r3p_reports id="15" folder_id="1" table_id="1" name="Customer List with Total Amount" />
+    <r3p_report_columns id="55" report_id="15" table_column_id="2" column_order="1" data_type="TXT" name="Customer Name"/>
+    <r3p_report_columns id="56" report_id="15" table_column_id="3" column_order="2" data_type="TXT" name="Product Name + TotalAmountSpent" />
       	
    	
    	<!-- Test 40: Simple nested select table column and  report static filter  -->

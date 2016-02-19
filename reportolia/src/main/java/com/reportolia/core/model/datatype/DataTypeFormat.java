@@ -7,8 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
 
@@ -27,7 +25,6 @@ public class DataTypeFormat extends BaseEntity {
 	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
     private DataType dataType;
     
-    @NotEmpty
     @Column(name = "format_mask", nullable = false, length = 128)
     private String mask;
 

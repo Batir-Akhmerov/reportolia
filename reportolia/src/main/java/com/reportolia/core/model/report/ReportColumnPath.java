@@ -5,8 +5,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.model.base.BaseColumnPath;
 
 /**
@@ -21,7 +19,6 @@ import com.reportolia.core.model.base.BaseColumnPath;
 public class ReportColumnPath extends BaseColumnPath {
     
 	
-	@NotEmpty
 	@ManyToOne
     @JoinColumn(name="report_column_id", nullable=false)
     private ReportColumn reportColumn;

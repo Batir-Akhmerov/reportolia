@@ -3,8 +3,10 @@
  */
 package com.reportolia.core.utils;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -55,6 +57,10 @@ public class ListUtils {
 			return -1;
 		}
 		return list.size();
+	}
+	
+	public static<T extends Object> Collection<?> extractPropertyValues(List<T> list, String propertyName) {
+		return CollectionUtils.collect(list, new BeanToPropertyValueTransformer(propertyName));
 	}
 
 }

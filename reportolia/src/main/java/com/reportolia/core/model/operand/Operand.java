@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
@@ -37,7 +36,6 @@ public class Operand extends BaseEntity {
 	@Column(name = "content_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
 	private ContentType contentType;
    
-	@NotEmpty
     @Column(name = "owner_id", nullable = false)
 	private Long ownerId;
 	
@@ -154,6 +152,13 @@ public class Operand extends BaseEntity {
 		this.order = order;
 	}
 
+	public Long getSqlItemId() {
+		if (this.sqlItem == null) {
+			return null;
+		}
+		return this.sqlItem.getId();
+	}
+	
 	public SqlItem getSqlItem() {
 		return this.sqlItem;
 	}

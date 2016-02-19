@@ -7,8 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.model.base.BaseEntity;
 
 /**
@@ -26,11 +24,9 @@ public class Folder extends BaseEntity {
     @JoinColumn(name="parent_folder_id")
     private Folder parentFolder;
    
-    @NotEmpty
     @Column(name = "name", nullable = false, length = 128)
     private String name;
     
-    @NotEmpty
     @Column(name = "expanded_name", nullable = false, length = 500)
     private String expandedName;
   

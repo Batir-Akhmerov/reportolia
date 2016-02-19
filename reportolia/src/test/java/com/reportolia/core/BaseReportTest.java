@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -49,6 +50,7 @@ import com.reportolia.core.sql.query.model.SecurityType;
         DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
 @DatabaseSetup("database-data.xml")
+@Ignore
 public class BaseReportTest {
 	
 	private SecurityType securityType = SecurityType.NONE; 
@@ -62,12 +64,12 @@ public class BaseReportTest {
 	@Resource protected QueryGeneratorHandler queryGeneratorManager;
 	@Resource protected ReportQueryGeneratorHandler reportQueryGeneratorManager;
 	@Resource protected SqlGeneratorHandler sqlGeneratorManager;
-	
+	/*
 	@Test
     public void reportTest() {
 		
 	}
-	
+	*/
 	protected void testReportSql(String testName, Long reportId, String expectedSql) {
 		List<Object> valueList = new ArrayList<>();
 		testReportSql(testName, reportId, expectedSql, valueList); 

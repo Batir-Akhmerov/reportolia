@@ -90,7 +90,7 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 					qColumn = new QueryColumn(tbColumn, qColumnTable);
 				}
 				else {
-					QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, column.getDbTableColumn());					
+					QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, column.getDbTableColumn(), command);					
 					Query nestedQuery = this.columnQueryGeneratorHandler.getQuery(column.getDbTableColumn().getId(), nestedCommand);
 					qColumn = new QueryColumn(nestedQuery);
 				}

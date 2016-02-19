@@ -7,8 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
 import com.reportolia.core.model.datatype.DataType;
@@ -25,7 +23,6 @@ import com.reportolia.core.model.datatype.DataType;
 	uniqueConstraints = { @UniqueConstraint(columnNames = {"sql_item_id", "param_sql"}) })
 public class SqlItemParameter extends BaseEntity {
     
-	@NotEmpty
     @Column(name = "sql_item_id", nullable = false)
     private long sqlItemId;
 	
@@ -33,11 +30,10 @@ public class SqlItemParameter extends BaseEntity {
 	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
     private DataType dataType;
     
-    @NotEmpty
+    
     @Column(name = "name", nullable = false, length = 128)
     private String name;
     
-    @NotEmpty
     @Column(name = "param_sql", nullable = false, length = 128)
     private String sql;
     

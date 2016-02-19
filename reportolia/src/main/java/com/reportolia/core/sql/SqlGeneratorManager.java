@@ -82,7 +82,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			builder.append(QC.GROUP_BY);
 			builder.append(QC.NL);
 			builder.append(QC.TAB);
-			toSqlOperands(query.getGroupList(), builder, valueList);
+			toSqlOperands(query.getGroupList(), builder, valueList, QC.COMMA);
 		}
 		
 		return builder.toString();
@@ -104,6 +104,10 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 				builder.append(QC.NL);
 				builder.append(QC.TAB);
 				isMainFound = true;
+				
+				if (!CollectionUtils.isEmpty(table.getTableList())) {
+					toSqlTables(table.getTableList(), builder, valueList, true);
+				}
 			}
 			else if (table.isSecurityFilterSql()) {
 				builder.append( replaceSqlMarkers(table.getSecurityFilterSql(), valueList) );
@@ -239,13 +243,22 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	}
 	
 	protected void toSqlOperands(List<QueryOperand> operandList, StringBuilder builder, List<Object> valueList) {
+		toSqlOperands(operandList, builder, valueList, null);
+	}
+	
+	protected void toSqlOperands(List<QueryOperand> operandList, StringBuilder builder, List<Object> valueList, String delimeter) {
 		if (CollectionUtils.isEmpty(operandList)) {
 			return;
 		}
 		//builder.append(QC.PL);
+		boolean isFirst = true;
 		for (QueryOperand operand: operandList) {
+			if (!isFirst && !StringUtils.isEmpty(delimeter)) {
+				builder.append(delimeter);
+			}
 			toSqlOperand(operand, builder, valueList);
 			builder.append(QC.SPACE);
+			isFirst = false;
 		}
 		//builder.append(QC.PR);
 	}

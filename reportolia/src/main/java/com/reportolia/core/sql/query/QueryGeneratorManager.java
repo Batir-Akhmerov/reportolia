@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
+import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +25,7 @@ import com.reportolia.core.model.sqlitem.SqlItem;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
+import com.reportolia.core.repository.sqlitem.SqlItemRepository;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
 import com.reportolia.core.sql.query.model.JoinType;
@@ -33,6 +35,7 @@ import com.reportolia.core.sql.query.model.QueryColumn;
 import com.reportolia.core.sql.query.model.QueryJoin;
 import com.reportolia.core.sql.query.model.QueryOperand;
 import com.reportolia.core.sql.query.model.QueryTable;
+import com.reportolia.core.utils.ListUtils;
 
 /**
  * The QueryGeneratorManager class
@@ -51,7 +54,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	
 	
 	@Resource protected DbTableColumnRepository tableColumnRepository;
-	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;	
+	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
+	@Resource protected SqlItemRepository sqlItemRepository;
 	@Resource protected ReportoliaSecurityHandler reportoliaSecurityHandler;
 	
 	public OperandHandler getContentOperandHandler() {
@@ -101,7 +105,10 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		if (CollectionUtils.isEmpty(contentList)) {
 			throw new ValidationException("Please add Operands to the Column Content!");
 		}
-		 
+		
+		boolean isAggregatedFunctionIncluded = containsAggregateFunction(contentList);
+		query.setAggregated(isAggregatedFunctionIncluded);
+		
 		List<QueryOperand> qList = createQueryOperands(query, contentList, command);
 		QueryColumn qColumn = new QueryColumn(qList);
 		
@@ -121,11 +128,39 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		populateQuerySortColumns(query, sortingList, command);				 
 		
 		// 4. Group By
-		if (CollectionUtils.isEmpty(command.getGroupByList())) {
+		if (!CollectionUtils.isEmpty(command.getGroupByList())) {
 			 query.setGroupList(command.getGroupByList());
 		}		 
 		 
 		return query;
+	}
+	
+	@SuppressWarnings("all")
+	public boolean containsAggregateFunction(List<Operand> list) {
+		List<SqlItem> aggregateFunctionList = this.sqlItemRepository.findAggregateFunctions();
+		if (CollectionUtils.isEmpty(aggregateFunctionList) || CollectionUtils.isEmpty(list)) {
+			return false;
+		}
+		List<Long> aggregateIdList = (List<Long>) ListUtils.extractPropertyValues(aggregateFunctionList, "id");
+		List<Long> functionIdList = (List<Long>) ListUtils.extractPropertyValues(list, "sqlItemId");
+		for (Long functionId: functionIdList) {
+			if (aggregateIdList.contains(functionId)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsAggregateNestedQuery(List<QueryOperand> list) {
+		if (CollectionUtils.isEmpty(list)) {
+			return false;
+		}
+		for (QueryOperand qOperand: list) {
+			if (qOperand.getNestedQuery() != null && qOperand.getNestedQuery().isAggregated()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
@@ -154,6 +189,11 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 						qOperandList.add(new QueryOperand(QC.EQ));
 						qOperandList.add(join.getPkColumn());
 						
+						/*
+						if (query.isAggregated()) {
+							command.addGroupByOperandToTopQuery(join.getPkColumn());
+						}
+						*/
 						isFirst = false;
 					}
 				}
@@ -188,14 +228,25 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 			return qOperandList;
 		}
 		
+		boolean isInsideAggregateFunction = false;
+		
 		for (Operand operand: operandList) {
 			QueryOperand qOperand = null;
 			// 1. Operand column associated with table column directly
 			if (operand.getDbColumn() != null) {
 				qOperand = createQueryOperandFromColumn(query, operand, command);
+				if (query.isAggregated() 
+						&& !isInsideAggregateFunction 
+						&& (qOperand.getNestedQuery() == null || !qOperand.getNestedQuery().isAggregated()) ) {
+					command.addGroupByOperand(qOperand);
+				}
 			}
-			else if (operand.getSqlItemType() != null) {
+			else if (operand.getSqlItem() != null) {
+				SqlItem sqlItem = operand.getSqlItem();
 				qOperand = createQueryOperandFromSqlItem(query, operand, command);
+				if (sqlItem.isAggregateFunction()) {
+					isInsideAggregateFunction = sqlItem.isBlock() != null ? sqlItem.isBlock() : false;
+				}
 			}
 			else if (operand.getVariable() != null) {
 				qOperand = createQueryOperandFromVariable(query, operand, command);
@@ -241,7 +292,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		}
 		else {
 			Assert.isTrue(this.nestedQueryGeneratorHandler != null, "NestedQueryGeneratorHandler is expected!");
-			QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, tbColumn);			
+			QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, tbColumn, command);			
 			Query nestedQuery = this.nestedQueryGeneratorHandler.getQuery(tbColumn.getId(), nestedCommand);
 			qOperand = new QueryOperand(nestedQuery);
 		}
