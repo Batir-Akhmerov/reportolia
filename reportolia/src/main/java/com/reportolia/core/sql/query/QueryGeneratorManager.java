@@ -9,7 +9,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
-import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -134,6 +133,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		 
 		return query;
 	}
+	
 	
 	@SuppressWarnings("all")
 	public boolean containsAggregateFunction(List<Operand> list) {

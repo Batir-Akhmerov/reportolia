@@ -28,6 +28,7 @@ import com.reportolia.core.sql.query.QueryGeneratorHandler;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryColumn;
 import com.reportolia.core.sql.query.model.QueryTable;
+import com.reportolia.core.utils.ListUtils;
 
 /**
  * The QueryGeneratorManager class
@@ -40,6 +41,8 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 	 
 	@Resource protected DbHandler dbManager;
 	@Resource protected QueryGeneratorHandler columnQueryGeneratorHandler;
+	
+	@Resource protected OperandHandler reportColumnOperandHandler;
 	@Resource protected OperandHandler reportStaticFilterOperandHandler;
 	
 	@Resource protected ReportHandler reportManager;
@@ -72,6 +75,9 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 			throw new ValidationException("Please add Columns to the Report!");
 		}
 		
+		boolean isAggregated = ListUtils.containsByProperty(columnList, "aggregated", true);
+		query.setAggregated(isAggregated);
+		
 	// SELECT: column projection
 		int projectionIndex = 1;
 		for (ReportColumn column: columnList) {
@@ -84,20 +90,31 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 				List<ReportColumnPath> columnPathList = this.reportManager.getReportColumnPaths(column);
 				QueryTable qColumnTable = this.columnQueryGeneratorHandler.appendTablesToQuery(query, columnPathList, command);
 				
-				
-				
 				if (tbColumn.isCalculated() == null || !tbColumn.isCalculated()) {
 					qColumn = new QueryColumn(tbColumn, qColumnTable);
+					if (query.isAggregated()) {
+						command.addGroupByOperand(qColumn);
+					}
 				}
 				else {
 					QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, column.getDbTableColumn(), command);					
 					Query nestedQuery = this.columnQueryGeneratorHandler.getQuery(column.getDbTableColumn().getId(), nestedCommand);
 					qColumn = new QueryColumn(nestedQuery);
 				}
-				query.addColumn(qColumn);
+			}
+			// 2. Report Level Calculated Column
+			else {
+				List<Operand> contentList = this.reportColumnOperandHandler.getOperandsByOwner(column.getId());
+				if (CollectionUtils.isEmpty(contentList)) { 
+					throw new ValidationException(String.format("No expression can be found in Calculated Report Column [%s]!", column.getName()));
+				}
+				qColumn = new QueryColumn(this.columnQueryGeneratorHandler.createQueryOperands(query, contentList, command));
 			}
 			
+			query.addColumn(qColumn);
+			
 			qColumn.populateFromReportColumn(column);
+			
 			if (column.isSorted()) {
 				// add to ORDER BY clause
 				query.addSortColumn(column, qColumn, projectionIndex);				
@@ -112,6 +129,11 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 		List<Operand> filterList = this.reportStaticFilterOperandHandler.getOperandsByOwner(report.getId());
 		if (!CollectionUtils.isEmpty(filterList)) { 
 			query.setFilterList(this.columnQueryGeneratorHandler.createQueryOperands(query, filterList, command));
+		}
+		
+		// GROUP BY clause
+		if (!CollectionUtils.isEmpty(command.getGroupByList())) {
+			 query.setGroupList(command.getGroupByList());
 		}
 		
 		 

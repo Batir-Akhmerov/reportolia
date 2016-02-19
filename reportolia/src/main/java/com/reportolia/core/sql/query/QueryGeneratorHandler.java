@@ -44,5 +44,8 @@ public interface QueryGeneratorHandler {
 	
 	public List<QueryOperand> createQueryOperands(Query query, List<Operand> operandList, QueryGenerationCommand command);
 	
+	@SuppressWarnings("all")
+	public boolean containsAggregateFunction(List<Operand> list);
+	public boolean containsAggregateNestedQuery(List<QueryOperand> list);
 
 }

@@ -118,9 +118,9 @@
     		<r3p_operand_column_path id="4" operand_id="3" table_relatioship_id="2" is_from_parent="false" relationship_order="3" />  <!--  order -> product -->
     	<r3p_operands id="4" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="1" operand_order="2"/> <!-- + -->
     	<r3p_operands id="5" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="31" operand_order="3"/> <!-- SUM( -->
-    	<r3p_operands id="6" owner_type="COLUMN" content_type="CONTENT" owner_id="3" column_id="52" operand_order="4"/> <!-- Product Name -->
+    	<r3p_operands id="6" owner_type="COLUMN" content_type="CONTENT" owner_id="3" column_id="52" operand_order="4"/> <!-- Product Price -->
     		<r3p_operand_column_path id="5" operand_id="6" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
-    		<r3p_operand_column_path id="6" operand_id="6" table_relatioship_id="2" is_from_parent="false" relationship_order="3" />  <!--  order -> product -->
+    		<r3p_operand_column_path id="6" operand_id="6" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
     	<r3p_operands id="7" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="32" operand_order="5"/> <!-- )SUM -->
 	
 <!--  TABLE Products 50 CALC COLUMNS--> 
@@ -180,6 +180,22 @@
     <r3p_reports id="15" folder_id="1" table_id="1" name="Customer List with Total Amount" />
     <r3p_report_columns id="55" report_id="15" table_column_id="2" column_order="1" data_type="TXT" name="Customer Name"/>
     <r3p_report_columns id="56" report_id="15" table_column_id="3" column_order="2" data_type="TXT" name="Product Name + TotalAmountSpent" />
+    
+    <!-- Test 16: Simple report with aggregated report column to test main query's GROUP BY -->
+    <r3p_reports id="16" folder_id="1" table_id="1" name="Aggregated Customer List with Total Amount" />
+    <r3p_report_columns id="60" report_id="16" table_column_id="2" column_order="1" data_type="TXT" name="Customer Name"/>
+    <r3p_report_columns id="61" report_id="16"  column_order="2" data_type="INT" name="TotalAmountSpent" aggregated="true" />
+	   	<r3p_operands id="1600" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" sql_item_id="31"  operand_order="1"/>   	
+	   	<r3p_operands id="1601" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" column_id="52" operand_order="2"/> <!-- Product Price -->
+	   		<r3p_operand_column_path id="16010" operand_id="1601" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="16011" operand_id="1601" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
+	   	<r3p_operands id="1602" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" sql_item_id="32" operand_order="3"/>
+	   	
+	   	<r3p_operands id="1603" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" sql_item_id="1" operand_order="4"/> <!-- + -->
+	   	<r3p_operands id="1604" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" column_id="51" operand_order="5"/> <!-- Product Name -->
+    		<r3p_operand_column_path id="16041" operand_id="1604" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="16043" operand_id="1604" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
+    	
       	
    	
    	<!-- Test 40: Simple nested select table column and  report static filter  -->

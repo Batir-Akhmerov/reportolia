@@ -45,6 +45,16 @@
 		<property name="sortingOperandHandler" 	ref="columnSortingOperandHandler" />
 	</bean>
 	
+	
+	<bean name="reportColumnOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
+		<property name="operandOwnerType">
+			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.REPORT_COLUMN"/>
+		</property>
+		<property name="contentType">
+			<util:constant static-field="com.reportolia.core.model.operand.ContentType.CONTENT"/>
+		</property>
+	</bean>
+	
 	<bean name="reportStaticFilterOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
 		<property name="operandOwnerType">
 			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.REPORT"/>

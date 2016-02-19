@@ -60,6 +60,12 @@ public class ReportColumn extends BaseEntity {
     @Column(name = "excluded", columnDefinition = "boolean default false")
     private Boolean excluded;
     
+    /**
+     * !!! Should be auto-set per report calculated column upon saving its operandList
+     */
+    @Column(name = "aggregated", columnDefinition = "boolean default false")
+    private Boolean aggregated;
+    
    
 	public String getName() {
 		return this.name;
@@ -160,6 +166,17 @@ public class ReportColumn extends BaseEntity {
 
 	public void setExcluded(Boolean excluded) {
 		this.excluded = excluded;
+	}
+
+	public Boolean isAggregated() {
+		return this.aggregated != null ? this.aggregated : false;
+	}
+	public Boolean getAggregated() {
+		return isAggregated();
+	}
+
+	public void setAggregated(Boolean aggregated) {
+		this.aggregated = aggregated;
 	}
 
 
