@@ -47,6 +47,11 @@
     	
     <r3p_table_columns id="1" table_id="1" data_type="INT" name="id"   label="customer id" is_pk="true"/>
     <r3p_table_columns id="2" table_id="1" data_type="TXT" name="name" label="customer name" />
+    <r3p_table_columns id="4" table_id="1" data_type="TXT" name="calcSimpleCalcColumn" label="customerName + id" is_calculated="true"/>
+		<r3p_operands id="41" owner_type="COLUMN" content_type="CONTENT" owner_id="4" column_id="2" operand_order="1"/> <!-- Customer Name -->
+    	<r3p_operands id="42" owner_type="COLUMN" content_type="CONTENT" owner_id="4" sql_item_id="1" operand_order="2"/> <!-- + -->
+    	<r3p_operands id="43" owner_type="COLUMN" content_type="CONTENT" owner_id="4" column_id="1" operand_order="3"/> <!-- Customer ID -->
+    		
     
     
 <!--  TABLE Products -->    
@@ -111,7 +116,7 @@
 		
 
 <!-- TABLE CALCULATED COLUMNS -->    
-<!-- TBLE Customers: Calc Columns -->
+<!-- TABLE Customers: Calc Columns -->
 	<r3p_table_columns id="3" table_id="1" data_type="TXT" name="calcProductTotalAmountSpent" label="productName + total amount" is_calculated="true"/>
 		<r3p_operands id="3" owner_type="COLUMN" content_type="CONTENT" owner_id="3" column_id="51" operand_order="1"/> <!-- Product Name -->
     		<r3p_operand_column_path id="3" operand_id="3" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
@@ -195,7 +200,10 @@
 	   	<r3p_operands id="1604" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="61" column_id="51" operand_order="5"/> <!-- Product Name -->
     		<r3p_operand_column_path id="16041" operand_id="1604" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
     		<r3p_operand_column_path id="16043" operand_id="1604" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
-    	
+    <r3p_report_columns id="62" report_id="16" table_column_id="54" column_order="3" data_type="INT" name="Random Order Amount"/>
+    	<r3p_report_column_path id="621" report_column_id="62" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />
+    	<r3p_report_column_path id="622" report_column_id="62" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />
+    <r3p_report_columns id="63" report_id="16" table_column_id="4" column_order="4" data_type="TXT" name="Simple Calc Column"/>
       	
    	
    	<!-- Test 40: Simple nested select table column and  report static filter  -->

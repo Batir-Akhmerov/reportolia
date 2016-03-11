@@ -60,6 +60,10 @@ public class QueryGenerationCommand {
 	public void setTopQuery(Query topQuery) {
 		this.topQuery = topQuery;
 	}
+	
+	public boolean isTopQueryAggregated() {
+		return this.topQuery != null && this.topQuery.isAggregated();
+	}
 
 	public QueryTable getMainQueryTable() {
 		return this.mainQueryTable;

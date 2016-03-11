@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.util.Assert;
 
 import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.report.ReportColumn;
@@ -67,7 +66,8 @@ public class Query {
 		if (CollectionUtils.isEmpty(this.tableList)) {
 			return null;
 		}
-		Assert.isTrue(this.tableList.get(0).isMain(), "First table in the query must be a main table!");
+		// !!! this is not the case when main query table belongs to the top query
+		// Assert.isTrue(this.tableList.get(0).isMain(), "First table in the query must be a main table!");
 		return this.tableList.get(0);
 	}
 	/*

@@ -75,7 +75,7 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 			throw new ValidationException("Please add Columns to the Report!");
 		}
 		
-		boolean isAggregated = ListUtils.containsByProperty(columnList, "aggregated", true);
+		boolean isAggregated = ListUtils.containsByProperty(columnList, "aggregated", true); // TODO: column.aggregated must be set during column content save!!!
 		query.setAggregated(isAggregated);
 		
 	// SELECT: column projection

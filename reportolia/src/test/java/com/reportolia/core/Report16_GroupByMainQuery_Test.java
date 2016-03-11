@@ -18,6 +18,12 @@ public class Report16_GroupByMainQuery_Test extends BaseReportTest{
 				" SELECT  "
 						+ "tbl1.name "
 						+ ",SUM( tbl1_1_x2.price ) + tbl1_1_x2.name "
+						+ ", ( SELECT TOP 1 "
+									+ "_tbl1_1_x2_2.quantity "
+								+ "FROM orders _tbl1_1_x2_2 "
+								+ "WHERE _tbl1_1_x2_2.product_id = tbl1_1_x2.id "
+						+ ") "
+						+ ", ( tbl1.name + tbl1.id ) "
 				+ "FROM customers tbl1 "
 					+ "LEFT JOIN ( "
 						+ "orders tbl1_1 "
@@ -25,16 +31,9 @@ public class Report16_GroupByMainQuery_Test extends BaseReportTest{
 					+ ") ON tbl1.id = tbl1_1.customer_id "
 				+ " GROUP BY "
 						+ "tbl1.name "
-						+ ",tbl1_1_x2.name ");
-		
-		/**
-		 * TODO:
-		 * 1) Put tbl1.id into topCommand.grouByList if topLevelQuery is aggregated (along with tbl1.name)
-		 * 2) Put the whole Simple Calc Column into groupBy if it doesn't contain aggregates and owner query is aggregated
-		 * 3)
-		 * 
-		 */
-		
+						+ ",tbl1_1_x2.name "
+						+ ",tbl1_1_x2.id "
+						+ ",tbl1.name + tbl1.id ");
 		
     }
 	

@@ -39,6 +39,12 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	}
 	
 	public String toSql(Query query, StringBuilder builder, List<Object> valueList) {
+		boolean isSimpleExpression = CollectionUtils.isEmpty(query.getTableList());
+		
+		if (isSimpleExpression) {
+			toSqlColumns(query.getColumnList(), builder, valueList);
+			return builder.toString();
+		}
 		
 		builder.append(QC.SELECT);
 		builder.append(QC.NL);
@@ -264,15 +270,24 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	}
 	
 	protected void toSqlOperand(QueryOperand operand, StringBuilder builder, List<Object> valueList) {
-		Assert.isTrue(!StringUtils.isEmpty(operand.getSql()), "QueryOperand.sql cannot be null!");
-		
-		if (operand.getTable() != null) {
-			builder.append(operand.getTable().getAlias());
-			builder.append(QC.DOT);
+		if (StringUtils.isEmpty(operand.getSql())) {
+			if (operand instanceof QueryColumn) {
+				toSqlColumn((QueryColumn) operand, builder, valueList);
+				
+			}
+			else {
+				Assert.isTrue(false, "QueryOperand.sql cannot be null!");
+			}
 		}
-		builder.append(operand.getSql());
-		if (!CollectionUtils.isEmpty(operand.getValueList())) {
-			valueList.addAll(operand.getValueList());
+		else {
+			if (operand.getTable() != null) {
+				builder.append(operand.getTable().getAlias());
+				builder.append(QC.DOT);
+			}
+			builder.append(operand.getSql());
+			if (!CollectionUtils.isEmpty(operand.getValueList())) {
+				valueList.addAll(operand.getValueList());
+			}
 		}
 	}
 	

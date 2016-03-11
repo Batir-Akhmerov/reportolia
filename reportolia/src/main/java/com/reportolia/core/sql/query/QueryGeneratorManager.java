@@ -189,15 +189,21 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 						qOperandList.add(new QueryOperand(QC.EQ));
 						qOperandList.add(join.getPkColumn());
 						
-						/*
-						if (query.isAggregated()) {
+						
+						if (command.isTopQueryAggregated()) {
 							command.addGroupByOperandToTopQuery(join.getPkColumn());
 						}
-						*/
+						
 						isFirst = false;
 					}
 				}
 				newMainTable.setJoinList(null);
+			}
+			else if (list.size() == 1){
+				list.remove(0); // remove external main table
+				if (command.isTopQueryAggregated()) {
+					command.addGroupByOperandToTopQuery(query.getColumnList().get(0));
+				}
 			}
 		}
 		else if (!command.isNotCorrelated()) {
