@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.reportolia.core.driver.DatabaseDriver;
 import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
 import com.reportolia.core.sql.query.model.QC;
 import com.reportolia.core.sql.query.model.Query;
@@ -31,6 +32,7 @@ import com.reportolia.core.sql.query.model.QueryTable;
 @Component
 public class SqlGeneratorManager implements SqlGeneratorHandler {
 	
+	@Resource protected DatabaseDriver databaseDriver;
 	@Resource protected ReportoliaSecurityHandler reportoliaSecurityHandler;
 	
 	public String toSql(Query query, List<Object> valueList) {
@@ -270,6 +272,9 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	}
 	
 	protected void toSqlOperand(QueryOperand operand, StringBuilder builder, List<Object> valueList) {
+		if (operand.isConvertToString() && (!operand.isContentBlockOperand() || !operand.isBlockEnd())) {
+			builder.append(this.databaseDriver.toVarcharStart());
+		}
 		if (StringUtils.isEmpty(operand.getSql())) {
 			if (operand instanceof QueryColumn) {
 				toSqlColumn((QueryColumn) operand, builder, valueList);
@@ -288,6 +293,9 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 			if (!CollectionUtils.isEmpty(operand.getValueList())) {
 				valueList.addAll(operand.getValueList());
 			}
+		}
+		if (operand.isConvertToString() && (!operand.isContentBlockOperand() || !operand.isBlockStart())) {
+			builder.append(this.databaseDriver.toVarcharEnd());
 		}
 	}
 	

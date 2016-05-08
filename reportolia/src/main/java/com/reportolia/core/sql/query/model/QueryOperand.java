@@ -26,6 +26,8 @@ public class QueryOperand {
 	private Query nestedQuery;
 	private DataType dataType;
 	private Variable variable;
+	private boolean convertToString;
+	private SqlItem sqlItem;
 	
 	
 	
@@ -49,6 +51,7 @@ public class QueryOperand {
 	}
 	
 	public QueryOperand(SqlItem item) {
+		this.sqlItem = item;
 		this.sql = item.getSql();
 		this.dataType = item.getDataType();
 	}
@@ -132,6 +135,10 @@ public class QueryOperand {
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
+	
+	public boolean isStringType() {
+		return isConvertToString() || (this.dataType != null && this.dataType == DataType.TXT); 
+	}
 
 	public Variable getVariable() {
 		return this.variable;
@@ -141,4 +148,31 @@ public class QueryOperand {
 		this.variable = variable;
 	}
 
+	public boolean isConvertToString() {
+		return this.convertToString;
+	}
+
+	public void setConvertToString(boolean convertToString) {
+		this.convertToString = convertToString;
+	}
+
+	public SqlItem getSqlItem() {
+		return this.sqlItem;
+	}
+
+	public void setSqlItem(SqlItem sqlItem) {
+		this.sqlItem = sqlItem;
+	}
+	
+	public boolean isContentBlockOperand() {
+		return this.sqlItem != null && !this.sqlItem.isIsolated() && (this.sqlItem.isBlock() || this.sqlItem.isBlockEnd());
+	}
+	
+	public boolean isBlockStart() {
+		return this.sqlItem != null && !this.sqlItem.isIsolated() && this.sqlItem.isBlock();
+	}
+
+	public boolean isBlockEnd() {
+		return this.sqlItem != null && !this.sqlItem.isIsolated() && this.sqlItem.isBlockEnd();
+	}
 }

@@ -136,7 +136,7 @@ public class SqlItem extends BaseEntity {
 	}
 
 	public Boolean isBlock() {
-		return this.block;
+		return this.block != null && this.block;
 	}
 
 	public void setBlock(Boolean block) {
@@ -144,7 +144,7 @@ public class SqlItem extends BaseEntity {
 	}
 
 	public Boolean isBlockEnd() {
-		return this.blockEnd;
+		return this.blockEnd != null && this.blockEnd;
 	}
 
 	public void setBlockEnd(Boolean blockEnd) {
@@ -160,7 +160,7 @@ public class SqlItem extends BaseEntity {
 	}
 
 	public Boolean isIsolated() {
-		return this.isolated;
+		return this.isolated != null && this.isolated;
 	}
 
 	public void setIsolated(Boolean isolated) {

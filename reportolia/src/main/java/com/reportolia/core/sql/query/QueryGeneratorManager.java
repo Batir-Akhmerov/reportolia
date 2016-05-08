@@ -35,6 +35,7 @@ import com.reportolia.core.sql.query.model.QueryJoin;
 import com.reportolia.core.sql.query.model.QueryOperand;
 import com.reportolia.core.sql.query.model.QueryTable;
 import com.reportolia.core.utils.ListUtils;
+import com.reportolia.core.utils.block.BlockUtils;
 
 /**
  * The QueryGeneratorManager class
@@ -265,6 +266,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 			}
 			qOperandList.add(qOperand);
 		}
+		
+		BlockUtils.parseBlocks(qOperandList);
 		
 		return qOperandList;
 	}

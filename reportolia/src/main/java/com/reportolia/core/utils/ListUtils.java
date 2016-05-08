@@ -62,5 +62,20 @@ public class ListUtils {
 	public static<T extends Object> Collection<?> extractPropertyValues(List<T> list, String propertyName) {
 		return CollectionUtils.collect(list, new BeanToPropertyValueTransformer(propertyName));
 	}
+	
+	public static<T extends Object> void setProperty(List<T> list, String property, Object value) {
+		if (CollectionUtils.isEmpty(list)) {
+			return;
+		}
+		
+		try {
+			for (T bean: list) {
+				PropertyUtils.setProperty(bean, property, value);
+			}
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

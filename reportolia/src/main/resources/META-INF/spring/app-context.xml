@@ -14,6 +14,9 @@
 
 	<context:component-scan base-package="com.reportolia.core" />
 	
+	<!-- Default Database Driver provides DBMS specific implementations of some SQL operators and functions -->
+	<bean name="databaseDriver" class="com.reportolia.core.driver.BaseDatabaseDriver" />
+	
 	<bean name="columnContentOperandHandler" class="com.reportolia.core.handler.operand.OperandManager">
 		<property name="operandOwnerType">
 			<util:constant static-field="com.reportolia.core.model.operand.OperandOwnerType.COLUMN"/>
