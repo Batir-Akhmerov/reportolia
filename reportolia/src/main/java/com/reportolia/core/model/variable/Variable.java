@@ -40,7 +40,7 @@ public class Variable extends BaseEntity {
      * Not-correlated calculated column used as value source to select variable values from
      */
     @ManyToOne
-    @JoinColumn(name="value_source_column_id", nullable=false)
+    @JoinColumn(name="value_source_column_id", nullable=true)
     private DbTableColumn valueSourceDbColumn;
     
     

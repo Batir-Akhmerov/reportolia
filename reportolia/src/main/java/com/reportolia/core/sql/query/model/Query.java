@@ -55,6 +55,7 @@ public class Query {
 		this.columnList.add(column);
 	}
 	
+	
 	public void addSortColumn(ReportColumn column, QueryColumn qColumn, int projectionIndex) {
 		this.getSortingList().add(new QuerySortColumn(column, qColumn, projectionIndex));
 	}
@@ -91,9 +92,19 @@ public class Query {
 	public void setTableList(List<QueryTable> tableList) {
 		this.tableList = tableList;
 	}
+	
 	public List<QueryOperand> getFilterList() {
+		return getFilterList(false);
+	}
+	
+	public List<QueryOperand> getFilterList(boolean isSafe) {
+		if (this.filterList == null && isSafe) {
+			this.filterList = new ArrayList<>();
+		}
 		return this.filterList;
 	}
+	
+	
 	public void setFilterList(List<QueryOperand> filterList) {
 		this.filterList = filterList;
 	}

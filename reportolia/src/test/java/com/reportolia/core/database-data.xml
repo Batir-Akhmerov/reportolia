@@ -39,6 +39,12 @@
     <r3p_sql_items id="43" sql_item_type="FUNC" sql="ELSE" label="ELSE"  parent_sql_item_id="40" is_isolated="true" is_nested="true"/>
     <r3p_sql_items id="44" sql_item_type="FUNC" sql="END" label=")"  parent_sql_item_id="40" is_block_end="true" is_isolated="true"/>	 
 
+
+<!-- VARIABLES -->
+	<r3p_variables id="1" owner_type="COLUMN" owner_id="5" name="Order Status" data_type="TXT" />
+	<!-- only Global Variables are here -->
+	<!-- each variable declared next to each owner -->  
+
 <!-- ************************************************************************************************** -->
 <!--  TABLE Customers -->
     <r3p_tables id="1" name="customers" is_secured="true" is_security_filter="true"
@@ -95,7 +101,9 @@
     <r3p_table_columns id="240" table_id="240" data_type="INT" name="id" label="security matrix id"  is_pk="true"/>
     <r3p_table_columns id="241" table_id="240" data_type="INT" name="security_row_id" label="security row id"/>
     <r3p_table_columns id="242" table_id="240" data_type="TXT" name="section_name" label="section name"/>  
-    <r3p_table_columns id="243" table_id="240" data_type="INT" name="user_id" label="user id"/>        
+    <r3p_table_columns id="243" table_id="240" data_type="INT" name="user_id" label="user id"/>   
+    
+       
     
 <!--  RELATIONSHIPS -->    
     <r3p_table_relationships id="1" parent_column_id="1" child_column_id="101" join_type_to_child="LEFT" is_link_to_security_filter="true"/> <!-- customer -> order -->
@@ -127,8 +135,37 @@
     		<r3p_operand_column_path id="5" operand_id="6" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
     		<r3p_operand_column_path id="6" operand_id="6" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
     	<r3p_operands id="7" owner_type="COLUMN" content_type="CONTENT" owner_id="3" sql_item_id="32" operand_order="5"/> <!-- )SUM -->
+    
+    <!-- COLUMN: Total amount of active orders -->	
+    <r3p_table_columns id="5" table_id="1" data_type="NUM" name="calcTotalAmountByActiveOrder" label="Total amount of active orders" is_calculated="true"/>
+    	<!-- col content -->
+    	<r3p_operands id="15" owner_type="COLUMN" content_type="CONTENT" owner_id="5" sql_item_id="31" operand_order="1"/> <!-- SUM( -->
+    	<r3p_operands id="16" owner_type="COLUMN" content_type="CONTENT" owner_id="5" column_id="52" operand_order="2"/> <!-- Product Price -->
+    		<r3p_operand_column_path id="15" operand_id="16" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="16" operand_id="16" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
+    	<r3p_operands id="17" owner_type="COLUMN" content_type="CONTENT" owner_id="5" sql_item_id="32" operand_order="3"/> <!-- )SUM -->
+    	<!-- static filter -->
+    	<r3p_operands id="20" owner_type="COLUMN" content_type="FILTER" owner_id="5" column_id="151" operand_order="1"/> <!-- Filter by Order Status Variable -->
+    		<r3p_operand_column_path id="20" operand_id="20" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->
+    		<r3p_operand_column_path id="21" operand_id="20" table_relatioship_id="3" is_from_parent="false" relationship_order="2" />  <!--  order -> order status -->
+    	<r3p_operands id="21" owner_type="COLUMN" content_type="FILTER" owner_id="5" sql_item_id="10" operand_order="2"/> <!-- = -->
+    	<r3p_operands id="22" owner_type="COLUMN" content_type="FILTER" owner_id="5" variable_id="1" operand_order="3"/> <!-- Variable: Order Status -->
+    	
+    <!-- COLUMN: Random amount of active orders - Nested Select Static filter test-->	
+    <r3p_table_columns id="6" table_id="1" data_type="NUM" name="calcRandomAmountByActiveOrder" label="Nested Select Static filter test" is_calculated="true"/>
+    	<!-- col content -->    	
+    	<r3p_operands id="30" owner_type="COLUMN" content_type="CONTENT" owner_id="6" column_id="52" operand_order="2"/> <!-- Product Price -->
+    		<r3p_operand_column_path id="31" operand_id="30" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->  
+    		<r3p_operand_column_path id="32" operand_id="30" table_relatioship_id="2" is_from_parent="false" relationship_order="2" />  <!--  order -> product -->
+    	
+    	<!-- static filter -->
+    	<r3p_operands id="35" owner_type="COLUMN" content_type="FILTER" owner_id="6" column_id="151" operand_order="1"/> <!-- Filter by Order Status Variable -->
+    		<r3p_operand_column_path id="35" operand_id="35" table_relatioship_id="1" is_from_parent="true" relationship_order="1" />  <!--  customer <- order -->
+    		<r3p_operand_column_path id="36" operand_id="35" table_relatioship_id="3" is_from_parent="false" relationship_order="2" />  <!--  order -> order status -->
+    	<r3p_operands id="36" owner_type="COLUMN" content_type="FILTER" owner_id="6" sql_item_id="10" operand_order="2"/> <!-- = -->
+    	<r3p_operands id="37" owner_type="COLUMN" content_type="FILTER" owner_id="6" value="Active" operand_order="3"/> <!-- Variable: Order Status -->
 	
-<!--  TABLE Products 50 CALC COLUMNS--> 
+<!--  TABLE Products: 50 CALC COLUMNS--> 
 	<r3p_table_columns id="54" table_id="50" data_type="INT" 	name="calcRandomQuantity" label="quantity from random order" is_calculated="true" />
     	<r3p_operands id="50" owner_type="COLUMN" content_type="CONTENT" owner_id="54" column_id="103" operand_order="1"/>
     		<r3p_operand_column_path id="50" operand_id="50" table_relatioship_id="2" is_from_parent="true" relationship_order="1" />  <!--  product -> order -->  
@@ -216,9 +253,20 @@
    	<r3p_operands id="4000" owner_type="REPORT" content_type="FILTER" owner_id="40" column_id="51" operand_order="1"/>   	
    	<r3p_operands id="4001" owner_type="REPORT" content_type="FILTER" owner_id="40" sql_item_type="COMP" sql_item_id="10" operand_order="2"/>
    	<r3p_operands id="4002" owner_type="REPORT" content_type="FILTER" owner_id="40" value="Test Product" operand_order="3"/>
+   	
+   	<!-- Test 50: Static filter in nested select-->
+    <r3p_reports id="50" folder_id="1" table_id="1" name="Static filter in nested select" />
+    <r3p_report_columns id="501" report_id="50" table_column_id="6" column_order="1" data_type="NUM" name="Amount by Active Status"/>
+   	
+   	<!-- Test 51: Parameterized nested select table columns with Free-form and report column values -->
+    <r3p_reports id="51" folder_id="1" table_id="1" name="Parameterized nested select table columns with Free-form and report column values" />
+    <r3p_report_columns id="511" report_id="51" table_column_id="5" column_order="1" data_type="NUM" name="Amount by Free-Form Status"/>
+    	<r3p_variable_values id="51" variable_id="1" consumer_type="REPORT_COLUMN" consumer_id="511" value="Active" /> 
+    <!-- 
+    <r3p_report_columns id="512" report_id="51" table_column_id="3" column_order="2" data_type="NUM" name="Amount by Report Column defined Status" />
+    <r3p_report_columns id="513" report_id="51" table_column_id="54" column_order="3" data_type="NUM" name="Product Quantity from Random Order" />
+     -->
     
-    
-    <!-- <r3p_operands id="40" owner_type="REPORT" content_type="FILTER" owner_id="4" sql_item_type="" sql_item_id="" column_id="51" value="" operand_order="1"/> -->
 <!--  REPORTS END -->
     
 

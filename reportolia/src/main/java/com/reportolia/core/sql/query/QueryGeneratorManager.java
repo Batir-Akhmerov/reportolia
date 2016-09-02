@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.reportolia.core.Constants;
 import com.reportolia.core.handler.operand.OperandHandler;
 import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
 import com.reportolia.core.model.base.BaseColumnPath;
@@ -21,6 +22,7 @@ import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.operand.Operand;
 import com.reportolia.core.model.operand.OperandColumnPath;
 import com.reportolia.core.model.sqlitem.SqlItem;
+import com.reportolia.core.model.sqlitem.SqlItemType;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
@@ -117,9 +119,9 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		 
 		// 2. Static Filter
 		List<Operand> filterList = this.filterOperandHandler.getOperandsByOwner(ownerId);
-		qList = createFilterCorrelation(query, qMainTable, null, command); //pkQueryTable, command);
-		qList.addAll(createQueryOperands(query, filterList, command));
-		//qList = createQueryOperands(query, filterList, command);
+		//qList = createFilterCorrelation(query, qMainTable, null, command); //pkQueryTable, command);
+		//qList.addAll(createQueryOperands(query, filterList, command));
+		qList = createQueryOperands(query, filterList, command);
 		query.setFilterList(qList);
 		 
 		 
@@ -130,9 +132,31 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		// 4. Group By
 		if (!CollectionUtils.isEmpty(command.getGroupByList())) {
 			 query.setGroupList(command.getGroupByList());
-		}		 
+		}
+		
+		// add a correlation to Static Filter
+		qList = createFilterCorrelation(query, qMainTable, null, command); //pkQueryTable, command);
+		addStaticFilter(query, qList);
 		 
 		return query;
+	}
+	
+	protected void addStaticFilter(Query query, List<QueryOperand> list) {
+		if (CollectionUtils.isEmpty(list)) {
+			return;
+		}
+		List<QueryOperand> thisList = query.getFilterList(true);
+		if (!CollectionUtils.isEmpty(thisList)) {
+			QueryOperand andOperand = createQueryOperand_And();
+			thisList.add(andOperand);
+		}
+		thisList.addAll(list);
+	}
+	
+	protected QueryOperand createQueryOperand_And() {
+		List<SqlItem> list = this.sqlItemRepository.findBySqlItemTypeAndSql(SqlItemType.OPER, Constants.SQL_ITEM_AND);
+		Assert.isTrue(list.size() > 0);
+		return new QueryOperand(list.get(0));
 	}
 	
 	
@@ -422,7 +446,8 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	}
 	 
 	protected <T extends BaseColumnPath> QueryTable appendTableJoin(Query query, QueryTable qTable, boolean isParentTableFirst, DbTableRelationship rel, StringBuilder stamp, QueryTable parentQTable, QueryGenerationCommand command) {
-			 
+		
+		//boolean isNestedQuery = query.getTopQuery() != null;
 		DbTableColumn childColumn = rel.getDbColumnChild();
 		DbTable childTable = childColumn.getDbTable();
 		 

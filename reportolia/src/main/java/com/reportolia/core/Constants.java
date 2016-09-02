@@ -22,4 +22,6 @@ public class Constants {
 	
 	public static final String ARROW_RIGHT = "->";
 	
+	public static final String SQL_ITEM_AND = "AND";
+	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 
 import com.reportolia.core.model.sqlitem.SqlItem;
+import com.reportolia.core.model.sqlitem.SqlItemType;
 import com.reportolia.core.repository.base.ReadonlyRepository;
 
 /**
@@ -20,4 +21,6 @@ public interface SqlItemRepository extends ReadonlyRepository<SqlItem, Long> {
 			"select s FROM SqlItem s WHERE s.aggregateFunction = true"
     )
     public List<SqlItem> findAggregateFunctions();
+	
+	public List<SqlItem> findBySqlItemTypeAndSql(SqlItemType type, String sql);
 }

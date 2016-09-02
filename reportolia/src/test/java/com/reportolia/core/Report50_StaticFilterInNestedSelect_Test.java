@@ -9,26 +9,22 @@ import org.junit.Test;
  * @author Batir Akhmerov
  * Created on Dec 11, 2015
  */
-public class Report50_ParameterizedColumn_Test extends BaseReportTest{
+public class Report50_StaticFilterInNestedSelect_Test extends BaseReportTest{
 
 	@Test
     public void reportTest() {
 			
-		testReportSql("Simple Table Calculated Column Test",
-			40L, 
-			" SELECT  "
-					+ "tbl50.name "
-					+ ",tbl50.price "
-					+ ", ( SELECT TOP 1 "
-							+ "_tbl50_2.quantity "
-						+ "FROM orders _tbl50_2 "
-						+ "WHERE _tbl50_2.product_id = tbl50.id "
-					+ ") "
-					+ ", ( SELECT TOP 1 _tbl50_2.quantity FROM orders _tbl50_2 ) "
-			+ "FROM products tbl50 "
-			+ "WHERE tbl50.name = ? "
-			+ "ORDER BY  tbl50.name DESC "
-		, "Test Product");
+		testReportSql("Static Filter In Nested Select",
+			50L,
+			" SELECT  ( "
+				+ "SELECT TOP 1 "
+					+ "_tbl1_1_x2.price "
+				+ "FROM orders _tbl1_1 "
+					+ "INNER JOIN products _tbl1_1_x2 ON _tbl1_1.product_id = _tbl1_1_x2.id "
+					+ "INNER JOIN order_status _tbl1_1_x3 ON _tbl1_1.status_id = _tbl1_1_x3.id  "
+				+ "WHERE _tbl1_1_x3.name = ? AND "
+					+ "_tbl1_1.customer_id = tbl1.id "
+			+ ") FROM customers tbl1 ", "Active");
 		
     }
 	

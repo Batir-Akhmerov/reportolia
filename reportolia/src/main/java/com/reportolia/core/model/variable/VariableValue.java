@@ -11,8 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
-import com.reportolia.core.model.datatype.DataType;
-import com.reportolia.core.model.table.DbTableColumn;
+import com.reportolia.core.model.report.ReportColumn;
 
 /**
  * 
@@ -22,25 +21,11 @@ import com.reportolia.core.model.table.DbTableColumn;
  * Created on Nov 13, 2015
  */
 @Entity
-@Table(name="r3p_variable_values", uniqueConstraints = { @UniqueConstraint(columnNames = {"variable_id", "user_id", "value"}) })
+@Table(name="r3p_variable_values", uniqueConstraints = { @UniqueConstraint(columnNames = {"variable_id", "consumer_id", "consumer_type", "user_id", "value"}) })
 public class VariableValue extends BaseEntity {
     
-	@Enumerated(EnumType.STRING)
-	@Column(name = "owner_type", nullable = false, length = Constants.LENGTH_OWNER_TYPE)
-    private VariableOwnerType ownerType;
-	
     @Column(name = "variable_id")
     private Long variableId;
-    
-    /**
-     * Used for user specific variable - values
-     */
-    @Column(name = "user_id")
-    private Long userId;
-    
-    @Enumerated(EnumType.STRING)
-	@Column(name = "data_type", nullable = false, length = Constants.LENGTH_DATA_TYPE)
-    private DataType dataType;
     
     /**
      * Variable Values can be set specifically for Operands, Report Columns, etc. 
@@ -53,27 +38,27 @@ public class VariableValue extends BaseEntity {
     @Column(name = "consumer_id")
     private Long consumerId;
     
+    /**
+     * Used for user specific variable - values
+     */
+    @Column(name = "user_id")
+    private Long userId;
     
     /**
-     * Not-correlated calculated column used as value source to select variable values from
+     * Hard-coded variable value to be injected into a report sql as '?'
      */
-    @ManyToOne
-    @JoinColumn(name="value_source_column_id", nullable=false)
-    private DbTableColumn valueSourceDbColumn;
-    
-    
     @Column(name = "value", nullable = false, length = 128)
     private String value;
-
-
-	public VariableOwnerType getOwnerType() {
-		return this.ownerType;
-	}
-
-
-	public void setOwnerType(VariableOwnerType ownerType) {
-		this.ownerType = ownerType;
-	}
+    
+    /**
+     * When used within a report - existing ReportColumn whose QueryColumn Sql is injected into a report sql   
+     */
+    @ManyToOne
+    @JoinColumn(name="report_column_id", nullable=true)
+    private ReportColumn reportColumn;
+    
+    
+    
 
 
 	public Long getVariableId() {
@@ -83,19 +68,6 @@ public class VariableValue extends BaseEntity {
 
 	public void setVariableId(Long variableId) {
 		this.variableId = variableId;
-	}
-
-
-
-
-
-	public DataType getDataType() {
-		return this.dataType;
-	}
-
-
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
 	}
 
 
@@ -119,16 +91,6 @@ public class VariableValue extends BaseEntity {
 	}
 
 
-	public DbTableColumn getValueSourceDbColumn() {
-		return this.valueSourceDbColumn;
-	}
-
-
-	public void setValueSourceDbColumn(DbTableColumn valueSourceDbColumn) {
-		this.valueSourceDbColumn = valueSourceDbColumn;
-	}
-
-
 	public String getValue() {
 		return this.value;
 	}
@@ -146,6 +108,16 @@ public class VariableValue extends BaseEntity {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+
+	public ReportColumn getReportColumn() {
+		return this.reportColumn;
+	}
+
+
+	public void setReportColumn(ReportColumn reportColumn) {
+		this.reportColumn = reportColumn;
 	}
 
 
