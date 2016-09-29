@@ -12,8 +12,8 @@ package com.reportolia.core.handler.security;
 public class ReportoliaDefaultSecurityManager implements ReportoliaSecurityHandler {
 
 	@Override
-	public int getUserId() {
-		return 13;
+	public Long getUserId() {
+		return 13l;
 	}
 
 	@Override

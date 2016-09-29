@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
+import javax.validation.ValidationException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,9 @@ import org.springframework.util.StringUtils;
 
 import com.reportolia.core.driver.DatabaseDriver;
 import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
+import com.reportolia.core.model.variable.VariableValue;
+import com.reportolia.core.model.variable.VariableValueConsumer;
+import com.reportolia.core.repository.variable.VariableValueRepository;
 import com.reportolia.core.sql.query.model.QC;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryColumn;
@@ -34,6 +38,7 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 	
 	@Resource protected DatabaseDriver databaseDriver;
 	@Resource protected ReportoliaSecurityHandler reportoliaSecurityHandler;
+	@Resource protected VariableValueRepository variableValueRepository;
 	
 	public String toSql(Query query, List<Object> valueList) {
 		StringBuilder builder = new StringBuilder();
@@ -277,8 +282,26 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 		}
 		if (StringUtils.isEmpty(operand.getSql())) {
 			if (operand instanceof QueryColumn) {
-				toSqlColumn((QueryColumn) operand, builder, valueList);
-				
+				toSqlColumn((QueryColumn) operand, builder, valueList);				
+			}
+			else if (operand.getVariable() != null) {
+				VariableValueConsumer valueConsumer = operand.getVariableValueConsumer();
+				Assert.isTrue(valueConsumer != null, "VariableValueConsumer cannot be null!");
+				Long userId = this.reportoliaSecurityHandler.getUserId();
+				List<VariableValue> variableValueList = this.variableValueRepository.findByConsumer(operand.getVariable().getId(), valueConsumer.getType(), valueConsumer.getConsumerId(), userId);
+				if (CollectionUtils.isEmpty(variableValueList)) {
+					throw new ValidationException(String.format("Assign values to Variable [%s]!", operand.getVariable().getName()));
+				}
+				Assert.isTrue(!CollectionUtils.isEmpty(variableValueList), "variableValueList cannot be null!");
+				boolean isFirst = true;
+				for (VariableValue v: variableValueList) {
+					if (!isFirst) {
+						builder.append(QC.COMMA);
+					}
+					builder.append(QC.Q);
+					valueList.add(v.getValue());
+					isFirst = false;
+				}
 			}
 			else {
 				Assert.isTrue(false, "QueryOperand.sql cannot be null!");

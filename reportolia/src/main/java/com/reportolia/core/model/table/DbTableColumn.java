@@ -99,7 +99,7 @@ public class DbTableColumn extends BaseEntity {
 
 
 	public Boolean isCalculated() {
-		return this.calculated;
+		return this.calculated != null ? this.calculated : false;
 	}
 
 

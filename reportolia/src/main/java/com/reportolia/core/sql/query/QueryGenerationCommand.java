@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
+import com.reportolia.core.model.variable.VariableValueConsumer;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.QueryOperand;
 import com.reportolia.core.sql.query.model.QueryTable;
@@ -30,6 +31,7 @@ public class QueryGenerationCommand {
 	private boolean notCorrelated;
 	private QueryGenerationCommand topQueryGenerationCommand;
 	private List<QueryGenerationCommand> nestedQueryGenerationCommands;
+	private VariableValueConsumer variableValueConsumer;
 	
 	public QueryGenerationCommand() {
 		
@@ -149,6 +151,14 @@ public class QueryGenerationCommand {
 			this.nestedQueryGenerationCommands = new ArrayList<>();
 		}
 		return this.nestedQueryGenerationCommands;
+	}
+
+	public VariableValueConsumer getVariableValueConsumer() {
+		return this.variableValueConsumer;
+	}
+
+	public void setVariableValueConsumer(VariableValueConsumer variableValueConsumer) {
+		this.variableValueConsumer = variableValueConsumer;
 	}
 
 	

@@ -15,7 +15,7 @@ public interface ReportoliaSecurityHandler {
 	 * Implement this method to return current User's ID at runtime
 	 * @return
 	 */
-	public int getUserId();
+	public Long getUserId();
 	
 	/**
 	 * Implement this method to tell the system whether current User has Admin Permissions

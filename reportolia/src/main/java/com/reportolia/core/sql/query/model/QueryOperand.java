@@ -11,6 +11,7 @@ import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.sqlitem.SqlItem;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.variable.Variable;
+import com.reportolia.core.model.variable.VariableValueConsumer;
 
 /**
  * The QueryOperand class
@@ -26,8 +27,10 @@ public class QueryOperand {
 	private Query nestedQuery;
 	private DataType dataType;
 	private Variable variable;
+	private VariableValueConsumer variableValueConsumer;
 	private boolean convertToString;
 	private SqlItem sqlItem;
+	
 	
 	
 	
@@ -55,9 +58,10 @@ public class QueryOperand {
 		this.sql = item.getSql();
 		this.dataType = item.getDataType();
 	}
-	public QueryOperand(Variable variable) {
+	public QueryOperand(Variable variable, VariableValueConsumer variableValueConsumer) {
 		this.variable = variable;
 		this.dataType = variable.getDataType();
+		this.variableValueConsumer = variableValueConsumer;
 	}
 	@SuppressWarnings("unused")
 	public QueryOperand(List<Object> valueList, DataType dataType) {
@@ -174,5 +178,13 @@ public class QueryOperand {
 
 	public boolean isBlockEnd() {
 		return this.sqlItem != null && !this.sqlItem.isIsolated() && this.sqlItem.isBlockEnd();
+	}
+
+	public VariableValueConsumer getVariableValueConsumer() {
+		return this.variableValueConsumer;
+	}
+
+	public void setVariableValueConsumer(VariableValueConsumer variableValueConsumer) {
+		this.variableValueConsumer = variableValueConsumer;
 	}
 }

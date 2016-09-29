@@ -4,10 +4,10 @@ import org.junit.Test;
 
 /**
  * 
- * The Report4_StaticFilterOperands_Test class
+ * The Report50_StaticFilterInNestedSelect_Test class
  *
  * @author Batir Akhmerov
- * Created on Dec 11, 2015
+ * Created on May 11, 2016
  */
 public class Report50_StaticFilterInNestedSelect_Test extends BaseReportTest{
 

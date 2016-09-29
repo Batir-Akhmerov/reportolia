@@ -13,11 +13,11 @@ import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
  */
 public class ReportoliaTestSecurityManager implements ReportoliaSecurityHandler {
 
-	private int userId = 13;
+	private Long userId = 13l;
 	private boolean admin;
 	
 	@Override
-	public int getUserId() {
+	public Long getUserId() {
 		return this.userId;
 	}
 
@@ -26,7 +26,7 @@ public class ReportoliaTestSecurityManager implements ReportoliaSecurityHandler 
 		return this.admin;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

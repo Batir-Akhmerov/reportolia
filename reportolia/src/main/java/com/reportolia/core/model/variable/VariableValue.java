@@ -24,8 +24,10 @@ import com.reportolia.core.model.report.ReportColumn;
 @Table(name="r3p_variable_values", uniqueConstraints = { @UniqueConstraint(columnNames = {"variable_id", "consumer_id", "consumer_type", "user_id", "value"}) })
 public class VariableValue extends BaseEntity {
     
-    @Column(name = "variable_id")
-    private Long variableId;
+    
+    @ManyToOne
+    @JoinColumn(name="variable_id", nullable=false)
+    private Variable variable;
     
     /**
      * Variable Values can be set specifically for Operands, Report Columns, etc. 
@@ -45,30 +47,18 @@ public class VariableValue extends BaseEntity {
     private Long userId;
     
     /**
-     * Hard-coded variable value to be injected into a report sql as '?'
+     * VALUE: Hard-coded variable value to be injected into a report sql as '?'
      */
     @Column(name = "value", nullable = false, length = 128)
     private String value;
     
     /**
-     * When used within a report - existing ReportColumn whose QueryColumn Sql is injected into a report sql   
+     * VALUE: When used within a report - existing ReportColumn whose QueryColumn Sql is injected into a report sql   
      */
     @ManyToOne
     @JoinColumn(name="report_column_id", nullable=true)
     private ReportColumn reportColumn;
     
-    
-    
-
-
-	public Long getVariableId() {
-		return this.variableId;
-	}
-
-
-	public void setVariableId(Long variableId) {
-		this.variableId = variableId;
-	}
 
 
 	public VariableValueConsumerType getConsumerType() {
@@ -118,6 +108,16 @@ public class VariableValue extends BaseEntity {
 
 	public void setReportColumn(ReportColumn reportColumn) {
 		this.reportColumn = reportColumn;
+	}
+
+
+	public Variable getVariable() {
+		return this.variable;
+	}
+
+
+	public void setVariable(Variable variable) {
+		this.variable = variable;
 	}
 
 

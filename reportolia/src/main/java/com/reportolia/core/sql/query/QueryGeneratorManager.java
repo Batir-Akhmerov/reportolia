@@ -26,6 +26,7 @@ import com.reportolia.core.model.sqlitem.SqlItemType;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
+import com.reportolia.core.model.variable.VariableValueConsumer;
 import com.reportolia.core.repository.sqlitem.SqlItemRepository;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
@@ -320,12 +321,16 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 		QueryTable qColumnTable = appendTablesToQuery(query, columnPathList, command);
 		
 		QueryOperand qOperand = null;
-		if (tbColumn.isCalculated() == null || !tbColumn.isCalculated()) {
+		if (!tbColumn.isCalculated()) {
 			qOperand = new QueryOperand(tbColumn, qColumnTable);
 		}
 		else {
 			Assert.isTrue(this.nestedQueryGeneratorHandler != null, "NestedQueryGeneratorHandler is expected!");
-			QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, tbColumn, command);			
+			QueryGenerationCommand nestedCommand = new QueryGenerationCommand(query, qColumnTable, tbColumn, command);
+			
+			// variable consumer is OPERAND
+			nestedCommand.setVariableValueConsumer(VariableValueConsumer.newConsumerOperand(operand.getId()));
+			
 			Query nestedQuery = this.nestedQueryGeneratorHandler.getQuery(tbColumn.getId(), nestedCommand);
 			qOperand = new QueryOperand(nestedQuery);
 		}
@@ -347,7 +352,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	}
 	protected QueryOperand createQueryOperandFromVariable(Query query, Operand operand, QueryGenerationCommand command) {
 		Assert.isTrue(operand.getVariable() != null, "Operand.Variable cannot be null!");
-		QueryOperand qOperand = new QueryOperand(operand.getVariable());
+		QueryOperand qOperand = new QueryOperand(operand.getVariable(), command.getVariableValueConsumer()); // variable consumer here is a top level owner (not the current operand)
 		return qOperand;
 	}
 	protected QueryOperand createQueryOperandFromValue(Query query, Operand operand, QueryGenerationCommand command) {

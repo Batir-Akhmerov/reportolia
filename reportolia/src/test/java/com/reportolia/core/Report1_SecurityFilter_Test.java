@@ -23,7 +23,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 				+ "FROM products tbl50 "
 				+ "INNER JOIN SecurityMatrix sf_products ON tbl50.ID = sf_products.SecurityRowID AND sf_products.SectionName = 'Products' AND sf_products.UserID = ? "
 				+ "ORDER BY  tbl50.name DESC ",
-				13);
+				13l);
 		
 		
 		testReportSql( "INNER JOIN Test",
@@ -42,7 +42,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 					+ "INNER JOIN security_matrix sf_security_matrix_10 ON tbl50_2.id = sf_security_matrix_10.security_row_id "
 						+ "AND sf_security_matrix_10.section_name = ? AND sf_security_matrix_10.user_id = ? "
 				+ " ORDER BY  tbl50.name DESC ,tbl50_2.quantity ,tbl50_2_x1.name",
-					13, 13, "Security Section: Orders", 13);
+					13l, 13l, "Security Section: Orders", 13l);
 					
         
 		testReportSql("Composite JOIN by 4 columns Test",
@@ -61,7 +61,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 				+ "INNER JOIN security_matrix sf_security_matrix_10 ON tbl50_4.id = sf_security_matrix_10.security_row_id "
 					+ "AND sf_security_matrix_10.section_name = ? AND sf_security_matrix_10.user_id = ? "
 				+ " ORDER BY  tbl50.name DESC ,tbl50_4.quantity",
-				13, "TEST PRODUCT", "123", 13, "Security Section: Orders", 13);
+				13l, "TEST PRODUCT", "123", 13l, "Security Section: Orders", 13l);
 		
 		testReportSql("LEFT JOIN Test", 
 				4L, 
@@ -99,7 +99,7 @@ public class Report1_SecurityFilter_Test extends BaseReportTest{
 					+ "AND sf_security_matrix_10.section_name = ? AND sf_security_matrix_10.user_id = ? "
 				+ "INNER JOIN products tbl100_x2 ON tbl100.product_id = tbl100_x2.id "
 				+ "INNER JOIN SecurityMatrix sf_products ON tbl100_x2.ID = sf_products.SecurityRowID AND sf_products.SectionName = 'Products' AND sf_products.UserID = ? ",
-				13, "Security Section: Orders", 13, 13);
+				13l, "Security Section: Orders", 13l, 13l);
 		
 		
     }
