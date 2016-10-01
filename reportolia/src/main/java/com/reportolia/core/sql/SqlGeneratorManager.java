@@ -303,6 +303,11 @@ public class SqlGeneratorManager implements SqlGeneratorHandler {
 					isFirst = false;
 				}
 			}
+			else if (operand.getNestedQuery() != null) {
+				builder.append(QC.PL);
+				toSql(operand.getNestedQuery(), builder, valueList);
+				builder.append(QC.PR);
+			}
 			else {
 				Assert.isTrue(false, "QueryOperand.sql cannot be null!");
 			}

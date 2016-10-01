@@ -10,7 +10,6 @@ package com.reportolia.core.model.variable;
  * Created on Nov 20, 2015
  */
 public enum VariableValueConsumerType {
-	//COLUMN,
 	OPERAND,
 	REPORT_COLUMN;
 }

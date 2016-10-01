@@ -46,6 +46,14 @@
 		<property name="contentOperandHandler" 	ref="columnContentOperandHandler" />
 		<property name="filterOperandHandler" 	ref="columnStaticFilterOperandHandler" />
 		<property name="sortingOperandHandler" 	ref="columnSortingOperandHandler" />
+		<property name="nestedQueryGeneratorHandler" ref="nestedQueryGeneratorHandler" />
+	</bean>
+	
+	<bean name="nestedQueryGeneratorHandler" class="com.reportolia.core.sql.query.QueryGeneratorManager">
+		<property name="contentOperandHandler" 	ref="columnContentOperandHandler" />
+		<property name="filterOperandHandler" 	ref="columnStaticFilterOperandHandler" />
+		<property name="sortingOperandHandler" 	ref="columnSortingOperandHandler" />
+		<property name="nestedQueryGeneratorHandler" ref="columnQueryGeneratorHandler" />
 	</bean>
 	
 	

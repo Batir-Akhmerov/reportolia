@@ -53,7 +53,7 @@ public class QueryGeneratorManager implements QueryGeneratorHandler {
 	protected OperandHandler filterOperandHandler;	// WHERE clause operand handler  
 	protected OperandHandler sortingOperandHandler;	// ORDER BY clause operand handler
 	
-	protected QueryGeneratorManager nestedQueryGeneratorHandler; // used for query generation of nested calculated columns inside Operands within SELECT or WHERE clauses
+	@Resource protected QueryGeneratorManager nestedQueryGeneratorHandler; // used for query generation of nested calculated columns inside Operands within SELECT or WHERE clauses
 	
 	
 	@Resource protected DbTableColumnRepository tableColumnRepository;

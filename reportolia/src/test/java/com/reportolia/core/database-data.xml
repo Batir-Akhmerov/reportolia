@@ -261,11 +261,17 @@
    	<!-- Test 51: Parameterized nested select table columns with Free-form and report column values -->
     <r3p_reports id="51" folder_id="1" table_id="1" name="Parameterized nested select table columns with Free-form and report column values" />
     <r3p_report_columns id="511" report_id="51" table_column_id="5" column_order="1" data_type="NUM" name="Amount by Free-Form Status"/>
-    	<r3p_variable_values id="51" variable_id="1" consumer_type="REPORT_COLUMN" consumer_id="511" value="Active" /> 
-    <!-- 
-    <r3p_report_columns id="512" report_id="51" table_column_id="3" column_order="2" data_type="NUM" name="Amount by Report Column defined Status" />
-    <r3p_report_columns id="513" report_id="51" table_column_id="54" column_order="3" data_type="NUM" name="Product Quantity from Random Order" />
-     -->
+    	<r3p_variable_values id="511" variable_id="1" consumer_type="REPORT_COLUMN" consumer_id="511" value="Variable Value Report with Table Calculated Column" />
+     <r3p_report_columns id="512" report_id="51" column_order="2" data_type="INT" name="Report Calculated Amount by Status" />
+	   	<r3p_operands id="5102" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="512" column_id="5" operand_order="1"/> 
+	   		<r3p_variable_values id="512" variable_id="1" consumer_type="OPERAND" consumer_id="5102" value="Variable Value Report Calculated Column Operand" />
+		<r3p_operands id="5103" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="512" sql_item_id="1" operand_order="2"/> <!-- + -->
+	 	<r3p_operands id="5104" owner_type="REPORT_COLUMN" content_type="CONTENT" owner_id="512" value="Free Form Value" operand_order="3"/> 
+    <!-- report filter -->
+   	<r3p_operands id="5100" owner_type="REPORT" content_type="FILTER" owner_id="51" column_id="5" operand_order="1"/> 
+   		<r3p_variable_values id="513" variable_id="1" consumer_type="OPERAND" consumer_id="5100" value="Variable Value Report Filter Operand" />  	
+   	<r3p_operands id="5105" owner_type="REPORT" content_type="FILTER" owner_id="51" sql_item_type="COMP" sql_item_id="10" operand_order="2"/>
+   	<r3p_operands id="5106" owner_type="REPORT" content_type="FILTER" owner_id="51" value="Test Filter Value" operand_order="3"/>
     
 <!--  REPORTS END -->
     
