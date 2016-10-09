@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.config;
+package com.reportolia.core.test.config;
 
 import com.reportolia.core.handler.security.ReportoliaSecurityHandler;
 

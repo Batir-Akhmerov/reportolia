@@ -28,6 +28,11 @@ public class DbManager implements DbHandler {
 	 @Resource protected DbTableColumnRepository tableColumnRepository;
 	 @Resource protected DbTableRelationshipRepository tableRelationshipRepository;
 	 
+	 public List<DbTable> getTableList() {
+		 List<DbTable> list = this.tableRepository.findAll();
+		 return list;
+	 }
+	 
 	 public List<DbTable> getTableList(String name) {
 		 List<DbTable> list = this.tableRepository.findByName(name);
 		 return list;

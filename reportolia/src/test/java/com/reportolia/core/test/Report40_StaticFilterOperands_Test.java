@@ -1,4 +1,4 @@
-package com.reportolia.core;
+package com.reportolia.core.test;
 
 import org.junit.Test;
 

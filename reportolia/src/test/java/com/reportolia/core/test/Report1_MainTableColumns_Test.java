@@ -1,4 +1,4 @@
-package com.reportolia.core;
+package com.reportolia.core.test;
 
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
  * Created on Dec 3, 2015
  */
 public class Report1_MainTableColumns_Test extends BaseReportTest{
-
+	
 	@Test
     public void simpleReportTest() {
 		

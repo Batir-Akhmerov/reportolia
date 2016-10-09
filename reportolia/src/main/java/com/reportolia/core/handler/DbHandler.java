@@ -16,6 +16,8 @@ import com.reportolia.core.model.table.DbTableRelationship;
  */
 public interface DbHandler {
 	
+	public List<DbTable> getTableList();
+	
 	public List<DbTable> getTableList(String name);
 	
 	public List<DbTableRelationship> getTableChildRelationshipList(long  tableId);

@@ -1,4 +1,4 @@
-package com.reportolia.core;
+package com.reportolia.core.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +19,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
-import com.reportolia.core.config.ColumnDetectorXmlDataSetLoader;
 import com.reportolia.core.handler.DbHandler;
 import com.reportolia.core.handler.report.ReportHandler;
 import com.reportolia.core.model.report.Report;
@@ -32,6 +31,7 @@ import com.reportolia.core.sql.SqlGeneratorHandler;
 import com.reportolia.core.sql.query.QueryGeneratorHandler;
 import com.reportolia.core.sql.query.model.Query;
 import com.reportolia.core.sql.query.model.SecurityType;
+import com.reportolia.core.test.config.ColumnDetectorXmlDataSetLoader;
 
 /**
  * 
@@ -42,13 +42,13 @@ import com.reportolia.core.sql.query.model.SecurityType;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = {PersistenceContext.class})
-@ContextConfiguration(locations = {"classpath:/com/reportolia/core/testContext-persistence.xml"})
+@ContextConfiguration(locations = {"classpath:testContext-persistence.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 @DbUnitConfiguration(dataSetLoader = ColumnDetectorXmlDataSetLoader.class)
-@DatabaseSetup("database-data.xml")
+@DatabaseSetup("classpath:database-data.xml")
 @Ignore
 public class BaseReportTest {
 	
@@ -56,7 +56,7 @@ public class BaseReportTest {
 
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
-	@Resource protected DbHandler dbManager;
+	@Resource protected DbHandler dbHandler;
 	@Resource protected ReportRepository reportRepository;
 	@Resource protected ReportColumnRepository reportColumnRepository;
 	@Resource protected ReportHandler reportManager;

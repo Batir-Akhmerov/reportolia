@@ -10,6 +10,7 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<import resource="classpath:/META-INF/spring/app-context.xml"/> 
+<!-- 	<import resource="classpath:db-context.xml"/>
 	
     <context:property-placeholder location="classpath:application.properties" ignore-resource-not-found="false"/>
 
@@ -44,6 +45,7 @@
     </bean>
 
     <jpa:repositories base-package="com.reportolia.core.repository"/>
-    
-    <bean id="reportoliaSecurityHandler" class="com.reportolia.core.config.ReportoliaTestSecurityManager"/>
+     -->
+     
+    <bean id="reportoliaSecurityHandler" class="com.reportolia.core.test.config.ReportoliaTestSecurityManager"/>
 </beans>

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.reportolia.core.utils.block;
+package com.reportolia.core.test.utils.block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.sqlitem.SqlItem;
 import com.reportolia.core.sql.query.model.QueryOperand;
+import com.reportolia.core.utils.block.BlockUtils;
 
 import junit.framework.TestCase;
 

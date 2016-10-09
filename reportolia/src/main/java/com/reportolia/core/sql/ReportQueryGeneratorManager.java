@@ -40,7 +40,7 @@ import com.reportolia.core.utils.ListUtils;
 @Component
 public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler {
 	 
-	@Resource protected DbHandler dbManager;
+	@Resource protected DbHandler dbHandler;
 	@Resource protected QueryGeneratorHandler columnQueryGeneratorHandler;
 	
 	@Resource protected OperandHandler reportColumnOperandHandler;

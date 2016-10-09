@@ -1,4 +1,4 @@
-package com.reportolia.core.config;
+package com.reportolia.core.test.config;
 
 import java.util.Properties;
 
@@ -6,15 +6,10 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 
@@ -25,11 +20,11 @@ import com.jolbox.bonecp.BoneCPDataSource;
  * @author Batir Akhmerov
  * Created on Nov 13, 2015
  */
-@Configuration
-@EnableTransactionManagement
-@ComponentScan(basePackages = {"com.reportolia.core.handler", "com.reportolia.core.sql"})
-@EnableJpaRepositories(basePackages = "com.reportolia.core.repository")
-@PropertySource("classpath:application.properties")
+//@Configuration
+//@EnableTransactionManagement
+//@ComponentScan(basePackages = {"com.reportolia.core.test.handler", "com.reportolia.core.test.sql"})
+//@EnableJpaRepositories(basePackages = "com.reportolia.core.test.repository")
+//@PropertySource("classpath:resources/application.properties")
 public class PersistenceContext {
 
     protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
@@ -43,7 +38,7 @@ public class PersistenceContext {
     private static final String PROPERTY_NAME_HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
     private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
 
-    private static final String PROPERTY_PACKAGES_TO_SCAN = "com.reportolia.core.model";
+    private static final String PROPERTY_PACKAGES_TO_SCAN = "com.reportolia.core.test.model";
 
     @Autowired
     private Environment environment;
