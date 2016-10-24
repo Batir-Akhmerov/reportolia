@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
+import com.reportolia.base.repository.ReadonlyRepository;
 import com.reportolia.core.model.sqlitem.SqlItem;
 import com.reportolia.core.model.sqlitem.SqlItemType;
-import com.reportolia.core.repository.base.ReadonlyRepository;
 
 /**
  * 

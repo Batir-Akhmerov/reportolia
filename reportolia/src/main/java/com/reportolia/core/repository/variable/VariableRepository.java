@@ -2,9 +2,9 @@ package com.reportolia.core.repository.variable;
 
 import java.util.List;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.variable.Variable;
 import com.reportolia.core.model.variable.VariableOwnerType;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 /**
  * 

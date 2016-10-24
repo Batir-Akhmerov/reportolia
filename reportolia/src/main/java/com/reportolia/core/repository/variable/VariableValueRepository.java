@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.variable.Variable;
 import com.reportolia.core.model.variable.VariableValue;
 import com.reportolia.core.model.variable.VariableValueConsumerType;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 
 /**

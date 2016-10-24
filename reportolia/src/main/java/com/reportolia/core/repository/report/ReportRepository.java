@@ -2,8 +2,8 @@ package com.reportolia.core.repository.report;
 
 import java.util.List;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.report.Report;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 /**
  * 

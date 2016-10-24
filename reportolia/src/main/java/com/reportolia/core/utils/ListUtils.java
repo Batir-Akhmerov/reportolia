@@ -3,6 +3,7 @@
  */
 package com.reportolia.core.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,9 +55,13 @@ public class ListUtils {
 	
 	public static<T extends Object> int getSize(List<T> list) {
 		if (list == null) {
-			return -1;
+			return 0;
 		}
 		return list.size();
+	}
+	
+	public static<T extends Object> boolean isEmpty(List<T> list) {
+		return getSize(list) == 0;
 	}
 	
 	public static<T extends Object> Collection<?> extractPropertyValues(List<T> list, String propertyName) {
@@ -77,5 +82,21 @@ public class ListUtils {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static<T extends Object> T getFirst(List<T> list) {
+		if (isEmpty(list)) {
+			return null;
+		}
+		return list.get(0);
+	}
+	
+	public static<T extends Object> List<T> safeList(List<T> list) {
+		List<T> res = new ArrayList<>();
+		if (isEmpty(list)) {
+			return res;
+		}
+		return list;
+	}
+	
 
 }

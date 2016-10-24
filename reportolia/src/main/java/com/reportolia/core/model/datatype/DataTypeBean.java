@@ -14,16 +14,16 @@ import com.reportolia.core.model.base.BaseEntity;
  * @author Batir Akhmerov
  * Created on Nov 13, 2015
  */
-@Entity
-@Table(name="r3p_data_types", uniqueConstraints = { @UniqueConstraint(columnNames = "name") })
+//@Entity
+//@Table(name="r3p_data_types", uniqueConstraints = { @UniqueConstraint(columnNames = "name") })
 public class DataTypeBean extends BaseEntity {
 
    
-    @Column(name = "name", nullable = false, length = 128)
+    //@Column(name = "name", nullable = false, length = 128)
     private String name;
   
 
-    @Column(name = "description", nullable = true, length = 500)
+    //@Column(name = "description", nullable = true, length = 500)
     private String description;
     
     //@OneToMany(targetEntity=DataTypeFormat.class, mappedBy="dataType", cascade=CascadeType.ALL, fetch = FetchType.EAGER)

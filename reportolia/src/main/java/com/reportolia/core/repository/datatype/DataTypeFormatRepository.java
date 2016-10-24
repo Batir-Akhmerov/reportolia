@@ -1,7 +1,7 @@
 package com.reportolia.core.repository.datatype;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.datatype.DataTypeFormat;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 /**
  * 

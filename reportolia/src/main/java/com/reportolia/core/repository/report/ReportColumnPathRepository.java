@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.report.ReportColumn;
 import com.reportolia.core.model.report.ReportColumnPath;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 /**
  * 

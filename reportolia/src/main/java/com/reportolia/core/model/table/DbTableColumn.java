@@ -11,6 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
 import com.reportolia.core.model.datatype.DataType;
@@ -26,6 +27,7 @@ import com.reportolia.core.model.datatype.DataType;
 @Table(name="r3p_table_columns", uniqueConstraints = { @UniqueConstraint(columnNames = {"table_id", "name"}) })
 public class DbTableColumn extends BaseEntity {
     
+	@JsonIgnore
     @ManyToOne
     @JoinColumn(name="table_id", nullable=false)
     private DbTable dbTable;
@@ -109,6 +111,9 @@ public class DbTableColumn extends BaseEntity {
 
 	public Boolean isPk() {
 		return this.pk;
+	}
+	public void setPk(boolean b) {
+		this.pk = b;
 	}
 	
 	public Boolean isNotCorrelated() {

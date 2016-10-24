@@ -12,6 +12,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reportolia.core.model.base.BaseEntity;
 
 /**
@@ -37,7 +38,8 @@ public class DbTable extends BaseEntity {
     @Column(name = "description", nullable = true, length = MAX_LENGTH_DESCRIPTION)
     private String description;
     
-    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DbTableColumn> dbTableColumns;
     
     /**
@@ -61,6 +63,7 @@ public class DbTable extends BaseEntity {
      * Should be declared as valid INNER JOIN script having special markers for table aliases
      * INNER JOIN SecurityMatrix <[{ALIAS_FILTER}]> ON <[{ALIAS_PARENT}]>.ID = <[{ALIAS_FILTER}]>.SecurityRowID AND <[{ALIAS_FILTER}]>.UserID = <[{USER_ID}]>  
      */
+    @JsonIgnore
     @Column(name = "security_filter_sql", nullable = true, length = MAX_LENGTH_DESCRIPTION)
     private String securityFilterSql;
     

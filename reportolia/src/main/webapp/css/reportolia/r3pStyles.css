@@ -1,0 +1,79 @@
+
+h1 {
+	font-family: Impact;
+    font-weight: normal;
+    color: lightslategray;
+}
+
+body {
+	font-family: 'Segoe UI Semilight', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    color: #000000;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/*
+div.jtable-main-container {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+div.jtable-main-container div.jtable-title {
+    background: #8aafd6 !important;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+*/
+table {
+	font-size: 0.9em;
+}
+
+.clsBold{
+	font-weight: bold;
+}
+.clsHidden {
+	display: none;
+}
+.clsHiddenForce {
+	display: none !important;
+}
+.clsFixed {
+	position: fixed;
+}
+.clsAbsolute {
+	position: absolute;
+	left: 0px;
+	right: 0px;
+}
+.clsTbButtons {
+	margin: 20px 0;
+}
+
+/********************************/
+/** JTABLE **********************/
+/********************************/
+.jtable-wrapper {
+	overflow-y: auto;
+}
+
+.jtable-row-even {
+	background: #fbfbfb;
+}
+
+.jtable-child-table-container {
+	margin: 4px 4px 33px 33px;
+}
+
+/********************************/
+/** JQUERY **********************/
+/********************************/
+.ui-widget-overlay .ui-front {
+	z-index: 9000;
+}
+.ui-dialog {
+	z-index: 9001;
+}

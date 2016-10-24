@@ -6,7 +6,7 @@ import com.reportolia.core.sql.query.model.SecurityType;
 
 /**
  * 
- * The Report1_MainTableColumns_Test class
+ * The Metadata_Test class
  *
  * @author Batir Akhmerov
  * Created on Dec 3, 2015

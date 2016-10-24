@@ -35,7 +35,7 @@ import com.reportolia.core.test.config.ColumnDetectorXmlDataSetLoader;
 
 /**
  * 
- * The BaseReportTest class
+ * The BaseMetadataTest class
  *
  * @author Batir Akhmerov
  * Created on Dec 3, 2015

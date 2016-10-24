@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.operand.ContentType;
 import com.reportolia.core.model.operand.Operand;
 import com.reportolia.core.model.operand.OperandOwnerType;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 /**
  * 

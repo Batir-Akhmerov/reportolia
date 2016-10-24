@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.reportolia.base.repository.UpdatableRepository;
+import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 
 /**
@@ -27,6 +28,8 @@ public interface DbTableRelationshipRepository extends UpdatableRepository<DbTab
 			"select r FROM DbTableRelationship r WHERE r.dbColumnChild.dbTable.id = :tableId AND r.linkToSecurityFilter = true"
     )
     public List<DbTableRelationship> findSecuredByChildTable(@Param("tableId") Long tableId);
+	
+	List<DbTableRelationship> findByDbColumnParentAndDbColumnChild(DbTableColumn dbColumnParent,DbTableColumn dbColumnChild);
 	
 	//List<DbTableRelationship> findByDbTableRelationshipGroup(DbTableRelationship dbTableRelationshipGroup);
 	

@@ -2,9 +2,9 @@ package com.reportolia.core.repository.table;
 
 import java.util.List;
 
+import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
-import com.reportolia.core.repository.base.UpdatableRepository;
 
 
 /**
