@@ -20,9 +20,14 @@ import com.reportolia.core.model.table.DbTableRelationship;
 public interface DbTableRelationshipRepository extends UpdatableRepository<DbTableRelationship, Long> {
     
 	@Query(
+			"select r FROM DbTableRelationship r WHERE r.dbColumnParent.dbTable.id = :tableId OR r.dbColumnChild.dbTable.id = :tableId"
+    )
+    public List<DbTableRelationship> findByTable(@Param("tableId") Long tableId);
+	
+	@Query(
 			"select r FROM DbTableRelationship r WHERE r.dbColumnParent.dbTable.id = :tableId"
     )
-    public List<DbTableRelationship> findByParentTable(@Param("tableId") Long tableId);
+    public List<DbTableRelationship> findByParentTableId(@Param("tableId") Long tableId);
 	
 	@Query(
 			"select r FROM DbTableRelationship r WHERE r.dbColumnChild.dbTable.id = :tableId AND r.linkToSecurityFilter = true"

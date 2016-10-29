@@ -20,6 +20,8 @@ public interface MetadataHandler {
 	
 	public List<SysTable> getSysTableList();
 	
+	public List<SysTable> getSysTableList(String tableNamePattern);
+	
 	public void saveSysTableList(JsonListForm<SysTable> json);
 	
 	public List<SysColumn> getSysColumnList(String tableName);

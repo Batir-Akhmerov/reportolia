@@ -1,7 +1,7 @@
 	var URL_SHOW_DB_META = 'r3pDbMetadataShow.go',
 		URL_SAVE_DB_META = 'r3pDbMetadataSave.go',
 		URL_SHOW_TABLES = 'r3pTableListShow.go',
-		
+		URL_SHOW_RELATIONSHIPS_MAP = 'r3pRelationshipMapShow.go',
 		URL_ = '';
 		
 
@@ -19,4 +19,7 @@
 	}
 	function openTableList() {
 		r3p.navigate(URL_SHOW_TABLES);
-	} 
+	}
+	function openRelationshipMap() {
+		r3p.navigate(URL_SHOW_RELATIONSHIPS_MAP);
+	}

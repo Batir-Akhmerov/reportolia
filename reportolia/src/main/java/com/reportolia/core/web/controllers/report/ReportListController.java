@@ -1,4 +1,4 @@
-package com.reportolia.core.web.controllers;
+package com.reportolia.core.web.controllers.report;
 
 import java.util.List;
 import java.util.Locale;
@@ -12,11 +12,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.reportolia.core.handler.DbHandler;
+import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.table.DbTable;
+import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
 
 /**
- * Handles requests for the application home page.
+ * 
+ * Handles requests for the application home page and shows a report list page
+ *
+ * @author Batir Akhmerov
+ * Created on Oct 23, 2016
  */
 @Controller
 public class ReportListController {
@@ -39,7 +44,7 @@ public class ReportListController {
 		
 		//model.addAttribute("serverTime", formattedDate );
 		
-		List<DbTable> list = this.dbManager.getTableList(new JTableJsonSearchForm());
+		List<DbTable> list = this.dbManager.getTableList(new JsonSearchForm());
 		if (list.size() == 0) {
 			return "redirect:/r3pTableListShow.go";
 		}

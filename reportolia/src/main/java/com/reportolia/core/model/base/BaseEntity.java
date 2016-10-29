@@ -16,6 +16,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import com.reportolia.core.utils.CoreUtils;
+
 /**
  * The BaseEntity class
  *
@@ -96,5 +98,9 @@ public abstract class BaseEntity {
 	 */
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
+	}
+	
+	public boolean isNewBean() {
+		return CoreUtils.isKeyNull(this.getId());
 	}
 }	

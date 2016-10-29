@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import com.reportolia.core.handler.DbHandler;
+import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.datatype.DataType;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
@@ -57,13 +57,15 @@ public class MetadataManager implements MetadataHandler {
 	protected SysColumnMapper sysColumnMapper = new SysColumnMapper();
 	protected SysRelationMapper sysRelationMapper = new SysRelationMapper();
 	
+	public List<SysTable> getSysTableList() {
+		return getSysTableList(null);
+	}
 	
-	public List<SysTable> getSysTableList()  {
+	public List<SysTable> getSysTableList(String tableNamePattern) {
 		Connection connection = null;
 		ResultSet result = null;
 		String   catalog          = null;
 		String   schemaPattern    = null;
-		String   tableNamePattern = null;
 		String[] types            = new String[]{TYPE_TABLE, TYPE_VIEW};
 		List<SysTable> list = new ArrayList<>();
 		try {

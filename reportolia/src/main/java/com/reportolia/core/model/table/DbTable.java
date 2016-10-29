@@ -39,7 +39,7 @@ public class DbTable extends BaseEntity {
     private String description;
     
     @JsonIgnore
-    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DbTableColumn> dbTableColumns;
     
     /**
@@ -150,6 +150,7 @@ public class DbTable extends BaseEntity {
 		return isSecurityFilter() && !StringUtils.isEmpty(this.getSecurityFilterSql()); 
 	}
 	
+	@JsonIgnore
 	public boolean isSecurityFilterTable() {
 		return isSecurityFilter() && StringUtils.isEmpty(this.getSecurityFilterSql()); 
 	}

@@ -1,4 +1,7 @@
 var r3p = (function(){
+	var _isPageModified = false
+		;
+	
 	// validation
 	if (!self.form2js) {
 		alert('form2js utility is expected!');
@@ -82,9 +85,9 @@ var r3p = (function(){
 					//alert("Success: " + data.param1) ;
 					if (fnSuccess) fnSuccess(resp);
 				})
-				.fail(function(resp)     { 
-					alert("Error: " + (resp && resp.error ? resp.error : 'Unexpected'));
+				.fail(function(resp) {
 					if (fnError) fnError(resp);
+					else alert("Error: " + (resp && resp.error ? resp.error : 'Unexpected'));
 				});
 		},
 		
@@ -105,6 +108,19 @@ var r3p = (function(){
 				}
 			};
 			
+			conf.id = div.attr('id');
+			r3p.showDialog(conf);
+		},
+		
+		showError: function(msg, title, conf, fnOk, fnCancel) {
+			conf = conf || {};
+			var div = r3p.createDialogDiv('dlg-error', title || r3pMsg.TLT_ERROR, msg);
+			conf.buttons = conf.buttons || {
+				Ok: function() {
+					if (fnOk) fnOk();
+					r3p.closeDlg(this);
+				}
+			};
 			conf.id = div.attr('id');
 			r3p.showDialog(conf);
 		},
@@ -133,6 +149,23 @@ var r3p = (function(){
 	    /******************************************/
 		form2js: function(node) {
 			return form2js(node, '.', true, _form2JsInterceptor);
+		},
+		
+		urlToJson: function(url) {
+			if (url) { 
+				return JSON.parse(
+					'{"' + url.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+					function(key, value) { 
+						return key==='' ? value : decodeURIComponent(value);
+					}
+				);
+			}
+			return {};
+		},
+		urlToJsonSafe: function(urlOrJson) {
+			var json = urlOrJson;
+			if (r3p.isString(urlOrJson)) json = r3p.urlToJson(urlOrJson);
+			return json;
 		},
 		
 		
@@ -167,6 +200,24 @@ var r3p = (function(){
 			return div;
 		},
 		
+		sticky: function(el, bottomGap, rightGap) {
+			el = $(el);
+			//var offset = el.offset();
+			if (r3p.isNotNull(bottomGap)) {
+				//console.log(wnd.height());
+				el.height($(window).height() - el.offset().top - bottomGap);
+			}
+			if (r3p.isNotNull(rightGap)) {
+				el.width($(window).width() - el.offset().left - rightGap);
+			}
+		},
+		
+		onWindowResize: function(fnResize) {
+			$(window).resize(
+				r3p.getSafeTimeout(fnResize, {delay: 10})
+			);
+		},
+		
 		/******************************************/
 	    /**   JTABLE   ***************************/
 	    /******************************************/
@@ -184,9 +235,26 @@ var r3p = (function(){
             };
             
             var defConfig = {
-            	jqueryuiTheme: true
+            	jqueryuiTheme: true,
+            	messages: r3pJtableMsg,
+            	defaultDateFormat: r3pJtableMsg.defaultDateFormat
             };
 			conf = $.extend({}, defConfig, conf);
+						
+			if (conf.actions && conf.actions.isJsonActions) {
+				var acts = conf.actions;
+				acts.defJson = acts.defJson || {};
+				if (r3p.isString(acts.createAction)) {
+                	acts.createAction = r3p.jtableAjaxAction(acts.createAction, r3p.urlToJsonSafe, acts.defJsonCreate || acts.defJson);
+                }
+                if (r3p.isString(acts.deleteAction)) {
+                	acts.deleteAction = r3p.jtableAjaxAction(acts.deleteAction, r3p.urlToJsonSafe, acts.defJsonDelete || acts.defJson);
+                }
+                if (r3p.isString(acts.updateAction)) {
+                	acts.updateAction = r3p.jtableAjaxAction(acts.updateAction, r3p.urlToJsonSafe, acts.defJsonUpdate ||  acts.defJson);
+                	if (r3p.isNull(acts.createAction)) acts.createAction = acts.updateAction;
+                }
+			}
 			
 			r3p.jq(id).jtable(conf);
 		},
@@ -208,19 +276,34 @@ var r3p = (function(){
 					return tbl.closest('.jtable-wrapper');
 				}
 			});
+		},
 			
-			/*
-			tblDiv.scroll(function() {
-				if (tblDiv.scrollTop() > rowHeight) {
-					clonedRow.addClass('clsAbsolute');
-					clonedRow.removeClass('clsHidden');
-				}
-				else {
-					clonedRow.addClass('clsHidden');
-					clonedRow.removeClass('clsAbsolute');
-				}
-			});
-			*/
+		jtableAjaxAction: function(url, fnJsonCallback, jsonDefaults) {
+			return function(formParams, jtParams) {
+				return $.Deferred(function($dfd) {
+					var json = fnJsonCallback ? fnJsonCallback(formParams) : {};
+					if (jsonDefaults)  {
+						var tmpDefaults = jsonDefaults;
+						if ($.isFunction(jsonDefaults))  tmpDefaults = jsonDefaults();
+						json = $.extend({}, tmpDefaults, json);
+					}
+					r3p.ajax({
+							url: url + '?id=' + json.id,
+							json: json
+						}, 
+						function(data) {
+							if (data && data.Result == 'ERROR') {
+								data.Message = data.Message || 'Unexpected Error!';
+							}
+							r3p.setPageModified();
+							$dfd.resolve(data);
+						}, 
+						function() {
+							$dfd.reject();
+						}
+					);
+				});
+	        };
 		},
 	    
 	    /******************************************/
@@ -232,7 +315,12 @@ var r3p = (function(){
 		openWindow: function(url) {
 			
 		},
-		
+		isPageModified: function() {
+			return _isPageModified;
+		},
+		setPageModified: function(modified) {
+			_isPageModified = r3p.isNull(modified) ? true : modified;
+		},
 		
 		/******************************************/
 	    /**   UTILS   ***************************/
@@ -255,6 +343,9 @@ var r3p = (function(){
 		isNotNull: function(o) {
 			return !r3p.isNull(o);
 		},
+		isString: function(v) {
+			return $.type(v) == 'string';
+		},
 		scriptSafe: function(txt) {
 			return $('<div/>').text(txt).html();
 		},
@@ -268,8 +359,49 @@ var r3p = (function(){
 				}
 			});
 			return res;
+		},
+		getSafeTimeout: function(fnHandler, conf) {
+			if (!conf) {
+				alert('Argument conf is required!');
+			}
+			return function() {
+				if (conf.isSet) return;
+				conf.isSet = setTimeout(function(){
+					fnHandler();
+					conf.isSet = null;
+				}, conf.delay || 200);
+			};
+		},
+		
+		coalesceObjFn: function() {
+			var res = null;
+			for (var ind in arguments) {
+				if (!arguments.hasOwnProperty(ind)) continue;
+				var objFn = arguments[ind];
+				if (!p3r.isNotNull(objFn) && $.isFunction(objFn)) {
+					objFn = objFn();
+				}
+				if (!p3r.isNotNull(objFn)) {
+					res = objFn;
+					break;
+				}
+			}
+			return res;
 		}
-			
+		
+		/*,
+		renameJsonField: function(json, fld, newFld) {
+			if (!json || json[fld] === undefined) return;
+			json[newFld] = json[fld];
+			delete json[fld];
+		},
+		subJsonField: function(json, fld, subFld) {
+			if (!json || json[fld] === undefined) return;
+			var v = json[fld];
+			json[fld] = {};
+			json[fld][subFld] = v;
+		}
+		*/
 	};
 }());
 

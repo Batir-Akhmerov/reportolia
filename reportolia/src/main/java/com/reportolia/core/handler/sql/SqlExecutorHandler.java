@@ -3,12 +3,6 @@
  */
 package com.reportolia.core.handler.sql;
 
-import java.util.List;
-
-import com.reportolia.core.driver.metadata.SysColumn;
-import com.reportolia.core.driver.metadata.SysTable;
-import com.reportolia.core.web.controllers.JsonListForm;
-
 /**
  * The metadataHandler class
  *

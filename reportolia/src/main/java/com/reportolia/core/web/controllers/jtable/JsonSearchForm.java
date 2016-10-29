@@ -1,17 +1,17 @@
 /**
  * 
  */
-package com.reportolia.core.web.controllers;
+package com.reportolia.core.web.controllers.jtable;
 
 import org.springframework.util.StringUtils;
 
 /**
- * The JTableJsonSearchForm class
+ * The JsonSearchForm class
  *
  * @author Batir Akhmerov
  * Created on Oct 19, 2016
  */
-public class JTableJsonSearchForm {
+public class JsonSearchForm {
 	
 	public static final String SORT_SPACE = " ";
 	public static final String SORT_ASC = "ASC";

@@ -1,4 +1,4 @@
-package com.reportolia.core.web.controllers;
+package com.reportolia.core.web.controllers.metadata;
 
 import java.util.List;
 
@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.reportolia.core.driver.metadata.MetadataHandler;
 import com.reportolia.core.driver.metadata.SysColumn;
 import com.reportolia.core.driver.metadata.SysTable;
+import com.reportolia.core.web.controllers.JsonListForm;
+import com.reportolia.core.web.controllers.jtable.JsonResult;
+import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
 
 /**
  * Handles requests for the application home page.
@@ -32,21 +35,21 @@ public class DbMetadataController {
 	
 	@ResponseBody	
 	@RequestMapping(value = "/r3pDbMetadataLoad")
-	public JTableJsonResult<SysTable> sysTablesLoad(JTableJsonSearchForm form, Model model) {
-		return new JTableJsonResult<SysTable>(this.metadataHandler.getSysTableList());
+	public JsonResult<SysTable> sysTablesLoad(JsonSearchForm form, Model model) {
+		return new JsonResult<SysTable>(this.metadataHandler.getSysTableList());
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pDbMetadataColumnsLoad")
-	public JTableJsonResult<SysColumn> sysColumnsLoad(String tableName, JTableJsonSearchForm form, Model model) {
-		return new JTableJsonResult<SysColumn>(this.metadataHandler.getSysColumnList(tableName));
+	public JsonResult<SysColumn> sysColumnsLoad(String tableName, JsonSearchForm form, Model model) {
+		return new JsonResult<SysColumn>(this.metadataHandler.getSysColumnList(tableName));
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pDbMetadataSave")
-	public JTableJsonResult<Object> sysTablesSave(@RequestBody final JsonListForm<SysTable> json) {
+	public JsonResult<Object> sysTablesSave(@RequestBody final JsonListForm<SysTable> json) {
 		this.metadataHandler.saveSysTableList(json);
-		return new JTableJsonResult<Object>();
+		return new JsonResult<Object>();
 	}
 	/*
 	@ResponseBody

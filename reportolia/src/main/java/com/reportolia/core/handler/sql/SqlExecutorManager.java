@@ -3,34 +3,7 @@
  */
 package com.reportolia.core.handler.sql;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import com.reportolia.core.driver.metadata.SysColumn;
-import com.reportolia.core.driver.metadata.SysColumnMapper;
-import com.reportolia.core.driver.metadata.SysTable;
-import com.reportolia.core.driver.metadata.SysTableMapper;
-import com.reportolia.core.model.datatype.DataType;
-import com.reportolia.core.model.table.DbTable;
-import com.reportolia.core.model.table.DbTableColumn;
-import com.reportolia.core.repository.table.DbTableColumnRepository;
-import com.reportolia.core.repository.table.DbTableRepository;
-import com.reportolia.core.utils.ListUtils;
-import com.reportolia.core.web.controllers.JsonListForm;
 
 /**
  * The MetadataManager class

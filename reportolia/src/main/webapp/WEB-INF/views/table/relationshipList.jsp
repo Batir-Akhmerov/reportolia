@@ -15,26 +15,27 @@
 		var MSG_RETRIEVE = '<spring:message code="msg.confirm.metadata.retrieve" />',
 			BTN_RETRIEVE = '<spring:message code="dbTables.button.retrieveFromDb" />',
 			BTN_ADD_MANUALLY = '<spring:message code="dbTables.button.addManually" />'
-			LBL_IS_SECURED = '<spring:message code="dbTables.isSecured" />',
-			LBL_HAS_SECURITY_FILTER = '<spring:message code="dbTables.hasSecurityFilter" />'
-			;
 			
+			;
+		
 		
 		function onLoad() {
 			$('#tabs').tabs({
 			  active: 0
 			});
 			
-			var tbl = r3p.jTable('tableList', {
+			var tbl = r3p.jTable('relationshipList', {
 	            title: '<spring:message code="dbTables.description"/>',
-	           
+	            //paging: true, //Enable paging
+	            //pageSize: 10, //Set page size (default: 10)
 	            sorting: true, //Enable sorting
 	            defaultSorting: 'name ASC', //Set default sorting
 	            height: 800,
 	            actions: {
-	                listAction: 'r3pTablesLoad.go', 
-	                deleteAction: 'r3pTableDelete.go',
-	                updateAction: 'r3pTableSave.go'
+	                listAction: 'r3pTablesLoad.go',
+	                deleteAction: '/Demo/DeleteStudent',
+	                updateAction: '/Demo/UpdateStudent',
+	                createAction: '/Demo/CreateStudent'
 	            },
 	            fields: {
 	                id: {
@@ -44,30 +45,10 @@
 	                    list: false
 	                },
 	                name: {
-	                    title: r3pMsg.LBL_NAME
+	                    title: 'Name'
 	                },
 	                label: {
-	                    title: r3pMsg.LBL_LABEL
-	                },
-	                secured: {
-	                	title: LBL_IS_SECURED,
-	                	width: '20%',
-	                	type: 'checkbox',
-	                	values: { 'false' : r3pMsg.OPT_NO, 'true' : r3pMsg.OPT_YES },
-	                	display: function(data) {
-	                    	if (data.record.secured) return '&#10004;';
-	                    	return '';
-	                    }
-	                },
-	                securityFilter: {
-	                	title: LBL_HAS_SECURITY_FILTER,
-	                	width: '20%',
-	                	type: 'checkbox',
-	                	values: { 'false' : r3pMsg.OPT_NO, 'true' : r3pMsg.OPT_YES },
-	                	display: function(data) {
-	                    	if (data.record.securityFilter) return '&#10004;';
-	                    	return '';
-	                    }
+	                    title: 'Label'
 	                }
 	            },
 	            toolbar: {
@@ -80,13 +61,15 @@
 				}
 	        });
 	        
+	       
 		        
 		    <c:if test="${isTableListEmpty}">
 				retrieveFromDb();
 			</c:if>
 			<c:if test="${!isTableListEmpty}">
 		        loadTableList();
-		    </c:if> 
+		        loadSpringyData();
+		    </c:if>
 		}
 		
 		function loadTableList() {
@@ -114,7 +97,7 @@
 			<jsp:include page="../tableTabs.jsp"/>
 			
 			<div id="tabTables">
-				<div id="tableList"></div>
+				<div id="relationshipList"></div>
 				
 			</div>
 			

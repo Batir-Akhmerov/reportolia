@@ -65,7 +65,7 @@ public class Metadata_Test extends BaseMetadataTest {
 		
 		// check if relationships were added
 		List<DbTableRelationship> relList = this.tableRelationshipRepository.findAll();
-		assertTrue(ListUtils.getSize(relList) == 4);
+		assertEquals(4, ListUtils.getSize(relList));
 		
 		List<DbTable> tbList = this.tableRepository.findAll();
 		for (DbTable dbTable: tbList) {

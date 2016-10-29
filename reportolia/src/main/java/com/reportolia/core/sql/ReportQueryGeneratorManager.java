@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.reportolia.core.handler.DbHandler;
+import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.handler.operand.OperandHandler;
 import com.reportolia.core.handler.report.ReportHandler;
 import com.reportolia.core.model.operand.Operand;

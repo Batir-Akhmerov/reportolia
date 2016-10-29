@@ -40,11 +40,11 @@
 		<script type="text/javascript" src="js/reportolia/jquery/ui/1.12.1.brown/jquery-ui.js"></script>
 			
 		<c:forEach items="${styles}" var="fileName">
-			<link rel="stylesheet" type="text/css" href="${fileName}" />
+			<link rel="stylesheet" type="text/css" href="${fn:trim(fileName)}" />
 		</c:forEach>
 		
-		<c:forEach items="${scripts}" var="fileName">
-			<script type="text/javascript" src="${fileName}"></script>
+		<c:forEach items="${scriptsBefore}" var="fileName">
+			<script type="text/javascript" src="${fn:trim(fileName)}"></script>
 		</c:forEach>
 		
 		<script>
@@ -103,8 +103,8 @@
 		
 		
 		
-		<c:forEach items="${scriptsAfter}" var="fileName">
-			<script type="text/javascript" src="${fileName}"></script>
+		<c:forEach items="${scripts}" var="fileName">
+			<script type="text/javascript" src="${fn:trim(fileName)}"></script>
 		</c:forEach>
 		
 	</body>	

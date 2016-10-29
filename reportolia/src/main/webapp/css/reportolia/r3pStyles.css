@@ -52,6 +52,17 @@ table {
 .clsTbButtons {
 	margin: 20px 0;
 }
+.clsInline {
+	display: inline-block;
+}
+.clsCanvas {
+	overflow: auto;
+	width: 65%;
+	border: 2px dotted #aaa;	
+}
+.clsMenuTable {
+	width: 30%;
+}
 
 /********************************/
 /** JTABLE **********************/

@@ -11,6 +11,9 @@ import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 
+import com.reportolia.core.utils.functions.InfoMapper;
+import com.reportolia.core.utils.functions.Mapper;
+
 
 /**
  * The ListUtils class
@@ -96,6 +99,22 @@ public class ListUtils {
 			return res;
 		}
 		return list;
+	}
+	
+	public static <F extends Object, T extends Object> List<T> remap(List<F> list, Mapper<F,T> mapper) {
+		List<T> resList = new ArrayList<>();
+		for (F bean: safeList(list)) {
+			resList.add(mapper.map(bean));
+		}
+		return resList;
+	}
+	
+	public static <F extends Object, I extends Object, T extends Object> List<T> remap(List<F> list, I info, InfoMapper<F,I, T> mapper) {
+		List<T> resList = new ArrayList<>();
+		for (F bean: safeList(list)) {
+			resList.add(mapper.map(info, bean));
+		}
+		return resList;
 	}
 	
 

@@ -1,10 +1,5 @@
 package com.reportolia.core.model.datatype;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import com.reportolia.core.model.base.BaseEntity;
 
 /**

@@ -17,6 +17,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reportolia.core.Constants;
 import com.reportolia.core.model.base.BaseEntity;
 import com.reportolia.core.sql.query.model.JoinType;
@@ -40,6 +41,7 @@ public class DbTableRelationship extends BaseEntity {
     /**
      * This Join Type is only used when Parent joins its Child.
      */
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
 	@Column(name = "join_type_to_child", nullable = true, length = Constants.LENGTH_JOIN_TYPE)
     private JoinType joinTypeToChild = JoinType.INNER;
@@ -47,6 +49,7 @@ public class DbTableRelationship extends BaseEntity {
     /**
      * This Join Type is only used when Child joins its Parent.
      */
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
 	@Column(name = "join_type_to_parent", nullable = true, length = Constants.LENGTH_JOIN_TYPE)
     private JoinType joinTypeToParent = JoinType.INNER;
@@ -69,12 +72,14 @@ public class DbTableRelationship extends BaseEntity {
      * Can be used in composite relatioship to filter one of columns by a hard-coded value
      * Only one column can be filtered using the following rule COALESCE(dbColumnParent, dbColumnChild) = joinValue
      */
+    @JsonIgnore
     @Column(name = "join_value", length = 128)
     private String joinValue;
     
     /**
      * List of other joined columns in case if this relationship is composite 
      */
+    @JsonIgnore
     @OneToMany(targetEntity=DbTableRelationship.class, mappedBy="dbTableRelationshipGroup", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("order")
     private List<DbTableRelationship> dbTableRelationshipGroupList;
@@ -88,6 +93,7 @@ public class DbTableRelationship extends BaseEntity {
     //@Column(name = "group_relationship_id")
     //private Long groupRelationshipId;
     
+    @JsonIgnore
     @Column(name = "group_relationship_order")
     private Integer order;
     
@@ -111,29 +117,37 @@ public class DbTableRelationship extends BaseEntity {
 	public DbTable getParentTable() {
 		return this.dbColumnParent.getDbTable();
 	}
+	public Long getParentTableId() {
+		return this.dbColumnParent.getDbTable().getId();
+	}
 	
 	public DbTable getChildTable() {
 		return this.dbColumnChild.getDbTable();
+	}
+	public Long getChildTableId() {
+		return this.dbColumnChild.getDbTable().getId();
 	}
 
 
 	public DbTableColumn getDbColumnParent() {
 		return this.dbColumnParent;
 	}
-
-
 	public void setDbColumnParent(DbTableColumn dbColumnParent) {
 		this.dbColumnParent = dbColumnParent;
+	}
+	public Long getDbColumnParentId() {
+		return this.dbColumnParent.getId();
 	}
 
 
 	public DbTableColumn getDbColumnChild() {
 		return this.dbColumnChild;
 	}
-
-
 	public void setDbColumnChild(DbTableColumn dbColumnChild) {
 		this.dbColumnChild = dbColumnChild;
+	}
+	public Long getDbColumnChildId() {
+		return this.dbColumnChild.getId();
 	}
 
 

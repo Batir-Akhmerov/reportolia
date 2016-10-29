@@ -19,7 +19,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
-import com.reportolia.core.handler.DbHandler;
+import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.handler.report.ReportHandler;
 import com.reportolia.core.model.report.Report;
 import com.reportolia.core.repository.report.ReportColumnRepository;

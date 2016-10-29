@@ -5,5 +5,7 @@
 
 <ul>
 	<li><a href="#tabTables" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li>
+	<li><a href="#tabRelationshipMap" onclick="openRelationshipMap()"><spring:message code="dbTable.relationship.map.tab.name" /></a></li> 
+	
 	<li><a href="#tabVariables"><spring:message code="variable.title" /></a></li>
 </ul>
