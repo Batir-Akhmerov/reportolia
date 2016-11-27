@@ -1,31 +1,86 @@
 	
 	function openDlg_TableRelationshipList(tableId, label) {
-		TITLE_CURRENT_TABLE = label || TITLE_CURRENT_TABLE;
-		initDlg_TableRelationshipList(tableId);
-		loadRelationshipList(tableId);
-		var div = r3p.createDialogDiv('relationshipList', TITLE_PAGE);
-		var conf = {width: 900};
-		conf.buttons = {};
-		conf.buttons[r3pMsg.BTN_CLOSE]= function() {
-			if (r3p.isPageModified() && self.refreshMe) {
-                self.refreshMe();
-			}
-			r3p.closeDlg(this);
-		};
+		var dlgTitle = label + ' ' + REL_PAGE_TITLE;
 		
-		conf.id = div.attr('id');
-		self.onLoad_TableRelationships = function(){
-			r3p.showDialog(conf);
+		var btnConf = {
+			noCancelBtn: true,
+			buttons: [{
+  					label: r3pMsg.BTN_CLOSE,
+  					handler: function() {
+  						if (r3p.isPageModified() && self.refreshMe) {
+  			                self.refreshMe();
+  						}
+  						r3p.closeDialog(this);
+  					}
+  				}
+  			]
 		};
+		var divId = 'dlgTableRelationships';
+		var url = 'r3pTableRelationshipsLoad.go?tableId=' + tableId;
+		if (self.dlgRelationshipListInitialized) {
+			r3p.changeDialogDiv(divId, dlgTitle);
+			self.tableRelationshipList.ajax.url(url).load();
+			r3p.showDialog(divId);
+			return;
+		}
 		
+		var div = r3p.createDialogDiv(divId, dlgTitle, '<div id="relationshipList"/></div>', {
+			'data-windows-style': 'true'
+		}, btnConf);
+		initDlg_TableRelationshipList(tableId, label, divId, url);
+		self.dlgRelationshipListInitialized = true;
 	}
 	
-	function initDlg_TableRelationshipList(tableId) {
-		setOwnerTable(tableId)
+	function initDlg_TableRelationshipList(tableId, label, divId, url) {
+		setOwnerTable(tableId);		
 		
-		if (self.dlgRelationshipListInitialized) return;
+		var tbConf = {
+		        ajax: url,		       
+		        r3pAjaxDelete: 'r3pTableRelationshipDelete.go',
+		        r3pAjaxOpen: 'r3pTableRelationshipsShow.go',
+		        scrollY: '400px',
+		        paging: false,
+		        ordering: false,
+		        searching: false,
+		        columns: [
+		        	{data: 'id', r3p: 'KEY'},
+		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
+		            {data: 'columnId', r3pLabel: TH_COLUMN,
+		            	render: function(data, type, full, meta) {
+		            		return full.column ? full.column.label : '';
+		    			}
+		            },
+		            {data: 'oneToMany', r3pLabel: LBL_MANY_TO_ONE,
+		            	render: function(data, type, full, meta) {
+		            		if (data) return '<--';
+		                	return '-->';
+		    			}
+		            },
+		            {data: 'linkedTableId', r3pLabel: TH_LINKED_TABLE,
+		            	render: function(data, type, full, meta) {
+		            		return full.linkedTable ? full.linkedTable.label : '';
+		    			}
+		            },
+		            {data: 'linkedColumnId', r3pLabel: TH_LINKED_COLUMN,
+		            	render: function(data, type, full, meta) {
+		            		return full.linkedColumn ? full.linkedColumn.label : '';
+		    			}
+		    		},
+		            {data: 'linkToFilter', r3pLabel: LBL_LINK_TO_FILTER,
+		            	render: function(data, type, full, meta) {
+		            		if (data) return '&#10004;';
+	                    	return '';
+		    			}
+		            }
+		        ],
+		        r3pAfterInit: function (e, settings, data) {
+		        	r3p.showDialog(divId);
+		        }
+		    };
+			
+			self.tableRelationshipList = r3pDtb.init('relationshipList', tbConf);
 		
-		
+		/*
 		r3p.jTable('relationshipList', {
             title: TITLE_CURRENT_TABLE, 
             selectOnRowClick: false,
@@ -112,7 +167,8 @@
             	if (self.onLoad_TableRelationships) self.onLoad_TableRelationships();
             }
         });
-		self.dlgRelationshipListInitialized = true;
+        */
+		
 	}
 	
 	function setOwnerTable(tableId) {
@@ -124,6 +180,6 @@
 	}
 	
 	function loadRelationshipList(tableId) {
-		$('#relationshipList').jtable('load', {tableId: tableId});
+		//$('#relationshipList').jtable('load', {tableId: tableId});
 	}
 	

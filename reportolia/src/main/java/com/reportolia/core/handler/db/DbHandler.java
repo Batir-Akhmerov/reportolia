@@ -9,7 +9,7 @@ import com.reportolia.core.handler.db.relationship.RelationshipInfo;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
-import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 
 /**
  * The DbHandler class
@@ -22,7 +22,7 @@ public interface DbHandler {
 	/*************************************************/
 	/** TABLES ***************************************/
 	/*************************************************/
-	public List<DbTable> getTableList(JsonSearchForm form);
+	public List<DbTable> getTableList(JsonForm form);
 	
 	public List<DbTable> getTableList(String name);
 	

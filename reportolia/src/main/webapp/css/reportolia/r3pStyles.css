@@ -1,35 +1,22 @@
-
-h1 {
-	font-family: Impact;
-    font-weight: normal;
-    color: lightslategray;
+html, body {
+    height: 100%;
 }
-
 body {
-	font-family: 'Segoe UI Semilight', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
-    font-weight: 400;
-    color: #000000;
-    font-size: 13px;
-    line-height: 1.4;
+}
+.page-content {
+    padding-top: 3.125rem;
+    min-height: 100%;
+    height: 100%;
 }
 
-/*
-div.jtable-main-container {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-}
 
-div.jtable-main-container div.jtable-title {
-    background: #8aafd6 !important;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-*/
-table {
-	font-size: 0.9em;
+@media screen and (max-width: 800px){
+    #cell-sidebar {
+        flex-basis: 52px;
+    }
+    #cell-content {
+        flex-basis: calc(100% - 52px);
+    }
 }
 
 .clsBold{
@@ -63,28 +50,81 @@ table {
 .clsMenuTable {
 	width: 30%;
 }
-
-/********************************/
-/** JTABLE **********************/
-/********************************/
-.jtable-wrapper {
-	overflow-y: auto;
+.hint {
+	z-index: 9948;
+}
+.dialog {
+	z-index: 9947;
+}
+.clsOverlay {
+	background: #aaaaaa;
+	opacity: 0.6;
+	position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 100%;
+    min-width: 100%; 
+    z-index: 9947;   
+}
+.clsDialogContent {
+	margin: 40px 0 0 0;
+	min-width: 230px;
+}
+.clsDialogButtons {
+	margin: 50px 0 0 0;
+	text-align: center;
+}
+.clsDialogButtons button:not(:last-child){
+	margin-right: 5px;
 }
 
-.jtable-row-even {
-	background: #fbfbfb;
-}
-
-.jtable-child-table-container {
-	margin: 4px 4px 33px 33px;
-}
 
 /********************************/
-/** JQUERY **********************/
+/** DATATABLE  **********************/
 /********************************/
-.ui-widget-overlay .ui-front {
-	z-index: 9000;
+.table .input-control.checkbox {
+    line-height: 1;
+    min-height: 0;
+    height: auto;
 }
-.ui-dialog {
-	z-index: 9001;
+.table td .input-control {
+	margin: 0px;
 }
+.table th .input-control .check {
+	margin-left: 0.2rem;
+}
+
+.dataTables_scrollBody > .dataTable {
+    margin-top: 0px;
+}
+.dataTables_scrollBody > .dataTable > thead {
+	visibility: hidden;
+	border: none !important;
+	height: 1px;
+}
+
+
+
+.dataTable tbody tr .cellBtnHover {
+	visibility: hidden;
+	cursor: pointer;
+	opacity: 0.5;
+}
+.dataTable tbody tr:hover .cellBtnHover {
+	visibility: visible;
+}
+.dataTable tbody tr:hover .cellBtnHover:hover  {
+	visibility: visible;
+	opacity: 1;
+}
+
+.dataTable .cellBtnExpander {
+    cursor: pointer;
+}
+
+.dataTable .childContainer {
+	margin-left: 60px;
+}
+

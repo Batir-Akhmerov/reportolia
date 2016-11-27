@@ -18,12 +18,9 @@ import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.utils.CoreUtils;
-import com.reportolia.core.utils.ListUtils;
-import com.reportolia.core.utils.functions.Mapper;
-import com.reportolia.core.web.controllers.jtable.BaseJsonResult;
-import com.reportolia.core.web.controllers.jtable.JTableOption;
-import com.reportolia.core.web.controllers.jtable.JsonResult;
-import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonDatatableResult;
+import com.reportolia.core.web.controllers.base.datatable.JsonForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonResult;
 
 /**
  * 
@@ -49,7 +46,7 @@ public class TableListController {
 	
 	@RequestMapping(value = "/r3pTableListShow")
 	public String show(Model model) {
-		List<DbTable> list = this.dbHandler.getTableList(new JsonSearchForm());
+		List<DbTable> list = this.dbHandler.getTableList(new JsonForm());
 		model.addAttribute("isTableListEmpty", CollectionUtils.isEmpty(list));
 		return "table/tableList";
 	}
@@ -60,21 +57,21 @@ public class TableListController {
 
 	@ResponseBody
 	@RequestMapping(value = "/r3pTablesLoad")
-	public JsonResult<DbTable> dbTablesLoad(JsonSearchForm form, Model model) {
-		return new JsonResult<DbTable>(this.dbHandler.getTableList(form));
+	public JsonDatatableResult<DbTable> dbTablesLoad(JsonForm form, Model model) {
+		return new JsonDatatableResult<DbTable>(this.dbHandler.getTableList(form), form);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableSave")
-	public JsonResult<DbTable> tableSave(@ModelAttribute("dbTable") DbTable bean) {
-		return new JsonResult<DbTable>(this.dbHandler.saveTable(bean));
+	public DbTable tableSave(@ModelAttribute("dbTable") DbTable bean) {
+		return this.dbHandler.saveTable(bean);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableDelete")
-	public BaseJsonResult tableDelete(@ModelAttribute("dbTable") DbTable bean) {
+	public JsonResult tableDelete(@ModelAttribute("dbTable") DbTable bean) {
 		this.dbHandler.deleteTable(bean);
-		return new BaseJsonResult();
+		return new JsonResult();
 	}
 	
 	////////////////////////////////////////////////////////////////////
@@ -83,28 +80,15 @@ public class TableListController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pOptionsTablesLoad")
-	public JsonResult<JTableOption> dbOptionTablesLoad(JsonSearchForm form, Model model) {
-		List<JTableOption> list = ListUtils.remap(this.dbHandler.getTableList(form), new Mapper<DbTable, JTableOption>() {
-			@Override
-			public JTableOption map(DbTable bean) {
-				return new JTableOption(bean.getName(), bean.getId());
-			}
-		});
-		return new JsonResult<JTableOption>(list, true);
+	public JsonDatatableResult<DbTable> dbOptionTablesLoad(JsonForm form, Model model) {
+		return new JsonDatatableResult<DbTable>(this.dbHandler.getTableList(form), form);
 	}
 	
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pOptionsTableColumnsLoad")
-	public JsonResult<JTableOption> dbOptionTableColumnsLoad(@RequestParam Long tableId, Model model) {
-		List<JTableOption> list = ListUtils.remap(this.tableColumnRepository.findByDbTableId(tableId), new Mapper<DbTableColumn, JTableOption>() {
-			@Override
-			public JTableOption map(DbTableColumn bean) {
-				return new JTableOption(bean.getName(), bean.getId());
-			}
-		});
-		
-		return new JsonResult<JTableOption>(list, true);
+	public JsonDatatableResult<DbTableColumn> dbOptionTableColumnsLoad(@RequestParam Long tableId, JsonForm form, Model model) {
+		return new JsonDatatableResult<DbTableColumn>(this.tableColumnRepository.findByDbTableId(tableId), form);
 	}
 	
 	

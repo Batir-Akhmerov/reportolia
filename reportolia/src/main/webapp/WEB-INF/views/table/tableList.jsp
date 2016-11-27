@@ -1,87 +1,55 @@
-<%@ page contentType="text/html" %> 
-<%@ taglib prefix="html" tagdir="/WEB-INF/tags/html" %> 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
-<html:page>
-	<jsp:attribute name="pageTitle"><spring:message code="dbTables.title" /></jsp:attribute>
+<%@ page contentType="text/html" %><%@ 
+	taglib prefix="html" tagdir="/WEB-INF/tags/html" %><%@ 
+	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%@ 
+	taglib uri="http://www.springframework.org/tags/form" prefix="form"%><%@
+	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
+	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
+%><html:page icon="mif-table">
+	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>
 	
-	<jsp:attribute name="scripts">js/reportolia/jquery/plugins/springy/springy.js,js/reportolia/jquery/plugins/springy/springyui.js</jsp:attribute>
+	<jsp:attribute name="scripts">
+		js/reportolia/metadata/dlgMetadata.js
+	</jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		
-		var MSG_RETRIEVE = '<spring:message code="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<spring:message code="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<spring:message code="dbTables.button.addManually" />'
-			LBL_IS_SECURED = '<spring:message code="dbTables.isSecured" />',
-			LBL_HAS_SECURITY_FILTER = '<spring:message code="dbTables.hasSecurityFilter" />'
-			;
-			
+		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
+			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
+			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
+			LBL_IS_SECURED = '<html:msg key="dbTables.isSecured" />',
+			LBL_HAS_SECURITY_FILTER = '<html:msg key="dbTables.hasSecurityFilter" />';
+		
+		<%-- metadata dialog constants --%>	
+		var DLG_METADATA_TITLE = '<html:msg key="sysTable.title" />',
+			DLG_METADATA_INSTRUCTIONS = '<html:msg key="sysTable.instructions" />',
+			COL_TYPE = '<html:msg key="form.type.name" />',
+			COL_SCHEMA = '<html:msg key="form.schema.name" />',
+			COL_COLUMNS = '<html:msg key="form.columns.name" />',
+			COL_DATA_TYPE = '<html:msg key="form.dataType.name" />',
+			COL_LENGTH = '<html:msg key="form.length.name" />',
+			INFO_OPEN_COLUMNS = '<html:msg key="info.open.columns" />',
+			MSG_ADD_SELECTED = '<html:msg key="msg.addSelected" />';
 		
 		function onLoad() {
-			$('#tabs').tabs({
-			  active: 0
-			});
+			var tbConf = {
+		        ajax: 'r3pTablesLoad.go',
+		        r3pAjaxSave: 'r3pTableSave.go',
+		        r3pAjaxDelete: 'r3pTableDelete.go',
+		        r3pAjaxOpen: 'r3pTableShow.go',
+		        columns: [
+		        	{data: 'id', r3p: 'KEY'},
+		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
+		            {data: 'secured', r3p: 'LBL_CHECK', r3pLabel: LBL_IS_SECURED},
+		            {data: 'securityFilter', r3p: 'LBL_CHECK', r3pLabel: LBL_HAS_SECURITY_FILTER}
+		        ]
+		    };
 			
-			var tbl = r3p.jTable('tableList', {
-	            title: '<spring:message code="dbTables.description"/>',
-	           
-	            sorting: true, //Enable sorting
-	            defaultSorting: 'name ASC', //Set default sorting
-	            height: 800,
-	            actions: {
-	                listAction: 'r3pTablesLoad.go', 
-	                deleteAction: 'r3pTableDelete.go',
-	                updateAction: 'r3pTableSave.go'
-	            },
-	            fields: {
-	                id: {
-	                    key: true,
-	                    create: false,
-	                    edit: false,
-	                    list: false
-	                },
-	                name: {
-	                    title: r3pMsg.LBL_NAME
-	                },
-	                label: {
-	                    title: r3pMsg.LBL_LABEL
-	                },
-	                secured: {
-	                	title: LBL_IS_SECURED,
-	                	width: '20%',
-	                	type: 'checkbox',
-	                	values: { 'false' : r3pMsg.OPT_NO, 'true' : r3pMsg.OPT_YES },
-	                	display: function(data) {
-	                    	if (data.record.secured) return '&#10004;';
-	                    	return '';
-	                    }
-	                },
-	                securityFilter: {
-	                	title: LBL_HAS_SECURITY_FILTER,
-	                	width: '20%',
-	                	type: 'checkbox',
-	                	values: { 'false' : r3pMsg.OPT_NO, 'true' : r3pMsg.OPT_YES },
-	                	display: function(data) {
-	                    	if (data.record.securityFilter) return '&#10004;';
-	                    	return '';
-	                    }
-	                }
-	            },
-	            toolbar: {
-				    items: [{
-				        text: BTN_RETRIEVE,
-				        click: function () {
-				            openDlgMetadata();
-				        }
-				    }]
-				}
-	        });
-	        
-		        
-		    <c:if test="${isTableListEmpty}">
+			self.tblList = r3pDtb.init('tableListDiv', tbConf);
+			
+		}
+		
+		function afterLoad() {
+			 <c:if test="${isTableListEmpty}">
 				retrieveFromDb();
 			</c:if>
 			<c:if test="${!isTableListEmpty}">
@@ -90,37 +58,34 @@
 		}
 		
 		function loadTableList() {
-			$('#tableList').jtable('load');
+			self.tblList.ajax.reload();
 		}
 		
 		function retrieveFromDb() {
-			var dlgButtons = {};
-			dlgButtons[BTN_RETRIEVE] = function() {
-				openDlgMetadata();
-				r3p.closeDlg(this);
+			var btnConf = {
+				yesBtnLabel: BTN_RETRIEVE,
+				yesBtnClass: 'success',
+				noBtnLabel: BTN_ADD_MANUALLY
 			};
-			dlgButtons[BTN_ADD_MANUALLY] = function() {
-				r3p.closeDlg(this);
-			};
-			
-			r3p.showConfirm(MSG_RETRIEVE, null, {
-				buttons: dlgButtons
-			});
+			r3p.showConfirm(MSG_RETRIEVE, btnConf)
+				.then(function(confirmed){
+					openDlgMetadata(loadTableList);
+				});
 		}
 	</jsp:attribute>
+	
+	<jsp:attribute name="sidebar">
+		<html:dbSidebar activeId="tableList" />
+	</jsp:attribute>
+	
 	<jsp:attribute name="body">
-		<div id="tabs">
+		<button class="button primary" onclick="createTable()"><span class="mif-plus"></span> <html:msg key="button.create"/></button>
+		<button class="button success" onclick="pushMessage('success')"><span class="mif-save"></span> <html:msg key="button.save"/></button>
+		<button class="button warning" onclick="openDlgMetadata(loadTableList)"><span class="mif-loop2"></span> <html:msg key="dbTables.button.retrieveFromDb"/></button>
 		
-			<jsp:include page="../tableTabs.jsp"/>
-			
-			<div id="tabTables">
-				<div id="tableList"></div>
-				
-			</div>
-			
-		</div>
+		<hr class="thin bg-grayLighter">
 		
-		<div id="dlgMetadata" class="clsHidden"><jsp:include page="../metadata/dlgMetadata.jsp"/></div>
-		
+		<div id="tableListDiv"></div> 
+	        
 	</jsp:attribute>
 </html:page>

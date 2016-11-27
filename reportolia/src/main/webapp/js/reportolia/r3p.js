@@ -25,42 +25,10 @@ var r3p = (function(){
 				return {name: name, value: $node.prop('checked')};
 			}
 		}
-		/*
-        var dataName = node.getAttribute ? node.getAttribute('data-name') : '',
-            dayNode,
-            monthNode,
-            yearNode,
-            day,
-            year,
-            month;
-
-        if (dataName && dataName != '' && node.className == 'datefield')
-        {
-            dayNode = node.querySelector('input[name="'+dataName + '.day"]');
-            monthNode = node.querySelector('select[name="'+dataName + '.month"]');
-            yearNode = node.querySelector('input[name="'+dataName + '.year"]');
-
-            day = dayNode.value;
-            year = yearNode.value;
-            month = monthNode.value;
-
-            return { name: dataName, value:  year + '-' + month + '-' + day};
-        }
-		*/
         return false;
     };
     
-    
-    
-	
-	
-	
-	/*
-	<div id="dialog-confirm" title="Empty the recycle bin?">
-	  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
-	</div>
-	*/
-	
+   
     // public methods
 	return {
 		
@@ -68,6 +36,7 @@ var r3p = (function(){
 	    /**   AJAX   ***************************/
 	    /******************************************/
 		ajax: function(conf, fnSuccess, fnError) {
+			var dfd  = $.Deferred();
 			var data = conf.json || {};
 			delete conf.json;
 			
@@ -82,66 +51,160 @@ var r3p = (function(){
 			
 			$.ajax(conf)
 				.done(function(resp) { 
-					//alert("Success: " + data.param1) ;
+					dfd.resolve(resp);
 					if (fnSuccess) fnSuccess(resp);
 				})
 				.fail(function(resp) {
+					dfd.reject(resp);
 					if (fnError) fnError(resp);
-					else alert("Error: " + (resp && resp.error ? resp.error : 'Unexpected'));
+					else r3p.showError(r3pMsg.ERR_LABEL + (resp && resp.error ? resp.error : r3pMsg.ERR_UNEXPECTED_NAME));
 				});
+			return dfd.promise();
 		},
 		
 		/******************************************/
 	    /**   DIALOGS   ***************************/
 	    /******************************************/		
-		showConfirm: function(msg, title, conf, fnOk, fnCancel) {
-			conf = conf || {};
-			var div = r3p.createDialogDiv('dlg-confirm', title || r3pMsg.TLT_CONFIRM, msg);
-			conf.buttons = conf.buttons || {
-				Ok: function() {
-					if (fnOk) fnOk();
-					r3p.closeDlg(this);
-				},
-				Cancel: function() {
-					if (fnCancel) fnCancel();
-					r3p.closeDlg(this);
-				}
+		showConfirm: function(msg, btnConf, dlgConf, title) {
+			var dfd  = $.Deferred();
+			btnConf = btnConf || {};
+			var defaultBtnConf = {
+				noCancelBtn: true,
+				buttons: [{
+						label: btnConf.yesBtnLabel || r3pMsg.BTN_YES,
+						cssClass: btnConf.yesBtnClass,
+	  					handler: function() {
+	  						dfd.resolve(true);
+	  						if (btnConf.fnYes) btnConf.fnYes();
+	  						r3p.closeDialog(this);
+	  					}
+	  				},
+	  				{
+	  					label: btnConf.noBtnLabel || r3pMsg.BTN_NO,
+	  					cssClass: btnConf.noBtnClass,
+	  					handler: function() {
+	  						dfd.resolve(false);
+	  						if (btnConf.fnNo) btnConf.fnNo();
+	  						r3p.closeDialog(this);
+	  					}
+	  				}
+	  			]
 			};
+			btnConf = $.extend({}, defaultBtnConf, btnConf);
+			var id = 'dlg-confirm',
+				div = r3p.createDialogDiv(id, title || r3pMsg.TLT_CONFIRM, msg, dlgConf, btnConf);
+						
+			r3p.showDialog(id, div);
 			
-			conf.id = div.attr('id');
-			r3p.showDialog(conf);
+			return dfd.promise();
 		},
 		
-		showError: function(msg, title, conf, fnOk, fnCancel) {
-			conf = conf || {};
-			var div = r3p.createDialogDiv('dlg-error', title || r3pMsg.TLT_ERROR, msg);
-			conf.buttons = conf.buttons || {
-				Ok: function() {
-					if (fnOk) fnOk();
-					r3p.closeDlg(this);
-				}
-			};
-			conf.id = div.attr('id');
-			r3p.showDialog(conf);
-		},
-		
-		showDialog: function(conf) {
-			conf = $.extend({
-				resizable: false,
-				height: "auto",
-				width:400,
-				modal: true,
-				buttons: {
-					Ok: function() {
-						$(this).dialog('close');
+		showError: function(msg, dlgConf, btnConf, title) {
+			var dfd  = $.Deferred(),
+				id = 'dlg-error';
+			dlgConf = $.extend({}, {'data-type': 'alert'}, dlgConf);
+			
+			var defaultBtnConf = {
+				noCancelBtn: true,
+				buttons: [{
+					label: r3pMsg.BTN_CLOSE,
+  					handler: function() {
+						dfd.resolve(true);
+						r3p.closeDialog(this);
 					}
-				}
-			}, conf);
-			$('#' + conf.id).dialog(conf);
+				}]
+			};
+			btnConf = $.extend({}, defaultBtnConf, btnConf);
+			var div = r3p.createDialogDiv(id, title || r3pMsg.TLT_ERROR, msg, dlgConf, btnConf);
+			
+			r3p.showDialog(id, div);
+						
+			return dfd.promise();
 		},
 		
-		closeDlg: function(div) {
-			$(div).dialog('close');
+		showDialog: function(id, div) {
+			var div = div || r3p.jq(id);
+			if (!div.prop('isDlgInitialized')) {
+				div.prop('isDlgInitialized', true);
+				$.Metro.initWidgets(div);
+			}
+			var dlg = div.data('dialog');
+			if (!dlg) {
+				alert('Cannot find dialog ' + id);
+				return;
+			}
+			if (div.prop('overlay')) div.prop('overlay').show();
+			dlg.open();
+		},
+		
+		closeDialog: function(obj) {
+			var btn = null;
+			if (!obj || obj.target) btn = $(this);
+			else btn = $(obj);
+			var div = btn.closest('[data-role="dialog"]');
+			if (div.prop('overlay')) div.prop('overlay').hide();
+			hideMetroDialog(div);
+		},
+		
+		createDialogDiv: function (id, title, msg, dlgConf, btnConf) {
+			var div = r3p.jq(id);
+			if (r3p.isNullJq(div)) {
+				btnConf = btnConf || {}; 
+				var defaultConf = {
+					id: id, 
+					'data-role': 'dialog'
+				};
+				dlgConf = $.extend({}, defaultConf, dlgConf);				
+				var overlay = r3p.createOverlay(dlgConf.id);
+				div = r3p.createEl('div', 'body', dlgConf, null, 'padding20');
+				div.prop('overlay', overlay);
+				r3p.createEl('h1', div);
+				r3p.createEl('div', div).addClass('clsDialogContent');
+				r3p.createEl('div', div).addClass('clsDialogButtons');
+			}
+			else {
+				$('body').append(div.prop('overlay')).append(div);
+			}
+			div.children('h1').html(title);
+			div.children('div.clsDialogContent').html(msg);
+			
+			// buttons
+			var btnDiv = div.children('div.clsDialogButtons').empty();				
+			if (btnConf.buttons) {
+				$.each(btnConf.buttons, function(i, btn){
+					r3p.createDialogButton(btnDiv, btn);
+				});
+			}
+			if (!btnConf.noCancelBtn) {
+				r3p.createDialogButton(btnDiv, {
+					label: btnConf.cancelBtnLabel || r3pMsg.BTN_CANCEL,
+					handler: r3p.closeDialog
+				});
+			}
+			
+			return div;
+		},
+		changeDialogDiv: function (id, title, msg) {
+			var div = r3p.jq(id);
+			if (r3p.isNullJq(div)) return;
+			if (title) div.children('h1').html(title);
+			if (msg) div.children('div.clsDialogContent').html(msg);			
+		},
+		createOverlay: function(dlgId){
+	        var overlayId = dlgId + '_overlay';
+	        var overlay = r3p.jq(overlayId);
+
+	        if (overlay.length === 0) {
+	            overlay = $("<div/>").attr('id', overlayId).addClass('clsOverlay').appendTo('body');
+	        }
+	        
+	        return overlay;
+	    },
+		createDialogButton: function(div, btn) {
+			var btnEl = r3p.createEl('button', div).html(btn.label);
+			 btnEl.addClass('button');
+			if (btn.cssClass) btnEl.addClass(btn.cssClass);
+			if (btn.handler) btnEl.click(btn.handler);
 		},
 		
 		/******************************************/
@@ -189,16 +252,7 @@ var r3p = (function(){
 	    	return el;
 	    },
 	    
-	    createDialogDiv: function (id, title, msg) {
-			var div = r3p.jq(id);
-			if (r3p.isNullJq(div)) {
-				div = r3p.createEl('div', 'body', {id: id}, null, 'clsHidden');
-				r3p.createEl('p', div);
-			}
-			div.children('p').html(msg);
-			div.attr('title', r3p.scriptSafe(title));
-			return div;
-		},
+	    
 		
 		sticky: function(el, bottomGap, rightGap) {
 			el = $(el);
@@ -218,94 +272,6 @@ var r3p = (function(){
 			);
 		},
 		
-		/******************************************/
-	    /**   JTABLE   ***************************/
-	    /******************************************/
-		
-		jTable: function(id, conf) {
-			conf = conf || {};
-			var fnRecLoaded = conf.recordsLoaded;
-			conf.recordsLoaded = function(evt, data){
-				if (fnRecLoaded) fnRecLoaded.call(this, evt, data);
-				var tbl = $(this);
-				if (r3p.isNotNull(conf.height) && !tbl.prop('isScrollInitialized')) {
-            		r3p.jTableScrollable(tbl, conf.height);
-            		tbl.prop('isScrollInitialized', true);
-            	}
-            };
-            
-            var defConfig = {
-            	jqueryuiTheme: true,
-            	messages: r3pJtableMsg,
-            	defaultDateFormat: r3pJtableMsg.defaultDateFormat
-            };
-			conf = $.extend({}, defConfig, conf);
-						
-			if (conf.actions && conf.actions.isJsonActions) {
-				var acts = conf.actions;
-				acts.defJson = acts.defJson || {};
-				if (r3p.isString(acts.createAction)) {
-                	acts.createAction = r3p.jtableAjaxAction(acts.createAction, r3p.urlToJsonSafe, acts.defJsonCreate || acts.defJson);
-                }
-                if (r3p.isString(acts.deleteAction)) {
-                	acts.deleteAction = r3p.jtableAjaxAction(acts.deleteAction, r3p.urlToJsonSafe, acts.defJsonDelete || acts.defJson);
-                }
-                if (r3p.isString(acts.updateAction)) {
-                	acts.updateAction = r3p.jtableAjaxAction(acts.updateAction, r3p.urlToJsonSafe, acts.defJsonUpdate ||  acts.defJson);
-                	if (r3p.isNull(acts.createAction)) acts.createAction = acts.updateAction;
-                }
-			}
-			
-			r3p.jq(id).jtable(conf);
-		},
-		
-		jTableScrollable: function(div, height) {
-			if (r3p.isNullJq(div)) return;
-			var container = div.find('.jtable-main-container'),
-				tbl = container.find('.jtable'),
-				thead = tbl.find('thead'),
-				divWrapper = r3p.createEl('div', null, null, null, 'jtable-wrapper');
-			
-			tbl.before(divWrapper);
-			divWrapper.append(tbl);
-			
-			divWrapper.height(height);
-			
-			tbl.floatThead({
-				scrollContainer: function($table){
-					return tbl.closest('.jtable-wrapper');
-				}
-			});
-		},
-			
-		jtableAjaxAction: function(url, fnJsonCallback, jsonDefaults) {
-			return function(formParams, jtParams) {
-				return $.Deferred(function($dfd) {
-					var json = fnJsonCallback ? fnJsonCallback(formParams) : {};
-					if (jsonDefaults)  {
-						var tmpDefaults = jsonDefaults;
-						if ($.isFunction(jsonDefaults))  tmpDefaults = jsonDefaults();
-						json = $.extend({}, tmpDefaults, json);
-					}
-					r3p.ajax({
-							url: url + '?id=' + json.id,
-							json: json
-						}, 
-						function(data) {
-							if (data && data.Result == 'ERROR') {
-								data.Message = data.Message || 'Unexpected Error!';
-							}
-							r3p.setPageModified();
-							$dfd.resolve(data);
-						}, 
-						function() {
-							$dfd.reject();
-						}
-					);
-				});
-	        };
-		},
-	    
 	    /******************************************/
 	    /**   PAGE   ***************************/
 	    /******************************************/
@@ -338,16 +304,33 @@ var r3p = (function(){
 			return !el || el.length == 0;
 		},
 		isNull: function(o) {
-			return !o || o == undefined;
+			return o == null || o == undefined;
 		},
 		isNotNull: function(o) {
 			return !r3p.isNull(o);
+		},
+		isBlank: function(s) {
+			return r3p.isNull(s) || s.length == 0;
+		},
+		isNotBlank: function(s) {
+			return !r3p.isBlank(s);
 		},
 		isString: function(v) {
 			return $.type(v) == 'string';
 		},
 		scriptSafe: function(txt) {
 			return $('<div/>').text(txt).html();
+		},
+		strFormat: function(str){
+			var args = arguments;
+			return str.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
+				if (m == "{{") { return "{"; }
+				if (m == "}}") { return "}"; }
+				return args[ parseInt(n) + 1 ];
+			});
+		},
+		getSize: function(list) {
+			return list && !r3p.isNull(list.length) ? list.length : 0;
 		},
 		findByProperty: function(list, propName, value) {
 			if (r3p.isEmpty(list)) return null;
@@ -519,23 +502,3 @@ var r3p = (function(){
 	}
 })(jQuery);
 
-/*
-(function($){
-	$.fn.r3pListForm = function(conf) {
-		if (!conf) return;
-		var defaults = $.fn.r3pListForm.defaults;
-		var o = $.extend({}, defaults, conf);
-		return new listForm(this, o);
-	};
-	
-	$.fn.r3pListForm.defaults = {
-			
-	};
-	
-	function listForm(form, conf){
-		var that = this;
-		
-		return this;
-	}
-})(jQuery);
-*/

@@ -6,15 +6,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <html:page>
-	<jsp:attribute name="pageTitle"><spring:message code="dbTables.title" /></jsp:attribute>
+	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>
 	
 	<jsp:attribute name="scripts">js/reportolia/jquery/plugins/springy/springy.js,js/reportolia/jquery/plugins/springy/springyui.js</jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		
-		var MSG_RETRIEVE = '<spring:message code="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<spring:message code="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<spring:message code="dbTables.button.addManually" />'
+		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
+			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
+			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
 			
 			;
 		
@@ -25,7 +25,7 @@
 			});
 			
 			var tbl = r3p.jTable('relationshipList', {
-	            title: '<spring:message code="dbTables.description"/>',
+	            title: '<html:msg key="dbTables.description"/>',
 	            //paging: true, //Enable paging
 	            //pageSize: 10, //Set page size (default: 10)
 	            sorting: true, //Enable sorting

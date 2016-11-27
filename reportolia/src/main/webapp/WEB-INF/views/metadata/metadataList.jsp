@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <html:page>
-	<jsp:attribute name="pageTitle"><spring:message code="sysTable.title" /></jsp:attribute>
+	<jsp:attribute name="pageTitle"><html:msg key="sysTable.title" /></jsp:attribute>
 	<jsp:attribute name="scriptBody">
 		
 		function onLoad() {
@@ -88,9 +88,9 @@
 		<table id="tableList" class="display">
 			<thead>
 				<tr>
-					<th><spring:message code="sysTable.table.name" /></th>
-					<th><spring:message code="form.type.name" /></th>
-					<th><spring:message code="form.schema.name" /></th>
+					<th><html:msg key="sysTable.table.name" /></th>
+					<th><html:msg key="form.type.name" /></th>
+					<th><html:msg key="form.schema.name" /></th>
 				</tr>
 			</thead>
 			<c:if test="${sysTableList != null}">
@@ -117,7 +117,7 @@
 		</table>
 		 --%>
 		<div class="clsTbButtons">
-			<button id="btnSave"><spring:message code="sysTable.button.addSelected" /></button>
+			<button id="btnSave"><html:msg key="sysTable.button.addSelected" /></button>
 		</div>
 	</jsp:attribute>
 </html:page>

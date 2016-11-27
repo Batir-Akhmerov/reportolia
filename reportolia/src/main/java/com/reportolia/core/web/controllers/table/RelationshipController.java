@@ -12,8 +12,9 @@ import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.handler.db.relationship.RelationshipInfo;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
-import com.reportolia.core.web.controllers.jtable.BaseJsonResult;
-import com.reportolia.core.web.controllers.jtable.JsonResult;
+import com.reportolia.core.web.controllers.base.datatable.JsonDatatableResult;
+import com.reportolia.core.web.controllers.base.datatable.JsonForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonResult;
 
 /**
  * 
@@ -39,21 +40,21 @@ public class RelationshipController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableRelationshipsLoad")
-	public JsonResult<RelationshipInfo> relationshipsLoad(long tableId) {
-		return new JsonResult<RelationshipInfo>(this.dbHandler.getTableRelationshipInfoList(tableId));
+	public JsonDatatableResult<RelationshipInfo> relationshipsLoad(long tableId, JsonForm form) {
+		return new JsonDatatableResult<RelationshipInfo>(this.dbHandler.getTableRelationshipInfoList(tableId), form);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableRelationshipSave")
-	public JsonResult<RelationshipInfo> relationshipSave(@RequestBody RelationshipInfo info) {
-		return new JsonResult<RelationshipInfo>(this.dbHandler.saveTableRelationship(info));
+	public RelationshipInfo relationshipSave(@RequestBody RelationshipInfo info) {
+		return this.dbHandler.saveTableRelationship(info);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableRelationshipDelete")
-	public BaseJsonResult relationshipDelete(@RequestBody RelationshipInfo info) {
+	public JsonResult relationshipDelete(@RequestBody RelationshipInfo info) {
 		this.dbHandler.deleteTableRelationship(info);
-		return new BaseJsonResult();
+		return new JsonResult();
 	}
 	
 }

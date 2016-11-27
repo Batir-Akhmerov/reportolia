@@ -87,6 +87,9 @@ public class DbTable extends BaseEntity {
 	 * @return the label
 	 */
 	public String getLabel() {
+		if (StringUtils.isEmpty(this.label)) {
+			return this.getName();
+		}
 		return this.label;
 	}
     

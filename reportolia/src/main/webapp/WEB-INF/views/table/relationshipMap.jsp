@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<html:page>
+<html:page icon="mif-tree">
 
 	<jsp:attribute name="scripts">
 		js/reportolia/jquery/plugins/springy/springy.js,
@@ -13,16 +13,30 @@
 		js/reportolia/table/dlgRelationshipList.js
 	</jsp:attribute>
 
-	<jsp:attribute name="pageTitle"><spring:message code="dbTables.title" /></jsp:attribute>
+	<jsp:attribute name="pageTitle"><html:msg key="dbTable.relationship.map.tab.name" /></jsp:attribute>
 	
 
 	
 	<jsp:attribute name="scriptBody">
 		
-		var MSG_RETRIEVE = '<spring:message code="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<spring:message code="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<spring:message code="dbTables.button.addManually" />'
+		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
+			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
+			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
 			;
+			
+		var REL_PAGE_TITLE = '<html:msg key="dbTable.relationship.manage.title" />',
+			REL_PAGE_INFO = '<html:msg key="dbTable.relationship.manage.instructions" />',
+			TITLE_CURRENT_TABLE = '',
+			TH_COLUMN = '<html:msg key="form.column.name" />',
+			TH_LINKED_TABLE = '<html:msg key="dbTable.relationship.linkedTable.name" />',
+			TH_LINKED_COLUMN = '<html:msg key="dbTable.relationship.linkedColumn.name" />',
+			LBL_LINK_TO_FILTER = '<html:msg key="dbTable.relationship.isLinkToFilter.name" />',
+			LBL_LINK_TO_FILTER_INFO = '<html:msg key="dbTable.relationship.isLinkToFilter.info" />',
+			LBL_ONE_TO_MANY = '<html:msg key="dbTable.relationship.oneToMany" />',
+			LBL_MANY_TO_ONE = '<html:msg key="dbTable.relationship.manyToOne" />'
+		
+			
+		;
 			
 		var COLOR_NODE = '#848482',
 			COLOR_TB_SEC_FILTER = '#348017',
@@ -37,9 +51,6 @@
 		}
 		
 		function onLoad() {
-			$('#tabs').tabs({
-			  active: 1
-			});
 			
 			r3p.onWindowResize(resizeMap);
 			resizeMap();
@@ -108,20 +119,19 @@
 		}
 		
 	</jsp:attribute>
+	
+	<jsp:attribute name="sidebar">
+		<html:dbSidebar activeId="relationshipMap" />
+	</jsp:attribute>
+	
 	<jsp:attribute name="body">
-		<div id="tabs">
-		
-			<jsp:include page="../tableTabs.jsp"/>
-			
-			<div id="tabRelationshipMap">
-				<div id="divMap">
-					<canvas id="datamodelMap" />
-				</div>
+		<hr class="thin bg-grayLighter">
+					
+		<div id="tabRelationshipMap">
+			<div id="divMap">
+				<canvas id="datamodelMap" />
 			</div>
-			
 		</div>
-		
-		<div id="dlgTableRelationship" class="clsHidden"><jsp:include page="dlgRelationshipList.jsp"/></div>
 		
 	</jsp:attribute>
 </html:page>

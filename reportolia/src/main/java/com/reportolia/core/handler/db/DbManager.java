@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reportolia.core.driver.metadata.MetadataHandler;
@@ -24,7 +24,7 @@ import com.reportolia.core.utils.ExceptionUtilsHandler;
 import com.reportolia.core.utils.ListUtils;
 import com.reportolia.core.utils.MessageConstants;
 import com.reportolia.core.utils.MessageResourceHandler;
-import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 
 /**
  * The DbManager class
@@ -32,7 +32,7 @@ import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
  * @author Batir Akhmerov
  * Created on Nov 13, 2015
  */
-@Component
+@Service
 public class DbManager implements DbHandler {
 	 
 	@Resource protected DbTableRepository tableRepository;
@@ -47,7 +47,7 @@ public class DbManager implements DbHandler {
 	/*************************************************/
 	/** TABLES ***************************************/
 	/*************************************************/	 
-	public List<DbTable> getTableList(JsonSearchForm form) {
+	public List<DbTable> getTableList(JsonForm form) {
 		 List<DbTable> list = this.tableRepository.findAll();
 		 return list;
 	}

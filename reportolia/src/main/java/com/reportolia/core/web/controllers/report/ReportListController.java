@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.table.DbTable;
-import com.reportolia.core.web.controllers.jtable.JsonSearchForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class ReportListController {
 		
 		//model.addAttribute("serverTime", formattedDate );
 		
-		List<DbTable> list = this.dbManager.getTableList(new JsonSearchForm());
+		List<DbTable> list = this.dbManager.getTableList(new JsonForm());
 		if (list.size() == 0) {
 			return "redirect:/r3pTableListShow.go";
 		}

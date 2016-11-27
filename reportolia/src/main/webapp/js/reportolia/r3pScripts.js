@@ -6,12 +6,12 @@
 		
 
 	function afterDomReady() {
-		
+		/*
 		$('button').button();
 		$('select:not(.noPlugin)').selectmenu();
 		$('input[type=checkbox]:not(.noPlugin)').checkboxradio();
 		$('input[type=radio]:not(.noPlugin)').checkboxradio();
-		 
+		 */
 	}
 	
 	function openDbMetadata() {
