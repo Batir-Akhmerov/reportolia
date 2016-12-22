@@ -3,6 +3,7 @@
  */
 package com.reportolia.core.web.controllers.base.datatable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ public class JsonDatatableResult<T extends Object> extends JsonResult {
 	public JsonDatatableResult(String error, JsonForm form){
 		super(form);
 		super.setError(error);
+		this.data = new ArrayList<>();
 	}
 	
 	

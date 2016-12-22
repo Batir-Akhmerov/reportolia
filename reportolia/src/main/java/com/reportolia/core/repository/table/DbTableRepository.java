@@ -2,6 +2,9 @@ package com.reportolia.core.repository.table;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.reportolia.base.repository.UpdatableRepository;
 import com.reportolia.core.model.table.DbTable;
 
@@ -19,7 +22,8 @@ public interface DbTableRepository extends UpdatableRepository<DbTable, Long> {
             "OR LOWER(t.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
     )
     public List<DbTable> search(@Param("searchTerm") String searchTerm);
-*/    
+*/  
+	Page<DbTable> findByNameContainsAllIgnoreCase(String name, Pageable pageable);
     List<DbTable> findByName(String name);
     List<DbTable> findByNameAndDescription(String name, String description);
 }

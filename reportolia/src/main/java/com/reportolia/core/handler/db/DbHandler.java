@@ -5,11 +5,14 @@ package com.reportolia.core.handler.db;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.reportolia.core.handler.db.relationship.RelationshipInfo;
 import com.reportolia.core.model.table.DbTable;
 import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.web.controllers.base.datatable.JsonForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonSelectOptionsForm;
 
 /**
  * The DbHandler class
@@ -23,6 +26,8 @@ public interface DbHandler {
 	/** TABLES ***************************************/
 	/*************************************************/
 	public List<DbTable> getTableList(JsonForm form);
+	
+	public Page<DbTable> getTableList(JsonSelectOptionsForm form);
 	
 	public List<DbTable> getTableList(String name);
 	

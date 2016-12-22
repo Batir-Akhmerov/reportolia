@@ -13,7 +13,9 @@
 	attribute name="head" fragment="true" %><%@ 
 	attribute name="scriptBody" fragment="true" %><%@ 
 	attribute name="body" fragment="true" %><%@ 
-	attribute name="sidebar" fragment="true" %><c:set var="_pageTitle"><jsp:invoke fragment="pageTitle" /></c:set
+	attribute name="sidebar" fragment="true" %><%@ 
+	attribute name="breadcrumbs" fragment="true" %><c:set var="_pageTitle"><jsp:invoke fragment="pageTitle" /></c:set
+><c:set var="_homeUrl">/reportolia</c:set
 ><html>
 	<head>
 		<title>${_pageTitle}</title>
@@ -65,10 +67,18 @@
     <div class="page-content">
         <div class="flex-grid no-responsive-future" style="height: 100%;">
             <div class="row" style="height: 100%">
-                <div class="cell size-x200" id="cell-sidebar" style="background-color: #71b1d1; height: 100%">
-                    <jsp:invoke fragment="sidebar" />
-                </div>
+            	 <c:if test="${sidebar != null}">
+	                <div class="cell size-x200" id="cell-sidebar" style="background-color: #71b1d1; height: 100%">
+	                    <jsp:invoke fragment="sidebar" />
+	                </div>
+	            </c:if>
                 <div class="cell auto-size padding20 bg-white" id="cell-content">
+					<c:if test="${breadcrumbs != null}">
+						<ul class="breadcrumbs padding10 no-padding-top no-padding-left">
+							<li><a href="${_homeUrl}"><span class="icon mif-home"></span></a></li>
+							<jsp:invoke fragment="breadcrumbs" />
+						</ul>
+					</c:if>
                     <h1 class="text-light">${_pageTitle} <span class="${icon} place-right"></span></h1>                    
                     <hr class="thin bg-grayLighter">
                     

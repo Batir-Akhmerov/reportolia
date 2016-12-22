@@ -5,7 +5,6 @@
 var r3pDtb = (function(){
 	
 	var defaultConf = {
-		//scrollY: '420px'
 	};
 	
 	function _prepareColumns(id, dbConf) {
@@ -13,14 +12,15 @@ var r3pDtb = (function(){
 		if (dbConf.columns) {
 			for (var i = 0, size = dbConf.columns.length; i < size; i++) {
 				col = dbConf.columns[i];
-				if (col.r3p) {
-					if ($.type(col.r3p) == 'string') {
-						col.r3p = {type: col.r3p};
-					}					
-					col = _buildColConf(col.r3p.type, col);
-					if (col.r3p.isButton) hasButtons = true;
-					dbConf.columns[i] = col;
+				if (r3p.isNull(col.r3p)) {
+					col.r3p = {type: 'LBL'};
 				}
+				if ($.type(col.r3p) == 'string') {
+					col.r3p = {type: col.r3p};
+				}					
+				col = _buildColConf(col.r3p.type, col);
+				if (col.r3p.isButton) hasButtons = true;
+				dbConf.columns[i] = col;
 			}
 		}
 		
@@ -43,27 +43,51 @@ var r3pDtb = (function(){
 		return hasButtons;
 	}
 	
+	function _prepareAjax(dbConf) {
+		if (!dbConf && !dbConf.ajax) return;
+		
+		var defaultAjax = {
+			error: function(resp) {
+        		var msg = resp && resp.responseJSON && resp.responseJSON.error ? resp.responseJSON.error : r3pMsg.ERR_UNEXPECTED 
+        		r3p.showError(msg);
+        	}
+		};
+		if ($.type(dbConf.ajax) == 'string') dbConf.ajax = {url: dbConf.ajax};
+		dbConf.ajax = $.extend({}, defaultAjax, dbConf.ajax);
+	}
 	
 	function _createTable(id, containerId, dbConf) {
 		var div = r3p.jq(containerId),
-			cssClass = (dbConf.r3pIsStriped != false ? ' striped ' : '') + (dbConf.r3pIsHovered != false ? ' hovered ' : '') + (dbConf.r3pCssClass ? ' ' + dbConf.r3pCssClass : ''),
-			tbl = r3p.createEl('table', div, {id: id, 'data-autowidth': false, style: 'width:100%'}, null, 'dataTable table ' + cssClass);
+			cssClass = (dbConf.r3pIsStriped != false ? ' striped ' : '') + (dbConf.r3pIsHovered != false ? ' hovered ' : '') + (dbConf.r3pCssClass ? ' ' + dbConf.r3pCssClass : '');
+		// button toolbar
+		if (dbConf.r3pAjaxSave && dbConf.r3pNewRow) {
+			var	btnNew = $( r3p.strFormat(r3p.TMPL_BTN, r3pMsg.BTN_CREATE, 'mif-plus', 'primary') )
+				.appendTo(div);
+			var newRowData = $.isPlainObject(dbConf.r3pNewRow) ? dbConf.r3pNewRow : {id: 0};	
+			btnNew.click(function(){
+				r3pDtb.openRowForm(newRowData, dbConf.r3pAjaxSave, r3p.jq(id).DataTable());
+			});		
+			$('<hr class="thin bg-grayLighter">').appendTo(div);
+		}
+		
+		var	tbl = r3p.createEl('table', div, {id: id, 'data-autowidth': false, style: 'width:100%'}, null, 'dataTable table ' + cssClass);
 			thead = r3p.createEl('thead', tbl),
 			tr = r3p.createEl('tr', thead);
 		if (dbConf.columns) {
 			for (var i = 0, size = dbConf.columns.length; i < size; i++) {
 				var colConf = dbConf.columns[i],
 					r3 = colConf.r3p;
-				var th = r3p.createEl('th', tr).html(colConf.r3pLabel || ' ');
+				var th = r3p.createEl('th', tr).html(r3.label || ' ');
 				if(r3 && r3.thRenderer) {
 					r3.thRenderer(th, tr, tbl, dbConf);
 				}
 			}
 		}
+		
 		return tbl;
 	}
 	
-	function _postInit(_tb, _dtbl, hasButtons) {
+	function _postDraw(_tb, _dtbl, hasButtons) {
 		var __checkboxCkicker = function() {
 			var el = $(this);
 			_clickCheckbox(el, _tb, _dtbl);
@@ -106,14 +130,73 @@ var r3pDtb = (function(){
 	
 	
 	function _buildColConf(type, col, actionUrl) {
-		col = col || {};
+		col = col || {r3p: {}};
 		if (actionUrl) col.actionUrl = actionUrl;
+		_toR3pProperty(col, 'r3pLabel', 'label');
+		_toR3pProperty(col, 'r3pSelectUrl', 'selectUrl');
+		_toR3pProperty(col, 'r3pSelectOptions', 'selectOptions');
 		var defConf = r3pCol[type] || {},
 			templateConf = defConf && defConf.r3p ? (r3pCol[defConf.r3p.templateType] || {}) : {};
 		return $.extend(true, {}, templateConf, defConf, col);
 	}
 	
+	function _toR3pProperty(colConf, propName, r3pName) {
+		if (colConf[propName]) {
+			colConf.r3p[r3pName] = colConf[propName];
+			delete colConf[propName];
+		}
+	}
 	
+	function _selectRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+		var fldName = tbColConf.data,
+			type = '',
+			ajaxUrl = r3pConf.selectUrl,
+			optionValue = trData[tbColConf.data],
+			optionLabel = tbColConf.render ? tbColConf.render(optionValue, type, trData) : optionValue;
+		$(r3p.strFormat(r3p.TMPL_SELECT, fldName, optionValue, label, optionLabel, 'clsBlock clsMarginBottom20')).appendTo($panel);
+		
+	    afterShowCallbackList.push(function(){
+	    	var sel = r3p.jq(fldName),
+				widgetDiv = sel.closest('.input-control');
+	    	$.Metro.initWidgets(widgetDiv);
+	    	r3p.initSelect(sel, r3pConf.selectUrl, r3pConf);
+	    });
+	}
+	
+	function _hiddenRenderer($panel, trData, tbColConf, r3pConf, afterShowCallbackList) {
+		var value = trData[tbColConf.data];
+		value = r3p.isBlank(value) ? '' : value;
+		$(r3p.strFormat(r3p.TMPL_HIDDEN, tbColConf.data, value)).appendTo($panel);
+	}
+	
+	function _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+		var value = trData[tbColConf.data];
+		value = r3p.isBlank(value) ? '' : value;
+		$(r3p.strFormat(r3p.TMPL_INPUT, tbColConf.data, value, label, 'clsBlock clsMarginBottom20')).appendTo($panel);
+	}
+	
+	function _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+		var fldName = tbColConf.data,
+			value = trData[tbColConf.data],
+			isChecked = value == true || value == 'true' ? 'checked' : '';
+		$(r3p.strFormat(r3p.TMPL_CHECKBOX, fldName, isChecked, label, 'clsBlock clsMarginBottom20')).appendTo($panel);
+	}
+	function _radioRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+		if (r3p.getSize(r3pConf.options) == 0) {
+			alert('R3p Radio Options expected!');
+			return;
+		}
+		var fldName = tbColConf.data,
+			value = trData[tbColConf.data],
+			div = $('<div class="clsBlock clsMarginBottom20"></div>').appendTo($panel);
+			
+		for (var i = 0, size = r3pConf.options.length; i < size; i++) {
+			var opt = r3pConf.options[i],
+				isChecked = opt.value == value ? 'checked' : '';
+			$(r3p.strFormat(r3p.TMPL_RADIO, fldName, opt.value, opt.label, isChecked, 'clsMarginRight20', opt.title ? 'title="' + opt.title + '"' : '')).appendTo(div);
+		}
+		
+	}
    
     // public methods
 	return {
@@ -123,13 +206,17 @@ var r3pDtb = (function(){
 			var tblId = r3pDtb.toTableId(containerId);
 			var hasButtons = _prepareColumns(tblId, dbConf);
 			
+			_prepareAjax(dbConf);
+			
 			var _tb = _createTable(tblId, containerId, dbConf), 
-				_dtbl = _tb.DataTable(dbConf).on( 'init.dt', function(e, settings, data){
-					if (_tb.prop('isInitizlized')) return;
-					_postInit(_tb, _dtbl, hasButtons);
-					if (dbConf.r3pAfterInit) dbConf.r3pAfterInit(e, settings, data);
-					_tb.prop('isInitizlized', true);
-				});
+				_dtbl = _tb.DataTable(dbConf)
+					.on( 'init.dt', function(e, settings, data){
+						if (_tb.prop('isInitizlized')) return;						
+						if (dbConf.r3pAfterInit) dbConf.r3pAfterInit(e, settings, data);
+						_tb.prop('isInitizlized', true);
+					}).on( 'draw.dt', function(e, settings, data){						
+						_postDraw(_tb, _dtbl, hasButtons);						
+					});
 			return _dtbl;
 		},
 		toTableId: function(containerId) {
@@ -165,6 +252,49 @@ var r3pDtb = (function(){
 		        }
 			}
 			else tr.removeClass('selected');
+		},
+		openRowForm: function(trData, saveUrl, _dtbl) {	    			
+			
+			var $panel = $('<div></div>').addClass('content');
+			
+			var conf = _dtbl.context[0],
+				initConf = conf.oInit ? conf.oInit : {},
+				afterShowCallbackList = [],
+				dlgTitle = initConf.r3pGetFormTitle ? initConf.r3pGetFormTitle(trData) : null;
+			for (var i = 0, size = conf.aoColumns.length; i < size; i++) {
+				var tbColConf = conf.aoColumns[i];
+
+				var r3pConf = tbColConf.r3p;
+				if (r3pConf.isButton) continue;
+				label = r3pConf.label;
+				
+				if (r3pConf.selectUrl) _selectRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+				else if (r3pConf.type == 'FLD_CHECK' || r3pConf.type == 'LBL_CHECK') _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+				else if (r3pConf.type == 'LBL_RADIO') _radioRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+				else if (tbColConf.visible == false) _hiddenRenderer($panel, trData, tbColConf, r3pConf, afterShowCallbackList);
+				else _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+			}
+			
+			r3p.showDetail('row-form', dlgTitle, $panel, null, null,
+    			function(dlg){							
+					var jsonData = r3p.form2js($panel.get(0));
+					r3p.ajax(
+						{url: saveUrl, json: jsonData}, 
+						function(resp){
+							if (resp && resp.error) {
+								r3p.showError(resp.error);
+								return;
+							}
+							r3p.setPageModified();
+							_dtbl.ajax.reload();
+							r3p.closeDialog(dlg);
+						}
+					);
+				}
+			); 
+			for(var i = 0, size = afterShowCallbackList.length; i < size; i++) {
+				afterShowCallbackList[i].call();
+			}
 		}
 	};
 }());
@@ -172,24 +302,19 @@ var r3pDtb = (function(){
 
 var r3pCol = ( function(){
 	
-	var TMPL_BTN = '<span class="{0}"></span>',
-		TMPL_BTN_HINT = '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{1}">'+TMPL_BTN+'</span>',
-		TMPL_CHECK = '<label class="input-control checkbox small-check">' +
-					    '<input type="checkbox" class="{3}" name="{0}" value="{1}" {2} />'+
-					    '<span class="cellCheckFlag check"></span>'+
-					'</label>';
-	
 	function _btnRenderer(data, type, full, meta) {
 		var conf = meta.settings;
 		var colConf = conf.aoColumns[meta.col];
 		if (!colConf.r3p || !colConf.r3p.isButton) return '***';
 		var c = colConf.r3p,
-			btn = r3p.strFormat(TMPL_BTN, 'cellBtn cellBtnHover ' + c.icon);
+			btn = r3p.strFormat(r3p.TMPL_BTN_CELL, 'cellBtn cellBtnHover ' + c.icon);
 		if (c.tooltip) {
-			return r3p.strFormat(TMPL_BTN_HINT, 'cellBtn cellBtnHover ' + c.icon, c.tooltip);
+			return r3p.strFormat(r3p.TMPL_BTN_CELL_HINT, 'cellBtn cellBtnHover ' + c.icon, c.tooltip);
 		}
 		return btn;
-	}	
+	}
+	
+	
 	
 	function _getColConf(meta) {
 		var conf = meta.settings;
@@ -220,6 +345,15 @@ var r3pCol = ( function(){
 	    		return isChecked ? '<span class="mif-checkmark"></span>' : '';
 	    	} 
 		},
+		LBL_RADIO : {
+			render: function(data, type, full, meta) {
+				var colConf = _getColConf(meta);
+				if (!colConf.r3p || r3p.getSize(colConf.r3p.options) == 0) return data;
+				var opt = r3p.findByProperty(colConf.r3p.options, 'value', data);
+				if (!opt) return data;
+	    		return '<span '+(opt.title? 'title="' + opt.title+ '"' : '')+'>'+opt.label+'</span>' ;
+	    	}
+		},
 		
 	// FIELDS
 		FLD_CHECK: {
@@ -229,7 +363,7 @@ var r3pCol = ( function(){
 				type: 'FLD_CHECK',
 				isField: true,
 	    		thRenderer: function(th, tr, tbl, dbConf){
-    				var btn = r3p.strFormat(TMPL_CHECK, 'selectAll', 'true', 'checked');
+    				var btn = r3p.strFormat(r3p.TMPL_CHECK_NO_LBL, 'selectAll', 'true', 'checked');
     				th.append(btn);
     				$('[name=selectAll]', th).click(function(){
     					var checkAll = $(this).prop('checked'),
@@ -249,7 +383,7 @@ var r3pCol = ( function(){
 					checked = isChecked? 'checked' : '',
 					cssClass = c.isRowSelector ? 'clsRowSelector' : '';
 				
-				var btn = r3p.strFormat(TMPL_CHECK, name, value, checked, cssClass);
+				var btn = r3p.strFormat(r3p.TMPL_CHECK_NO_LBL, name, value, checked, cssClass);
 				if (isChecked) _markRowSelected(meta, isChecked);
 				
 				return btn;
@@ -302,38 +436,9 @@ var r3pCol = ( function(){
 								}
 								row.remove().draw(false);
 				    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
+				    			r3p.setPageModified();
 							});
-						})
-					/*
-					, 
-						{
-							fnYes: function(){	
-								r3p.ajax(
-									{
-										url: colConf.actionUrl,
-										json: {
-											id: row.data().id
-										}
-									}
-									, function(resp) {
-										if (resp.error) {
-											alert(resp.error);
-											return;
-										}
-										row.remove().draw( false );
-						    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
-									}
-								);
-								
-							}
-						}, 
-						{
-							//'data-overlay': 'false',
-							'data-overlay-color': 'blank'
-						}
-						
-					);
-					*/
+						});
 	    		}
 			}
 		},
@@ -343,9 +448,12 @@ var r3pCol = ( function(){
 				templateType: '_BTN_TEMPLATE',
 				tooltip: r3pMsg.BTN_INFO_EDIT,
 				icon: 'mif-pencil',
-				handler: function(td, cell, colConf){
-	    			alert('edit?');
+				handler: function(td, cell, colConf, _tb, _dtbl){	    			
 	    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
+	    			var trData = _dtbl.row($(td).closest('tr')).data();
+	    			
+	    			r3pDtb.openRowForm(trData, colConf.actionUrl, _dtbl)
+	    			
 	    		}
 			}
 		},
@@ -354,13 +462,13 @@ var r3pCol = ( function(){
 			orderable:      false,
 			data:           null,
 			width: 30,
-			defaultContent: r3p.strFormat(TMPL_BTN_HINT, 'cellBtn cellBtnExpander mif-plus', r3pMsg.BTN_INFO_EXPAND),
+			defaultContent: r3p.strFormat(r3p.TMPL_BTN_CELL_HINT, 'cellBtn cellBtnExpander mif-plus', r3pMsg.BTN_INFO_EXPAND),
 			r3p: {
 				type: 'BTN_EXPAND',
 				isButton: true,
 				onClick: null,
 				tooltip: r3pMsg.BTN_INFO_EXPAND_COLLAPSE,
-				handler: function(td, cell, colConf){
+				handler: function(td, cell, colConf, _tb, _dtbl){
 					var spanBtn = td.find('span.cellBtnExpander');
 					spanBtn.toggleClass('mif-plus');
 					spanBtn.toggleClass('mif-minus');
@@ -378,7 +486,7 @@ var r3pCol = ( function(){
 				templateType: '_BTN_TEMPLATE',				
 				tooltip: r3pMsg.BTN_INFO_OPEN,
 				icon: 'mif-chevron-thin-right',
-				handler: function(td, cell, colConf){
+				handler: function(td, cell, colConf, _tb, _dtbl){
 	    			alert('open?');
 	    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
 	    		}

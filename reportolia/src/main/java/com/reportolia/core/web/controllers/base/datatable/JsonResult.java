@@ -18,6 +18,9 @@ public class JsonResult {
 	public JsonResult(){
 		//
 	}	
+	public JsonResult(String error){
+		this(error, null);	
+	}
 	public JsonResult(String error, JsonForm form){
 		this(form);
 		this.error = error;		

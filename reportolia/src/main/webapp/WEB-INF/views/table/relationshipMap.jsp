@@ -32,10 +32,9 @@
 			TH_LINKED_COLUMN = '<html:msg key="dbTable.relationship.linkedColumn.name" />',
 			LBL_LINK_TO_FILTER = '<html:msg key="dbTable.relationship.isLinkToFilter.name" />',
 			LBL_LINK_TO_FILTER_INFO = '<html:msg key="dbTable.relationship.isLinkToFilter.info" />',
+			LBL_REL_TYPE = '<html:msg key="dbTable.relationship.type" />',
 			LBL_ONE_TO_MANY = '<html:msg key="dbTable.relationship.oneToMany" />',
-			LBL_MANY_TO_ONE = '<html:msg key="dbTable.relationship.manyToOne" />'
-		
-			
+			LBL_MANY_TO_ONE = '<html:msg key="dbTable.relationship.manyToOne" />'	
 		;
 			
 		var COLOR_NODE = '#848482',
@@ -125,7 +124,6 @@
 	</jsp:attribute>
 	
 	<jsp:attribute name="body">
-		<hr class="thin bg-grayLighter">
 					
 		<div id="tabRelationshipMap">
 			<div id="divMap">

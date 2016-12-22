@@ -18,7 +18,9 @@ body {
         flex-basis: calc(100% - 52px);
     }
 }
-
+.clsBlock {
+	display: block;	
+}
 .clsBold{
 	font-weight: bold;
 }
@@ -80,7 +82,26 @@ body {
 	margin-right: 5px;
 }
 
+.clsWidth200 {
+	width: 200px !important;
+}
+.clsWidth300 {
+	width: 300px !important;
+}
 
+.clsMarginBottom20 {
+	margin-bottom: 20px;
+}
+.clsMarginRight20 {
+	margin-right: 20px;	
+}
+.select2-dropdown {
+	z-index: 10000;
+}
+.clsFontSize2x {
+	font-size: 1.5rem;
+	line-height: 1.5rem;
+}
 /********************************/
 /** DATATABLE  **********************/
 /********************************/

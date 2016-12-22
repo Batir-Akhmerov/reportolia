@@ -5,7 +5,7 @@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
 %><html:page icon="mif-table">
-	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>
+	<jsp:attribute name="pageTitle"><html:msg key="dbTable.title" /></jsp:attribute>
 	
 	<jsp:attribute name="scripts">
 		js/reportolia/metadata/dlgMetadata.js
@@ -13,10 +13,7 @@
 	
 	<jsp:attribute name="scriptBody">
 		
-		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
-			LBL_IS_SECURED = '<html:msg key="dbTables.isSecured" />',
+		var LBL_IS_SECURED = '<html:msg key="dbTables.isSecured" />',
 			LBL_HAS_SECURITY_FILTER = '<html:msg key="dbTables.hasSecurityFilter" />';
 		
 		<%-- metadata dialog constants --%>	
@@ -31,21 +28,15 @@
 			MSG_ADD_SELECTED = '<html:msg key="msg.addSelected" />';
 		
 		function onLoad() {
+			/*
 			var tbConf = {
 		        ajax: 'r3pTablesLoad.go',
 		        r3pAjaxSave: 'r3pTableSave.go',
 		        r3pAjaxDelete: 'r3pTableDelete.go',
-		        r3pGetFormTitle: function(rowData) {
-		        	return rowData.name;
-		        },
+		        r3pAjaxOpen: 'r3pTableShow.go',
 		        columns: [
 		        	{data: 'id', r3p: 'KEY'},
-		        	{data: 'name', visible: false, searchable: false},
-		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL,
-		            	render: function(data, type, full, meta){
-		            		return r3p.tmplLinkHint(data, '#', 'openTableColumns('+full.id+')', INFO_OPEN_COLUMNS);
-				    	}
-		            },
+		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
 		            {data: 'secured', r3p: 'LBL_CHECK', r3pLabel: LBL_IS_SECURED},
 		            {data: 'securityFilter', r3p: 'LBL_CHECK', r3pLabel: LBL_HAS_SECURITY_FILTER}
 		        ]
@@ -53,36 +44,14 @@
 			
 			
 			self.tblList = r3pDtb.init('tableListDiv', tbConf);
+			*/
 		}
 		
-		function afterLoad() {
-			 <c:if test="${isTableListEmpty}">
-				retrieveFromDb();
-			</c:if>
-			<c:if test="${!isTableListEmpty}">
-		        loadTableList();
-		    </c:if>
-		}
-		
-		function loadTableList() {
-			self.tblList.ajax.reload();
-		}
-		
-		function retrieveFromDb() {
-			var btnConf = {
-				yesBtnLabel: BTN_RETRIEVE,
-				yesBtnClass: 'success',
-				noBtnLabel: BTN_ADD_MANUALLY
-			};
-			r3p.showConfirm(MSG_RETRIEVE, btnConf)
-				.then(function(confirmed){
-					openDlgMetadata(loadTableList);
-				});
-		}
 	</jsp:attribute>
 	
-	<jsp:attribute name="sidebar">
-		<html:dbSidebar activeId="tableList" />
+	<jsp:attribute name="breadcrumbs">
+		<li><a href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li>
+		<li><a href="#" onclick="openTable(${dbTable.id})">${dbTable.name}</a></li>
 	</jsp:attribute>
 	
 	<jsp:attribute name="body">
@@ -92,8 +61,13 @@
 		
 		
 		<hr class="thin bg-grayLighter">
+		<form:form method="POST" commandName="dbTable">
 		
-		<div id="tableListDiv"></div> 
+			<label><html:msg key="dbTable.title" /></label>
+			<div class="input-control text">
+				<form:input path="name" />
+			</div> 
+		</form:form>
 	        
 	</jsp:attribute>
 </html:page>

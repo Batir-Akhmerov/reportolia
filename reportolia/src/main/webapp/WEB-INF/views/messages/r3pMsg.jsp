@@ -10,6 +10,7 @@ var r3pMsg = {
 	BTN_ADD_SELECTED: '<html:msg key="button.addSelected" />',
 	BTN_CANCEL: '<html:msg key="button.cancel" />',
 	BTN_CLOSE: '<html:msg key="button.close" />',
+	BTN_CREATE: '<html:msg key="button.create" />',
 	BTN_NO:    '<html:msg key="button.no" />',
 	BTN_OK:    '<html:msg key="button.ok" />',
 	BTN_SAVE:    '<html:msg key="button.save" />',
@@ -26,6 +27,7 @@ var r3pMsg = {
 	BTN_INFO_OPEN:    '<html:msg key="button.info.open" />',
 	
 	ERR_LABEL: '<html:msg key="error.label" />',
+	ERR_UNEXPECTED: '<html:msg key="error.unexpected" />',
 	ERR_UNEXPECTED_NAME: '<html:msg key="error.unexpected.name" />',
 	
 	LBL_LABEL: '<html:msg key="form.label.name" />',

@@ -31,42 +31,77 @@
 		self.dlgRelationshipListInitialized = true;
 	}
 	
-	function initDlg_TableRelationshipList(tableId, label, divId, url) {
+	function initDlg_TableRelationshipList(tableId, tableLabel, divId, url) {
 		setOwnerTable(tableId);		
 		
 		var tbConf = {
 		        ajax: url,		       
 		        r3pAjaxDelete: 'r3pTableRelationshipDelete.go',
-		        r3pAjaxOpen: 'r3pTableRelationshipsShow.go',
+		        r3pAjaxSave: 'r3pTableRelationshipSave.go',
+		        r3pNewRow: {tableId: tableId},
+		        r3pGetFormTitle: function(rowData) {
+		        	return tableLabel;
+		        },
 		        scrollY: '400px',
 		        paging: false,
 		        ordering: false,
 		        searching: false,
 		        columns: [
 		        	{data: 'id', r3p: 'KEY'},
-		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
-		            {data: 'columnId', r3pLabel: TH_COLUMN,
+		        	{data: 'tableId', visible: false, searchable: false},
+		            {data: 'columnId', 
+		            	r3pLabel: TH_COLUMN,
+		            	r3pSelectUrl: 'r3pOptionsTableColumnsLoad.go?tableId=' + tableId,
 		            	render: function(data, type, full, meta) {
 		            		return full.column ? full.column.label : '';
 		    			}
 		            },
-		            {data: 'oneToMany', r3pLabel: LBL_MANY_TO_ONE,
-		            	render: function(data, type, full, meta) {
-		            		if (data) return '<--';
-		                	return '-->';
-		    			}
+		            {data: 'oneToMany', 
+		            	r3pLabel: LBL_REL_TYPE,
+		            	r3p: {
+		            		type: 'LBL_RADIO',
+		            		options: [
+		            		    {label: '<span class="clsFontSize2x">&larr;</span>', value: true, title: LBL_ONE_TO_MANY},
+		            		    {label: '<span class="clsFontSize2x">&rarr;</span>', value: false, title: LBL_MANY_TO_ONE}
+		            		]
+		            	}
 		            },
-		            {data: 'linkedTableId', r3pLabel: TH_LINKED_TABLE,
+		            {data: 'linkedTableId', 
+		            	r3pLabel: TH_LINKED_TABLE,
+		            	r3p: {
+		            		selectUrl: 'r3pOptionsTablesLoad.go',
+		            		onChange: function(fldSelect, selConf) {
+			    				r3p.jq('linkedColumnId').val(null).trigger("change");
+			    			}
+		            	},
 		            	render: function(data, type, full, meta) {
 		            		return full.linkedTable ? full.linkedTable.label : '';
 		    			}
+		    			
 		            },
-		            {data: 'linkedColumnId', r3pLabel: TH_LINKED_COLUMN,
+		            {data: 'linkedColumnId', 
+		            	r3pLabel: TH_LINKED_COLUMN,
+		            	r3p: {
+		            		selectUrl: function (params) {
+		            			var selCol = r3p.jq('linkedColumnId'),
+		            				selTable = r3p.jq('linkedTableId'),
+		            				tableId = parseInt(selTable.val());
+		            			if (isNaN(tableId) ||  tableId < 0) {
+		            				selCol.prop('disabled', true);
+		            				return null;
+		            			}
+		            			selCol.prop('disabled', false);
+		            			return 'r3pOptionsTableColumnsLoad.go?tableId=' + tableId;
+		            		}
+		            	},
 		            	render: function(data, type, full, meta) {
 		            		return full.linkedColumn ? full.linkedColumn.label : '';
 		    			}
 		    		},
-		            {data: 'linkToFilter', r3pLabel: LBL_LINK_TO_FILTER,
+		    		{data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
+		            {data: 'linkToFilter', 
+		    			r3pLabel: LBL_LINK_TO_FILTER,
+		    			r3p: 'LBL_CHECK',
 		            	render: function(data, type, full, meta) {
 		            		if (data) return '&#10004;';
 	                    	return '';
@@ -80,94 +115,7 @@
 			
 			self.tableRelationshipList = r3pDtb.init('relationshipList', tbConf);
 		
-		/*
-		r3p.jTable('relationshipList', {
-            title: TITLE_CURRENT_TABLE, 
-            selectOnRowClick: false,
-            height: 400,
-            actions: {
-                listAction: 'r3pTableRelationshipsLoad.go',
-                isJsonActions: true,
-                defJson: function() { 
-                	return {tableId: getOwnerTable()};
-                },
-                deleteAction: 'r3pTableRelationshipDelete.go',
-                updateAction: 'r3pTableRelationshipSave.go'
-            },
-            fields: {
-                id: {
-                	key: true,
-                	create: false,
-                    edit: false,
-                    list: false
-                },
-                label: {
-                	title: r3pMsg.LBL_LABEL,
-                	width: '20%',
-                },
-                columnId: {
-                    title: TH_COLUMN,
-                    width: '20%',
-                    display: function(data) {
-                    	return data.record.column.name;
-                    },
-                    dependsOn: 'tableId',
-                    options: function (data) {
-                        if (data.source == 'list') {
-                            return 'r3pOptionsTableColumnsLoad.go?tableId=0';
-                        }
-                        return 'r3pOptionsTableColumnsLoad.go?tableId=' + getOwnerTable(); 
-                    }
-                },
-                oneToMany: {
-                	title: '',
-                	width: '5%',
-                	type: 'radiobutton',
-                	options: {'true': LBL_ONE_TO_MANY, 'false': LBL_MANY_TO_ONE},
-                	display: function(data) {
-                    	if (data.record.oneToMany) return '<--';
-                    	return '-->';
-                    },
-                	defaultValue: true
-                },
-                linkedTableId: {
-                    title: TH_LINKED_TABLE,
-                    width: '20%',
-                    display: function(data) {
-                    	return data.record.linkedTable.name;
-                    },
-                    options: 'r3pOptionsTablesLoad.go'
-                },
-                linkedColumnId: {
-                	width: '20%',
-                    title: TH_LINKED_COLUMN,
-                    display: function(data) {
-                    	return data.record.linkedColumn.name;
-                    },
-	                dependsOn: 'linkedTableId',
-	                options: function (data) {
-	                    if (data.source == 'list') {
-	                        return 'r3pOptionsTableColumnsLoad.go?tableId=0';
-	                    }
-	                    return 'r3pOptionsTableColumnsLoad.go?tableId=' + data.dependedValues.linkedTableId;
-	                }
-                },
-                linkToFilter: {
-                	title: LBL_LINK_TO_FILTER_INFO,
-                	width: '15%',
-                	type: 'checkbox',
-                	values: { 'false' : r3pMsg.OPT_FALSE, 'true' : LBL_LINK_TO_FILTER },
-                	display: function(data) {
-                    	if (data.record.linkToFilter) return '&#10004;';
-                    	return '';
-                    }
-                }
-            },
-            recordsLoaded: function(){
-            	if (self.onLoad_TableRelationships) self.onLoad_TableRelationships();
-            }
-        });
-        */
+		
 		
 	}
 	

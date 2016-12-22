@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.table.DbTable;
+import com.reportolia.core.web.controllers.base.BaseController;
 import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 
 /**
@@ -24,7 +25,7 @@ import com.reportolia.core.web.controllers.base.datatable.JsonForm;
  * Created on Oct 23, 2016
  */
 @Controller
-public class ReportListController {
+public class ReportListController  extends BaseController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ReportListController.class);
 	

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import com.reportolia.core.utils.ListUtils;
 import com.reportolia.core.utils.MessageConstants;
 import com.reportolia.core.utils.MessageResourceHandler;
 import com.reportolia.core.web.controllers.base.datatable.JsonForm;
+import com.reportolia.core.web.controllers.base.datatable.JsonSelectOptionsForm;
 
 /**
  * The DbManager class
@@ -49,6 +51,11 @@ public class DbManager implements DbHandler {
 	/*************************************************/	 
 	public List<DbTable> getTableList(JsonForm form) {
 		 List<DbTable> list = this.tableRepository.findAll();
+		 return list;
+	}
+	
+	public Page<DbTable> getTableList(JsonSelectOptionsForm form) {
+		 Page<DbTable> list = this.tableRepository.findByNameContainsAllIgnoreCase(form.getSearchTerm(), form);
 		 return list;
 	}
 	 

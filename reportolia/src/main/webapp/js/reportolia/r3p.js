@@ -99,6 +99,40 @@ var r3p = (function(){
 			return dfd.promise();
 		},
 		
+		showDetail: function(dlgId, title, $panel, btnConf, dlgConf, fnSave, fnCancel) {
+			var dfd  = $.Deferred();
+			btnConf = btnConf || {};
+			var defaultBtnConf = {
+				noCancelBtn: true,
+				buttons: [{
+						label: btnConf.yesBtnLabel || r3pMsg.BTN_SAVE,
+						cssClass: btnConf.yesBtnClass || 'success',
+	  					handler: function() {
+	  						dfd.resolve(true);
+	  						if (fnSave && !fnSave(this)) return;
+	  						r3p.closeDialog(this);
+	  					}
+	  				},
+	  				{
+	  					label: btnConf.noBtnLabel || r3pMsg.BTN_CANCEL,
+	  					cssClass: btnConf.noBtnClass,
+	  					handler: function() {
+	  						dfd.resolve(false);
+	  						if (fnCancel && !fnCancel(this)) return;
+	  						r3p.closeDialog(this);
+	  					}
+	  				}
+	  			]
+			};
+			btnConf = $.extend({}, defaultBtnConf, btnConf);
+			var id = 'dlg-detail-' + (dlgId || '_'),
+				div = r3p.createDialogDiv(id, title, $panel, dlgConf, btnConf);
+						
+			r3p.showDialog(id, div);
+			
+			return dfd.promise();
+		},
+		
 		showError: function(msg, dlgConf, btnConf, title) {
 			var dfd  = $.Deferred(),
 				id = 'dlg-error';
@@ -146,7 +180,7 @@ var r3p = (function(){
 			hideMetroDialog(div);
 		},
 		
-		createDialogDiv: function (id, title, msg, dlgConf, btnConf) {
+		createDialogDiv: function (id, title, dlgContent, dlgConf, btnConf) {
 			var div = r3p.jq(id);
 			if (r3p.isNullJq(div)) {
 				btnConf = btnConf || {}; 
@@ -158,15 +192,20 @@ var r3p = (function(){
 				var overlay = r3p.createOverlay(dlgConf.id);
 				div = r3p.createEl('div', 'body', dlgConf, null, 'padding20');
 				div.prop('overlay', overlay);
-				r3p.createEl('h1', div);
+				if (title) r3p.createEl('h3', div, null, null, 'text-light');
 				r3p.createEl('div', div).addClass('clsDialogContent');
 				r3p.createEl('div', div).addClass('clsDialogButtons');
 			}
 			else {
 				$('body').append(div.prop('overlay')).append(div);
 			}
-			div.children('h1').html(title);
-			div.children('div.clsDialogContent').html(msg);
+			if (title) div.children('h3').html(title);
+			var contentPanel = div.children('div.clsDialogContent');
+			if (dlgContent instanceof jQuery) {
+				contentPanel.empty();
+				contentPanel.append(dlgContent);
+			}
+			else div.children('div.clsDialogContent').html(dlgContent);
 			
 			// buttons
 			var btnDiv = div.children('div.clsDialogButtons').empty();				
@@ -231,10 +270,103 @@ var r3p = (function(){
 			return json;
 		},
 		
+		initSelect: function(field, url, conf){
+					
+			var selConf = $.extend({}, {
+				escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+				minimumInputLength: 0,
+				templateResult: r3p.formatSelectOption, 
+				templateSelection: r3p.formatSelectOption,
+				
+				// r3p options
+				pageSize: 30,
+				onChange: null
+			}, conf);
+			
+			selConf.ajax = {
+				url: url,
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+					return {
+						results: data.items,
+						pagination: {
+							more: (params.page * selConf.pageSize) < data.total_count
+						}
+					};
+				}//,
+				//cache: true
+			};
+			var fldSelect = $(field).select2(selConf);
+			if (selConf.onChange) {
+				fldSelect.on('change', function (e) {
+					selConf.onChange(fldSelect, selConf);
+				});
+			}
+			return fldSelect;
+		},
+		formatSelectOption: function (bean) {
+	    	return bean.name || bean.label || bean.text;
+	    },
 		
 		/******************************************/
 	    /**   HTML   ***************************/
 	    /******************************************/
+	    TMPL_BTN: '<button class="button {2}" ><span class="{1}"></span>{0}</button>',
+	    TMPL_BTN_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{3}">' 
+	    	+'<button class="button {2}" ><span class="{1}"></span>{0}</button></span>',
+	    TMPL_BTN_CELL: '<span class="{0}"></span>',
+	    TMPL_BTN_CELL_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{1}"><span class="{0}"></span></span>',
+		
+		TMPL_CHECK_NO_LBL: '<label class="input-control checkbox small-check">' +
+					    '<input type="checkbox" class="{3}" name="{0}" value="{1}" {2} />'+
+					    '<span class="cellCheckFlag check"></span>'+
+					'</label>',
+		TMPL_CHECK: '<label class="input-control checkbox small-check">' +
+				    '<input type="checkbox" class="{3}" name="{0}" value="{1}" {4} />' +
+				    '<span class="cellCheckFlag check"></span>' +
+				    '<span class="caption">{2}</span>' +
+				'</label>',
+				
+		TMPL_HIDDEN: '<input type="hidden" name="{0}" value="{1}" />',
+		
+		TMPL_INPUT: '<label>{2}</label>' +
+                     '<div class="input-control text {3}">' +
+                     	'<input type="text" name="{0}" value="{1}">' +
+                     '</div>',
+                     
+        TMPL_LINK_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{3}">' 
+        		+'<a href="{1}" onClick="{2}" >{0}</a></span>',                     
+                     
+        TMPL_SELECT: '<label>{2}</label>' +
+        				'<div class="input-control {4}" data-role="select">' +
+			        	'<select name="{0}">' +
+			        		'<option value="{1}" selected="selected">{3}</option>' +
+			        	'</select>' +
+			        	'</div>',
+	
+		TMPL_CHECKBOX: '<label class="input-control checkbox {3}">' +
+						    '<input type="checkbox" name="{0}" {1}>' +
+						    '<span class="check"></span>' +
+						    '<span class="caption">{2}</span>' +
+						'</label>',
+		
+		TMPL_RADIO: '<label class="input-control radio small-check {4}" {5}>' +
+					    '<input type="radio" name="{0}" value="{1}" {3}>' +
+					    '<span class="check"></span>' +
+					    '<span class="caption">{2}</span>' +
+					'</label>',
 		createEl: function(tag, parent, attrs, props, cls) {
 	    	var el = $('<' + tag + '></' + tag + '>');
 	    	if (parent) el.appendTo(parent);
@@ -250,6 +382,10 @@ var r3p = (function(){
 	    	}
 	    	if (cls) el.addClass(cls);
 	    	return el;
+	    },
+	    
+	    tmplLinkHint: function(ancor, href, fnClick, hint) {
+	    	return r3p.strFormat(r3p.TMPL_LINK_HINT, ancor, href, fnClick, hint);
 	    },
 	    
 	    
