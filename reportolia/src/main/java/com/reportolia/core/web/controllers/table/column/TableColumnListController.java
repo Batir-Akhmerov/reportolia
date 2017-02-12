@@ -1,10 +1,7 @@
-package com.reportolia.core.web.controllers.table.columns;
-
-import java.util.List;
+package com.reportolia.core.web.controllers.table.column;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,12 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.table.DbTable;
-import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.utils.CoreUtils;
 import com.reportolia.core.web.controllers.base.BaseController;
-import com.reportolia.core.web.controllers.base.datatable.JsonForm;
+import com.reportolia.core.web.controllers.base.GoHomeException;
 
 /**
  * 
@@ -42,10 +38,9 @@ public class TableColumnListController  extends BaseController {
 	}
 	
 	@RequestMapping(value = "/r3pTableColumnListShow")
-	public String show(Model model, @ModelAttribute("dbTable") DbTable dbTable) {
-		if (dbTable != null) {
-			List<DbTableColumn> list = this.tableColumnRepository.findByDbTable(dbTable);
-			model.addAttribute("columnList", CollectionUtils.isEmpty(list));
+	public String show(Model model, @ModelAttribute("dbTable") DbTable dbTable) {		
+		if (dbTable == null) {
+			throw new GoHomeException();
 		}
 		return "table/columns/columnList";
 	}

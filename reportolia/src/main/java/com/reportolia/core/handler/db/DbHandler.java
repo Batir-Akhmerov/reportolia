@@ -13,6 +13,7 @@ import com.reportolia.core.model.table.DbTableColumn;
 import com.reportolia.core.model.table.DbTableRelationship;
 import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 import com.reportolia.core.web.controllers.base.datatable.JsonSelectOptionsForm;
+import com.reportolia.core.web.controllers.table.column.TableColumnListJsonForm;
 
 /**
  * The DbHandler class
@@ -41,9 +42,15 @@ public interface DbHandler {
 	/*************************************************/
 	/** COLUMNS **************************************/
 	/*************************************************/	
+	public List<DbTableColumn> getColumnList(TableColumnListJsonForm form);
+	
 	public List<DbTableColumn> getColumnList(DbTable table);
 	
 	public DbTableColumn getColumn(DbTable table, String columnName);
+	
+	public DbTableColumn saveColumn(DbTableColumn bean, long tableId);
+	
+	public void deleteColumn(DbTableColumn  bean, long tableId);
 	
 	
 

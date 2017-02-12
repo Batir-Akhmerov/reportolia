@@ -26,6 +26,13 @@ public class BaseController {
 	protected MessageResourceHandler messageResourceHandler;
 	
 	
+	@ExceptionHandler(GoHomeException.class)
+	public ModelAndView handleGoHomeException(GoHomeException ghe) {
+		ModelAndView model = new ModelAndView("redirect:/r3pReportList.go");
+		model.addObject("errorMsg", ghe.getMessage());
+		return model;
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleAllException(HttpServletRequest req, Exception e) {
 		logger.error("\nERROR URL: " + req.getRequestURL() + " raised " + e + "\nStacktrace: " + e.getStackTrace());

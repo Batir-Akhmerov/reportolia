@@ -103,4 +103,14 @@ public abstract class BaseEntity {
 	public boolean isNewBean() {
 		return CoreUtils.isKeyNull(this.getId());
 	}
+
+	@Override
+	public int hashCode() {
+		return this.id != null ? this.id.intValue() : -1;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this.id != null && obj != null && this.id.equals(((BaseEntity)obj).getId());
+	}
 }	

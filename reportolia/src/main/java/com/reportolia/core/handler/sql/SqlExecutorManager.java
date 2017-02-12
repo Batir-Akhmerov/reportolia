@@ -20,7 +20,7 @@ public class SqlExecutorManager implements SqlExecutorHandler {
 	public static final String TYPE_VIEW = "VIEW";
 	
 	@Resource protected DataSource dataSource;
-	@Resource protected DbTableRepository tableRepository;
+	@Resource protected FolderRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
 	
 	

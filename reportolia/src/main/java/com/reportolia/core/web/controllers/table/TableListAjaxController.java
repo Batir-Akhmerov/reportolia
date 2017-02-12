@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,7 +36,7 @@ public class TableListAjaxController  extends BaseJsonController {
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableColumnRepository tableColumnRepository;
 	
-	@ModelAttribute("dbTable")
+	//@ModelAttribute("dbTable")
 	public DbTable getBean(Long id) {
 		if (CoreUtils.isKeyNull(id)) {
 			return null;
@@ -52,13 +52,13 @@ public class TableListAjaxController  extends BaseJsonController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableSave")
-	public DbTable tableSave(@ModelAttribute("dbTable") DbTable bean) {
+	public DbTable tableSave(@RequestBody DbTable bean) {
 		return this.dbHandler.saveTable(bean);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableDelete")
-	public JsonResult tableDelete(@ModelAttribute("dbTable") DbTable bean) {
+	public JsonResult tableDelete(@RequestBody DbTable bean) {
 		this.dbHandler.deleteTable(bean);
 		return new JsonResult();
 	}

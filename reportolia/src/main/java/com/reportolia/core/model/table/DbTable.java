@@ -39,7 +39,7 @@ public class DbTable extends BaseEntity {
     private String description;
     
     @JsonIgnore
-    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity=DbTableColumn.class, mappedBy="dbTable", cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private List<DbTableColumn> dbTableColumns;
     
     /**

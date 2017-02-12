@@ -20,7 +20,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.reportolia.core.handler.db.DbHandler;
-import com.reportolia.core.handler.report.ReportHandler;
+import com.reportolia.core.handler.report.ReportManager;
 import com.reportolia.core.model.report.Report;
 import com.reportolia.core.repository.report.ReportColumnRepository;
 import com.reportolia.core.repository.report.ReportRepository;
@@ -59,7 +59,7 @@ public class BaseReportTest {
 	@Resource protected DbHandler dbHandler;
 	@Resource protected ReportRepository reportRepository;
 	@Resource protected ReportColumnRepository reportColumnRepository;
-	@Resource protected ReportHandler reportManager;
+	@Resource protected ReportManager reportManager;
 	@Resource protected QueryGeneratorHandler queryGeneratorManager;
 	@Resource protected ReportQueryGeneratorHandler reportQueryGeneratorManager;
 	@Resource protected SqlGeneratorHandler sqlGeneratorManager;

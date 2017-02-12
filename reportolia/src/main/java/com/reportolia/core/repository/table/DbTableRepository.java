@@ -10,7 +10,7 @@ import com.reportolia.core.model.table.DbTable;
 
 /**
  * 
- * The DbTableRepository class
+ * The FolderRepository class
  *
  * @author Batir Akhmerov
  * Created on Nov 13, 2015

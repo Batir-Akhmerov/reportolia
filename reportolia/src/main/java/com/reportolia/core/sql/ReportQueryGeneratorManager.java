@@ -14,7 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.handler.operand.OperandHandler;
-import com.reportolia.core.handler.report.ReportHandler;
+import com.reportolia.core.handler.report.ReportManager;
 import com.reportolia.core.model.operand.Operand;
 import com.reportolia.core.model.report.Report;
 import com.reportolia.core.model.report.ReportColumn;
@@ -46,7 +46,7 @@ public class ReportQueryGeneratorManager implements ReportQueryGeneratorHandler 
 	@Resource protected OperandHandler reportColumnOperandHandler;
 	@Resource protected OperandHandler reportStaticFilterOperandHandler;
 	
-	@Resource protected ReportHandler reportManager;
+	@Resource protected ReportManager reportManager;
 	@Resource protected ReportColumnRepository reportColumnRepository;
 	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
 	

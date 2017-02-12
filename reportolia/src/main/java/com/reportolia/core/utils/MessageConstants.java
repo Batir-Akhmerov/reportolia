@@ -14,6 +14,8 @@ public class MessageConstants {
 	public static final String ERROR_UNEXPECTED = "error.unexpected";
 	public static final String ERROR_REQUIRED_FIELD = "error.validation.requiredField";
 	
+	
+	public static final String ERROR_ELEMENT_NOT_EXISTS = "error.validation.element.notExists";
 	public static final String ERROR_TB_NOT_REMOVABLE = "error.validation.table.cannotDelete.hasColumns";
 	public static final String ERROR_TB_NOT_EXISTS = "error.validation.table.notExists";
 	public static final String ERROR_TB_DUPLICATE = "error.validation.table.alreadyExists";

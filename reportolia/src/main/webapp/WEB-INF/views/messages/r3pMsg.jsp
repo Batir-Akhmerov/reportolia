@@ -30,8 +30,16 @@ var r3pMsg = {
 	ERR_UNEXPECTED: '<html:msg key="error.unexpected" />',
 	ERR_UNEXPECTED_NAME: '<html:msg key="error.unexpected.name" />',
 	
+	LBL_COLUMN: '<html:msg key="form.column.name" />',
 	LBL_LABEL: '<html:msg key="form.label.name" />',
 	LBL_NAME: '<html:msg key="form.name.name" />',
+	LBL_DATA_TYPE: '<html:msg key="form.dataType.name" />',
+	LBL_CALCULATED: '<html:msg key="form.calculated.name" />',
+	LBL_NOT_CORRELATED: '<html:msg key="form.notCorrelated.name" />',
+	LBL_PK: '<html:msg key="form.primaryKey.name" />',
+	
+
+
 	
 	OPT_NO:   '<html:msg key="option.no" />',
 	OPT_YES:  '<html:msg key="option.yes" />',

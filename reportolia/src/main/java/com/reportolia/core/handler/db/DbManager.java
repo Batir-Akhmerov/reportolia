@@ -21,12 +21,13 @@ import com.reportolia.core.repository.table.DbTableColumnRepository;
 import com.reportolia.core.repository.table.DbTableRelationshipRepository;
 import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.utils.CoreUtils;
-import com.reportolia.core.utils.ExceptionUtilsHandler;
+import com.reportolia.core.utils.ExceptionUtilsService;
 import com.reportolia.core.utils.ListUtils;
 import com.reportolia.core.utils.MessageConstants;
 import com.reportolia.core.utils.MessageResourceHandler;
 import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 import com.reportolia.core.web.controllers.base.datatable.JsonSelectOptionsForm;
+import com.reportolia.core.web.controllers.table.column.TableColumnListJsonForm;
 
 /**
  * The DbManager class
@@ -41,7 +42,7 @@ public class DbManager implements DbHandler {
 	@Resource protected DbTableColumnRepository tableColumnRepository;
 	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
 	@Resource protected MetadataHandler metadataHandler;
-	@Resource protected ExceptionUtilsHandler exceptionHandler;
+	@Resource protected ExceptionUtilsService exceptionUtils;
 	@Resource protected MessageResourceHandler messageResourceHandler;
 	
 	private DbTableTalationshipToRelationshipInfoMapper dbToRelationshipInfoMapper = new DbTableTalationshipToRelationshipInfoMapper();
@@ -66,38 +67,51 @@ public class DbManager implements DbHandler {
 	
 	@Transactional
 	public DbTable saveTable(DbTable bean) {
-		this.exceptionHandler.assertFalse(bean == null, "Table argument is required!");
-		this.exceptionHandler.validateRequired(bean.getName(), MessageConstants.FORM_NAME);
-		this.exceptionHandler.validateNotEmpty(
+		this.exceptionUtils.assertFalse(bean == null, "Table argument is required!");
+		this.exceptionUtils.validateRequired(bean.getName(), MessageConstants.FORM_NAME);
+		this.exceptionUtils.validateNotEmpty(
 			this.metadataHandler.getSysTableList(bean.getName()),
 			MessageConstants.ERROR_TB_NOT_EXISTS,
 			bean.getName()
 		);
+		DbTable beanToSave = bean;
 		if (bean.isNewBean()) {
-			this.exceptionHandler.validateEmpty(
+			this.exceptionUtils.validateEmpty(
 				getTableList(bean.getName()),
 				MessageConstants.ERROR_TB_DUPLICATE,
 				bean.getName()
 			);
 		}
+		else {
+			DbTable oldBean = this.tableRepository.findById(bean.getId());
+			this.exceptionUtils.validateFalse(oldBean == null, MessageConstants.ERROR_TB_NOT_EXISTS, bean.getName());
+			CoreUtils.copyProperties(bean, oldBean, "label", "description", "secured", "securityFilter");
+			beanToSave = oldBean;
+		}
 		
-		bean = this.tableRepository.save(bean);
-		return bean;
+		beanToSave = this.tableRepository.save(beanToSave);
+		return beanToSave;
 	}
 	
 	@Transactional
 	public void deleteTable(DbTable  bean) {
-		this.exceptionHandler.validateEmpty(
-			getColumnList(bean),
+		DbTable oldBean = this.tableRepository.findById(bean.getId());
+		this.exceptionUtils.validateEmpty(
+			getColumnList(oldBean),
 			MessageConstants.ERROR_TB_NOT_REMOVABLE,
-			bean.getName()
+			oldBean.getName()
 		);
-		this.tableRepository.delete(bean);
+		this.tableRepository.delete(oldBean);
 	}
 	
 	/*************************************************/
 	/** COLUMNS **************************************/
 	/*************************************************/
+	
+	public List<DbTableColumn> getColumnList(TableColumnListJsonForm form) {
+		 DbTable table = this.tableRepository.findById(form.getTableId());
+		 return getColumnList(table);
+	}
 	
 	public List<DbTableColumn> getColumnList(DbTable table) {
 		 if (table == null) {
@@ -113,7 +127,44 @@ public class DbManager implements DbHandler {
 		 List<DbTableColumn> list = getColumnList(table);
 		 return ListUtils.findByProperty(list, "name", columnName);
 	}
-	 
+	
+	@Transactional
+	public DbTableColumn saveColumn(DbTableColumn bean, long tableId) {
+		this.exceptionUtils.assertFalse(bean == null, "Column argument is required!");
+		
+		DbTableColumn beanToSave = bean;
+		if (bean.isNewBean()) {
+			this.exceptionUtils.assertFalse(CoreUtils.isKeyNull(tableId), "Column argument is required!");
+			DbTable table = this.tableRepository.findById(tableId);
+			this.exceptionUtils.assertTrue(table != null, "Cannot find table [%s]!", tableId);
+			
+			this.exceptionUtils.validateRequired(bean.getLabel(), MessageConstants.FORM_NAME);
+			bean.setName(bean.getLabel());
+			this.exceptionUtils.validateEmpty(
+					this.tableColumnRepository.findByDbTableIdAndName(tableId, bean.getName()),
+				MessageConstants.ERROR_TB_DUPLICATE,
+				bean.getName()
+			);
+			bean.setDbTable(table);
+		}
+		else {
+			DbTableColumn oldBean = this.tableColumnRepository.findById(bean.getId());
+			this.exceptionUtils.validateFalse(oldBean == null, MessageConstants.ERROR_ELEMENT_NOT_EXISTS, bean.getName());
+			CoreUtils.copyProperties(bean, oldBean, "label");
+			beanToSave = oldBean;
+		}
+		
+		beanToSave = this.tableColumnRepository.save(beanToSave);
+		return beanToSave;
+	}
+	
+	@Transactional
+	public void deleteColumn(DbTableColumn  bean, long tableId) {
+		DbTable table = this.tableRepository.findById(tableId);
+		DbTableColumn oldBean = this.tableColumnRepository.findById(bean.getId());
+		table.getDbTableColumns().remove(oldBean);
+		this.tableRepository.save(table);
+	}
 	
 	 
 	/*************************************************/
@@ -126,7 +177,7 @@ public class DbManager implements DbHandler {
 	}
 	
 	public RelationshipInfo saveTableRelationship(RelationshipInfo info) {
-		this.exceptionHandler.assertFalse(CoreUtils.isKeyNull(info.getTableId()), "TableId argument is required!");
+		this.exceptionUtils.assertFalse(CoreUtils.isKeyNull(info.getTableId()), "TableId argument is required!");
 			
 		DbTableRelationship bean = null;
 		if (CoreUtils.isKeyNull(info.getId())) {
@@ -138,9 +189,9 @@ public class DbManager implements DbHandler {
 		DbTableColumn column = this.tableColumnRepository.findById(info.getColumnId());
 		DbTableColumn linkedColumn = this.tableColumnRepository.findById(info.getLinkedColumnId());
 		
-		this.exceptionHandler.assertFalse(column == null || linkedColumn == null, "Both columns are required for the table relationship!"
+		this.exceptionUtils.assertFalse(column == null || linkedColumn == null, "Both columns are required for the table relationship!"
 		);
-		this.exceptionHandler.assertFalse( 
+		this.exceptionUtils.assertFalse( 
 				column.getDbTable().getId() != info.getTableId() && linkedColumn.getDbTable().getId() != info.getTableId()
 				, "At least one column should belong to table [%s]!", info.getTableId()
 		);
@@ -163,7 +214,7 @@ public class DbManager implements DbHandler {
 	
 	@Transactional
 	public DbTableRelationship saveTableRelationship(DbTableRelationship  bean) {
-		this.exceptionHandler.assertFalse(
+		this.exceptionUtils.assertFalse(
 				bean.getDbColumnParent() == null || bean.getDbColumnParent().getId() == null
 				|| bean.getDbColumnChild() == null || bean.getDbColumnChild().getId() == null
 			, "Relationship must have both Parent and Child Column set!"

@@ -57,9 +57,32 @@ var r3p = (function(){
 				.fail(function(resp) {
 					dfd.reject(resp);
 					if (fnError) fnError(resp);
-					else r3p.showError(r3pMsg.ERR_LABEL + (resp && resp.error ? resp.error : r3pMsg.ERR_UNEXPECTED_NAME));
+					else {
+						var errMsg = r3pMsg.ERR_UNEXPECTED_NAME;
+						if (resp && resp.responseJSON && resp.responseJSON.error) {
+							errMsg = resp.responseJSON.error;
+						}
+						else if (resp && resp.error && $.type(resp.error) == 'string'){
+							errMsg = resp.error;
+						} 
+						r3p.showError(errMsg);
+					}
 				});
 			return dfd.promise();
+		},
+		isAjaxErrorShown: function(resp) {
+			if (resp && resp.error) {
+				r3p.showError(resp.error);
+				return true;
+			}
+			return false;
+		},
+		ajaxErrorCallback: function(resp){
+			if (resp && resp.responseJSON && resp.responseJSON.error) {
+				r3p.showError(resp.responseJSON.error);
+				return;
+			}
+			r3p.showError(r3pMsg.ERR_UNEXPECTED);
 		},
 		
 		/******************************************/
@@ -323,9 +346,9 @@ var r3p = (function(){
 		/******************************************/
 	    /**   HTML   ***************************/
 	    /******************************************/
-	    TMPL_BTN: '<button class="button {2}" ><span class="{1}"></span>{0}</button>',
+	    TMPL_BTN: '<button class="button {2}" ><span class="{1}"></span> {0}</button>',
 	    TMPL_BTN_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{3}">' 
-	    	+'<button class="button {2}" ><span class="{1}"></span>{0}</button></span>',
+	    	+'<button class="button {2}" ><span class="{1}"></span> {0}</button></span>',
 	    TMPL_BTN_CELL: '<span class="{0}"></span>',
 	    TMPL_BTN_CELL_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{1}"><span class="{0}"></span></span>',
 		
@@ -343,9 +366,9 @@ var r3p = (function(){
 		
 		TMPL_INPUT: '<label>{2}</label>' +
                      '<div class="input-control text {3}">' +
-                     	'<input type="text" name="{0}" value="{1}">' +
+                     	'<input type="text" name="{0}" value="{1}" {4}>' +
                      '</div>',
-                     
+                                                 
         TMPL_LINK_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{3}">' 
         		+'<a href="{1}" onClick="{2}" >{0}</a></span>',                     
                      
@@ -354,18 +377,18 @@ var r3p = (function(){
 			        	'<select name="{0}">' +
 			        		'<option value="{1}" selected="selected">{3}</option>' +
 			        	'</select>' +
-			        	'</div>',
+			        	'</div>', 
 	
 		TMPL_CHECKBOX: '<label class="input-control checkbox {3}">' +
-						    '<input type="checkbox" name="{0}" {1}>' +
+						    '<input type="checkbox" name="{0}" {1} {4}>' +
 						    '<span class="check"></span>' +
-						    '<span class="caption">{2}</span>' +
+						    '<span class="caption"> {2}</span>' +
 						'</label>',
 		
 		TMPL_RADIO: '<label class="input-control radio small-check {4}" {5}>' +
 					    '<input type="radio" name="{0}" value="{1}" {3}>' +
 					    '<span class="check"></span>' +
-					    '<span class="caption">{2}</span>' +
+					    '<span class="caption"> {2}</span>' +
 					'</label>',
 		createEl: function(tag, parent, attrs, props, cls) {
 	    	var el = $('<' + tag + '></' + tag + '>');

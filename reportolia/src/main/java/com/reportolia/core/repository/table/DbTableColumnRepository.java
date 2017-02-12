@@ -26,8 +26,13 @@ public interface DbTableColumnRepository extends UpdatableRepository<DbTableColu
     )
     public List<DbTableColumn> findByDbTableId(@Param("tableId") Long tableId);
     
-    public List<DbTableColumn> findByDbTable(DbTable dbTable);
+    @Query(
+			"select c FROM DbTableColumn c WHERE c.dbTable.id = :tableId AND c.name = :name ORDER BY c.name"
+    )
+    public List<DbTableColumn> findByDbTableIdAndName(@Param("tableId") Long tableId, @Param("name") String name);
     
+    public List<DbTableColumn> findByDbTable(DbTable dbTable);
+        
     public List<DbTableColumn> findByDbTableAndPk(DbTable dbTable, Boolean pk);
     
 }

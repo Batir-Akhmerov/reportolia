@@ -8,17 +8,17 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
- * The ExceptionUtilsHandler class
+ * The ExceptionUtilsService class
  *
  * @author Batir Akhmerov
  * Created on Oct 28, 2016
  */
-@Component
-public class ExceptionUtilsHandler {
+@Service
+public class ExceptionUtilsService {
 	
 	public static final String MSG_VALIDATION_ERROR = "Validation Error!";
 	
@@ -69,6 +69,11 @@ public class ExceptionUtilsHandler {
 		}
 	}
 	*/
+	
+	public void assertTrue(boolean validCond, String msg, Object ... args) {
+		assertFalse(!validCond, msg, args);
+	}
+	
 	public void assertFalse(boolean invalidCond, String msg, Object ... args) {
 		if (invalidCond) {
 			String error = StringUtils.isEmpty(msg) ? MSG_VALIDATION_ERROR : CoreUtils.format(msg, args);

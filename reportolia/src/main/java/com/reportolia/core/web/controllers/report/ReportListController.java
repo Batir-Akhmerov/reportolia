@@ -1,21 +1,14 @@
 package com.reportolia.core.web.controllers.report;
 
-import java.util.List;
-import java.util.Locale;
-
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.reportolia.core.handler.db.DbHandler;
-import com.reportolia.core.model.table.DbTable;
+import com.reportolia.core.repository.table.DbTableRepository;
 import com.reportolia.core.web.controllers.base.BaseController;
-import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 
 /**
  * 
@@ -27,16 +20,16 @@ import com.reportolia.core.web.controllers.base.datatable.JsonForm;
 @Controller
 public class ReportListController  extends BaseController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ReportListController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(ReportListController.class);
 	
-	@Resource protected DbHandler dbManager;
+	//@Resource protected DbHandler dbManager;
+	@Resource protected DbTableRepository tableRepository;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/r3pReportList", method = RequestMethod.GET)
-	public String show(Locale locale, Model model) {
-		logger.info("Welcome r3pReportList! The client locale is {}.", locale);
+	public String show(Model model) {
 		
 		//Date date = new Date();
 		//DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
@@ -45,8 +38,7 @@ public class ReportListController  extends BaseController {
 		
 		//model.addAttribute("serverTime", formattedDate );
 		
-		List<DbTable> list = this.dbManager.getTableList(new JsonForm());
-		if (list.size() == 0) {
+		if (this.tableRepository.count() == 0) {
 			return "redirect:/r3pTableListShow.go";
 		}
 		/*
@@ -66,7 +58,7 @@ public class ReportListController  extends BaseController {
 		model.addAttribute("stateList", stateList);
 		*/
 		
-		return "reportList";
+		return "report/reportList";
 	}
 	
 }

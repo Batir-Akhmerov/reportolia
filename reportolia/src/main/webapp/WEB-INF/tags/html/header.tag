@@ -7,7 +7,7 @@
 <!-- HEADER BEGIN -->
 
 <div class="app-bar fixed-top darcula" data-role="appbar">
-	<a class="app-bar-element branding"><spring:message code="app.title" /></a>
+	<a class="app-bar-element branding" href="/reportolia"><spring:message code="app.title" /></a>
 	<span class="app-bar-divider"></span>
 	<ul class="app-bar-menu">
 	    <li data-flexorderorigin="0" data-flexorder="1"><a href="">Dashboard</a></li>

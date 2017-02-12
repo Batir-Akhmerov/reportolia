@@ -1,4 +1,4 @@
-package com.reportolia.core.web.controllers.table;
+package com.reportolia.core.web.controllers.table.relationship;
 
 import javax.annotation.Resource;
 

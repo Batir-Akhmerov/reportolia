@@ -47,10 +47,7 @@ var r3pDtb = (function(){
 		if (!dbConf && !dbConf.ajax) return;
 		
 		var defaultAjax = {
-			error: function(resp) {
-        		var msg = resp && resp.responseJSON && resp.responseJSON.error ? resp.responseJSON.error : r3pMsg.ERR_UNEXPECTED 
-        		r3p.showError(msg);
-        	}
+			error: r3p.ajaxErrorCallback
 		};
 		if ($.type(dbConf.ajax) == 'string') dbConf.ajax = {url: dbConf.ajax};
 		dbConf.ajax = $.extend({}, defaultAjax, dbConf.ajax);
@@ -169,18 +166,27 @@ var r3pDtb = (function(){
 		$(r3p.strFormat(r3p.TMPL_HIDDEN, tbColConf.data, value)).appendTo($panel);
 	}
 	
-	function _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
-		var value = trData[tbColConf.data];
+	function _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList, isDisabled) {
+		var value = trData[tbColConf.data],
+			isDisabled = isDisabled ? ' disabled' : '';
 		value = r3p.isBlank(value) ? '' : value;
-		$(r3p.strFormat(r3p.TMPL_INPUT, tbColConf.data, value, label, 'clsBlock clsMarginBottom20')).appendTo($panel);
+		$(r3p.strFormat(r3p.TMPL_INPUT, tbColConf.data, value, label, 'clsBlock clsMarginBottom20', isDisabled)).appendTo($panel);
 	}
 	
-	function _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+	function _inputDisabledRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
+		var value = trData[tbColConf.data];
+		value = r3p.isBlank(value) ? '' : value;
+		$(r3p.strFormat(r3p.TMPL_INPUT_DISABLED, tbColConf.data, value, label, 'clsBlock clsMarginBottom20')).appendTo($panel);
+	}
+	
+	function _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList, isDisabled) {
 		var fldName = tbColConf.data,
 			value = trData[tbColConf.data],
-			isChecked = value == true || value == 'true' ? 'checked' : '';
-		$(r3p.strFormat(r3p.TMPL_CHECKBOX, fldName, isChecked, label, 'clsBlock clsMarginBottom20')).appendTo($panel);
+			isChecked = value == true || value == 'true' ? 'checked' : '',
+			isDisabled = isDisabled ? ' disabled' : '';
+		$(r3p.strFormat(r3p.TMPL_CHECKBOX, fldName, isChecked, label, 'clsBlock clsMarginBottom20', isDisabled)).appendTo($panel);
 	}
+		
 	function _radioRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList) {
 		if (r3p.getSize(r3pConf.options) == 0) {
 			alert('R3p Radio Options expected!');
@@ -269,10 +275,10 @@ var r3pDtb = (function(){
 				label = r3pConf.label;
 				
 				if (r3pConf.selectUrl) _selectRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
-				else if (r3pConf.type == 'FLD_CHECK' || r3pConf.type == 'LBL_CHECK') _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+				else if (r3pConf.type == 'FLD_CHECK' || r3pConf.type == 'LBL_CHECK') _checkboxRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList, tbColConf.readOnly);
 				else if (r3pConf.type == 'LBL_RADIO') _radioRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
-				else if (tbColConf.visible == false) _hiddenRenderer($panel, trData, tbColConf, r3pConf, afterShowCallbackList);
-				else _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList);
+				else if (!tbColConf.readOnly && tbColConf.visible == false) _hiddenRenderer($panel, trData, tbColConf, r3pConf, afterShowCallbackList);				
+				else _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList, tbColConf.readOnly);
 			}
 			
 			r3p.showDetail('row-form', dlgTitle, $panel, null, null,
@@ -281,14 +287,12 @@ var r3pDtb = (function(){
 					r3p.ajax(
 						{url: saveUrl, json: jsonData}, 
 						function(resp){
-							if (resp && resp.error) {
-								r3p.showError(resp.error);
-								return;
-							}
+							if (r3p.isAjaxErrorShown(resp)) return;
 							r3p.setPageModified();
 							_dtbl.ajax.reload();
 							r3p.closeDialog(dlg);
-						}
+						},
+						r3p.ajaxErrorCallback
 					);
 				}
 			); 
@@ -420,7 +424,7 @@ var r3pCol = ( function(){
 				icon: 'mif-bin',
 				handler: function(td, cell, colConf, tb, dtbl) {
 					var row = dtbl.row(td.closest('tr'));
-					r3p.showConfirm(r3pMsg.BTN_INFO_DELETE)
+					r3p.showConfirm(r3pMsg.BTN_INFO_DELETE, {yesBtnClass: 'danger'})
 						.then(function(confirm){
 							if (!confirm) return;
 							r3p.ajax({
@@ -430,10 +434,7 @@ var r3pCol = ( function(){
 								}
 							})
 							.then(function(resp) {
-								if (resp.error) {
-									r3p.showError(resp.error);
-									return;
-								}
+								if (r3p.isAjaxErrorShown(resp)) return;
 								row.remove().draw(false);
 				    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
 				    			r3p.setPageModified();

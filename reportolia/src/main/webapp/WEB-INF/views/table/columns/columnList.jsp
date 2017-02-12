@@ -26,49 +26,50 @@
 			COL_LENGTH = '<html:msg key="form.length.name" />',
 			INFO_OPEN_COLUMNS = '<html:msg key="info.open.columns" />',
 			MSG_ADD_SELECTED = '<html:msg key="msg.addSelected" />';
+			
+		var TABLE_ID = ${dbTable.id};
 		
 		function onLoad() {
-			/*
+		
+			
+			
 			var tbConf = {
-		        ajax: 'r3pTablesLoad.go',
-		        r3pAjaxSave: 'r3pTableSave.go',
-		        r3pAjaxDelete: 'r3pTableDelete.go',
-		        r3pAjaxOpen: 'r3pTableShow.go',
+		        ajax: 'r3pTableColumnsLoad.go?tableId=' + TABLE_ID,
+		        r3pAjaxSave: 'r3pTableColumnSave.go?tableId=' + TABLE_ID,
+		        r3pAjaxDelete: 'r3pTableColumnDelete.go?tableId=' + TABLE_ID,
+		        r3pGetFormTitle: function(rowData) {
+		        	return r3pMsg.LBL_COLUMN;
+		        },
+		        r3pNewRow: {tableId: TABLE_ID},
 		        columns: [
 		        	{data: 'id', r3p: 'KEY'},
+		        	{data: 'name', r3pLabel: r3pMsg.LBL_NAME, readOnly: true},
 		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
-		            {data: 'secured', r3p: 'LBL_CHECK', r3pLabel: LBL_IS_SECURED},
-		            {data: 'securityFilter', r3p: 'LBL_CHECK', r3pLabel: LBL_HAS_SECURITY_FILTER}
+		            {data: 'dataType', r3pLabel: r3pMsg.LBL_DATA_TYPE, readOnly: true},
+		            {data: 'pk', r3pLabel: r3pMsg.LBL_PK, r3p: 'LBL_CHECK', readOnly: true, visible: false, searchable: false},
+		            {data: 'calculated', r3pLabel: r3pMsg.LBL_CALCULATED, r3p: 'LBL_CHECK', readOnly: true, visible: false, searchable: false},
+		            {data: 'notCorrelated', r3pLabel: r3pMsg.LBL_NOT_CORRELATED, r3p: 'LBL_CHECK', readOnly: true, visible: false, searchable: false}
+		            
 		        ]
 		    };
 			
 			
-			self.tblList = r3pDtb.init('tableListDiv', tbConf);
-			*/
+			self.tblList = r3pDtb.init('columnListDiv', tbConf);
+			
 		}
 		
 	</jsp:attribute>
 	
 	<jsp:attribute name="breadcrumbs">
 		<li><a href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li>
-		<li><a href="#" onclick="openTable(${dbTable.id})">${dbTable.name}</a></li>
+		<%-- <li><a href="#" onclick="openTable(${dbTable.id})">${dbTable.name}</a></li> --%>
+		<li>${dbTable.name}</li> 
 		<li><a href="#" onclick="openTableColumns(${dbTable.id})"><spring:message code="dbTable.column.list.name" /></a></li>
 	</jsp:attribute>
 	
 	<jsp:attribute name="body">
-		<button class="button primary" onclick="createTable()"><span class="mif-plus"></span> <html:msg key="button.create"/></button>
-		<button class="button success" onclick="pushMessage('success')"><span class="mif-save"></span> <html:msg key="button.save"/></button>
-		<button class="button warning" onclick="openDlgMetadata(loadTableList)"><span class="mif-loop2"></span> <html:msg key="dbTables.button.retrieveFromDb"/></button>
-		
-		
-		<hr class="thin bg-grayLighter">
-		<form:form method="POST" commandName="dbTable">
-		
-			<label><html:msg key="dbTable.title" /></label>
-			<div class="input-control text">
-				<form:input path="name" />
-			</div> 
-		</form:form>
+				 
+		<div id="columnListDiv"></div>
 	        
 	</jsp:attribute>
 </html:page>

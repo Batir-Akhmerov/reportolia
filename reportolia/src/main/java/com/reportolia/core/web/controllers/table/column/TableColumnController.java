@@ -1,4 +1,4 @@
-package com.reportolia.core.web.controllers.table.columns;
+package com.reportolia.core.web.controllers.table.column;
 
 import java.util.List;
 
