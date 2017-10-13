@@ -11,10 +11,13 @@
 	<span class="app-bar-divider"></span>
 	<ul class="app-bar-menu">
 	    <li data-flexorderorigin="0" data-flexorder="1"><a href="">Dashboard</a></li>
-	    <li data-flexorderorigin="1" data-flexorder="2">
-	        <a href="" class="dropdown-toggle">Project</a>
+	    <li data-flexorderorigin="1" data-flexorder="2"><a href="#" onclick="openReportList()"><spring:message code="reports.title" /></a></li>
+	    <li data-flexorderorigin="2" data-flexorder="3">
+	        <a href="" class="dropdown-toggle"><spring:message code="database.title" /></a>
 	        <ul class="d-menu" data-role="dropdown">
-	            <li><a href="">New project</a></li>
+	            <li><a href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li>
+	            <li><a href="#" onclick="openRelationshipMap()"><spring:message code="dataModelMap.title" /></a></li>
+	            <li><a href="#" onclick="openVariableList()"><spring:message code="variable.title" /></a></li>
 	            <li class="divider"></li>
 	            <li>
 	                <a href="" class="dropdown-toggle">Reopen</a>
@@ -28,8 +31,8 @@
 	            </li>
 	        </ul>
 	    </li>
-	    <li data-flexorderorigin="2" data-flexorder="3"><a href=""><spring:message code="security.title" /></a></li>
-	    <li data-flexorderorigin="3" data-flexorder="4"><a href="">System</a></li><li data-flexorderorigin="4" data-flexorder="5" class="">
+	    <li data-flexorderorigin="3" data-flexorder="4"><a href=""><spring:message code="security.title" /></a></li>
+	    <li data-flexorderorigin="4" data-flexorder="5"><a href="">System</a></li><li data-flexorderorigin="4" data-flexorder="5" class="">
 	        <a href="" class="dropdown-toggle">Help</a>
 	        <ul class="d-menu" data-role="dropdown">
 	            <li><a href="">ChatOn</a></li>

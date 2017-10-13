@@ -1,5 +1,6 @@
 var r3p = (function(){
-	var _isPageModified = false
+	var _isPageModified = false,
+		_NULL_KEY = 0
 		;
 	
 	// validation
@@ -31,6 +32,7 @@ var r3p = (function(){
    
     // public methods
 	return {
+		
 		
 		/******************************************/
 	    /**   AJAX   ***************************/
@@ -450,6 +452,16 @@ var r3p = (function(){
 		/******************************************/
 	    /**   UTILS   ***************************/
 	    /******************************************/
+		nullKey: function() {
+			return _NULL_KEY;
+		},
+		/**
+		 * Validates a key. Makes sure a key is _NULL_KEY if null.
+		 */
+		key: function(id) {
+			if (r3p.isNull(id)) id = r3p.nullKey();
+			return id;
+		},
 		jq: function(idName) {
 			idName = idName.replace( /(:|\.|\[|\]|,|=)/g, '\\$1' );
 			var el = $('#' + idName);

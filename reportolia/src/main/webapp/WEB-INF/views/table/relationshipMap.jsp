@@ -37,7 +37,7 @@
 			LBL_MANY_TO_ONE = '<html:msg key="dbTable.relationship.manyToOne" />'	
 		;
 			
-		var COLOR_NODE = '#848482',
+		var COLOR_NODE = '#2086bf',
 			COLOR_TB_SEC_FILTER = '#348017',
 			COLOR_TB_SECURED = '#9F000F', 
 			COLOR_FILTER_LINK = '#4AA02C',

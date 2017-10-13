@@ -28,7 +28,7 @@ public class ReportListController  extends BaseController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/r3pReportList", method = RequestMethod.GET)
+	@RequestMapping(value = "/r3pReportListShow", method = RequestMethod.GET)
 	public String show(Model model) {
 		
 		//Date date = new Date();

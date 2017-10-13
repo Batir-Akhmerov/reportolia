@@ -14,13 +14,19 @@
         <span class="counter">0</span>
     </a></li>
      --%>
+     
+    <li <c:if test="${activeId == 'reportList'}">class="active"</c:if>><a href="#" onclick="openReportList()">
+        <span class="mif-table icon"></span>
+        <span class="title"><spring:message code="reports.title" /></span>
+    </a></li>
+     
     <li <c:if test="${activeId == 'tableList'}">class="active"</c:if>><a href="#" onclick="openTableList()">
         <span class="mif-table icon"></span>
         <span class="title"><spring:message code="dbTables.title" /></span>
     </a></li>
     <li <c:if test="${activeId == 'relationshipMap'}">class="active"</c:if>><a href="#" onclick="openRelationshipMap()">
         <span class="mif-tree icon"></span>
-        <span class="title"><spring:message code="dbTable.relationship.map.tab.name" /></span>
+        <span class="title"><spring:message code="dataModelMap.title" /></span>
     </a></li>
     <li <c:if test="${activeId == 'variableList'}">class="active"</c:if>><a href="#">
         <span class="mif-cloud icon"></span>

@@ -5,6 +5,9 @@
 		URL_SHOW_TABLE  = 'r3pTableShow.go',
 		URL_SHOW_TABLE_COLUMNS = 'r3pTableColumnListShow.go',
 		URL_SHOW_RELATIONSHIPS_MAP = 'r3pRelationshipMapShow.go',
+		URL_SHOW_REPORT_LIST = 'r3pReportListShow.go',
+		URL_SHOW_REPORT = 'r3pReportShow.go',
+		URL_SHOW_REPORT_COLUMN = 'r3pReportColumnShow.go',
 		URL_ = '';
 		
 
@@ -17,9 +20,24 @@
 		 */
 	}
 	
+	function openReportList() {
+		r3p.navigate(URL_SHOW_REPORT_LIST);
+	}
+	function openReport(id) {
+		id = r3p.key(id);
+		r3p.navigate(URL_SHOW_REPORT + '?id=' + id);
+	}
+	function openReportColumn(id) {
+		id = r3p.key(id);
+		r3p.navigate(URL_SHOW_REPORT_COLUMN + '?id=' + id);
+	}
+	
+	
 	function openDbMetadata() {
 		r3p.navigate(URL_SHOW_DB_META);
 	}
+	
+	
 	function openTableList() {
 		r3p.navigate(URL_SHOW_TABLES);
 	}
@@ -30,6 +48,12 @@
 		r3p.navigate(URL_SHOW_TABLE_COLUMNS + '?id=' + tableId);
 	}
 	
+	
+	
 	function openRelationshipMap() {
 		r3p.navigate(URL_SHOW_RELATIONSHIPS_MAP);
+	}
+	
+	function openVariableList() {
+		alert("Implement me!");
 	}

@@ -26,9 +26,9 @@
 			var tbConf = {
 		        ajax: getReportListUrl,
 		        
-		        r3pAjaxDelete: 'r3pTableColumnDelete.go?tableId=' + TABLE_ID,
+		        r3pAjaxDelete: 'r3pReportDelete.go?reportId=' + 1,
 		        
-		        r3pNewRow: {folderId: TABLE_ID},
+		        r3pNewRow: {folderId: FOLDER_ID},
 		        columns: [
 		        	{data: 'id', r3p: 'KEY'},
 		        	{data: 'name', r3pLabel: r3pMsg.LBL_NAME, readOnly: true}
@@ -40,7 +40,7 @@
 			
 		}
 		
-		function getReportLIstUrl() {
+		function getReportListUrl() {
 			return 'r3pReportsLoad.go?folderId=' + FOLDER_ID;
 		}
 		
@@ -48,12 +48,16 @@
 	
 	
 	<jsp:attribute name="sidebar">
-		
+		<html:dbSidebar activeId="reportList" />
 	</jsp:attribute>
 	
 	
 	<jsp:attribute name="body">
-				 
+	
+		<button class="button primary" onclick="openReport()"><span class="mif-plus"></span> <html:msg key="button.create"/></button>
+		
+		<hr class="thin bg-grayLighter">
+				
 		<div id="reportListDiv"></div>
 	        
 	</jsp:attribute>

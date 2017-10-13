@@ -28,7 +28,7 @@ public class BaseController {
 	
 	@ExceptionHandler(GoHomeException.class)
 	public ModelAndView handleGoHomeException(GoHomeException ghe) {
-		ModelAndView model = new ModelAndView("redirect:/r3pReportList.go");
+		ModelAndView model = new ModelAndView("redirect:/r3pReportListShow.go");
 		model.addObject("errorMsg", ghe.getMessage());
 		return model;
 	}

@@ -50,6 +50,7 @@ var r3pDtb = (function(){
 			error: r3p.ajaxErrorCallback
 		};
 		if ($.type(dbConf.ajax) == 'string') dbConf.ajax = {url: dbConf.ajax};
+		else if ($.type(dbConf.ajax) == 'function') dbConf.ajax = {url: dbConf.ajax()};
 		dbConf.ajax = $.extend({}, defaultAjax, dbConf.ajax);
 	}
 	
