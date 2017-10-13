@@ -1,6 +1,6 @@
 
 
-<jsp:forward page="r3pReportList.go" />
+<jsp:forward page="r3pReportListShow.go" />
 <%-- 
 <!DOCTYPE html>
 
