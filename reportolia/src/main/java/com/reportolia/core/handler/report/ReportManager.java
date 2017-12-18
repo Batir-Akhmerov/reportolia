@@ -28,7 +28,7 @@ import com.reportolia.core.web.controllers.report.ReportListJsonForm;
  * Created on Nov 25, 2015
  */
 @Service
-public class ReportManager  {
+public class ReportManager implements ReportHandler {
 	
 	@Resource protected ReportRepository reportRepository;
 	@Resource protected ReportColumnRepository reportColumnRepository;
@@ -48,6 +48,10 @@ public class ReportManager  {
 		}
 		folder = this.folderRepository.findById(form.getFolderId());
 		return this.reportRepository.findByFolder(folder, folderSortByName);
+	}
+	
+	public Report saveReport(Report report) {
+		return this.reportRepository.save(report);
 	}
 	
 	public void deleteReport(long reportId) {

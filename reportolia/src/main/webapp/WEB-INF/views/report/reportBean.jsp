@@ -43,6 +43,10 @@
 			*/
 		}
 		
+		function saveReport() {
+			$('form').get(0).submit();
+		}
+		
 	</jsp:attribute>
 	
 	<jsp:attribute name="breadcrumbs">
@@ -52,7 +56,7 @@
 	
 	<jsp:attribute name="body">
 		<button class="button primary" onclick="openReportColumn(0)"><span class="mif-plus"></span> <html:msg key="button.create"/></button>
-		<button class="button success" onclick="pushMessage('success')"><span class="mif-save"></span> <html:msg key="button.save"/></button>
+		<button class="button success" onclick="saveReport()"><span class="mif-save"></span> <html:msg key="button.save"/></button>
 		
 		
 		<hr class="thin bg-grayLighter">
