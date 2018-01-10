@@ -4,12 +4,10 @@
 	taglib uri="http://www.springframework.org/tags/form" prefix="form"%><%@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
-%><html:page icon="mif-table">
+%><html:page>
 	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>
 	
-	<jsp:attribute name="scripts">
-		js/reportolia/metadata/dlgMetadata.js
-	</jsp:attribute>
+	<jsp:attribute name="scripts"></jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		
@@ -59,9 +57,7 @@
 			 <c:if test="${isTableListEmpty}">
 				retrieveFromDb();
 			</c:if>
-			<c:if test="${!isTableListEmpty}">
-		        loadTableList();
-		    </c:if>
+			
 		}
 		
 		function loadTableList() {
@@ -76,19 +72,15 @@
 			};
 			r3p.showConfirm(MSG_RETRIEVE, btnConf)
 				.then(function(confirmed){
-					openDlgMetadata(loadTableList);
-				});
+					openDbMetadataPopulator(FWD_TABLES);
+				}
+			);
+			
 		}
 	</jsp:attribute>
 	
-	<jsp:attribute name="sidebar">
-		<html:dbSidebar activeId="tableList" />
-	</jsp:attribute>
-	
-	<jsp:attribute name="body">
-		<%-- <button class="button primary" onclick="createTable()"><span class="mif-plus"></span> <html:msg key="button.create"/></button> --%>
-		<button class="button warning" onclick="openDlgMetadata(loadTableList)"><span class="mif-loop2"></span> <html:msg key="dbTables.button.retrieveFromDb"/></button>
-		
+	<jsp:attribute name="body">		
+		<button onclick="retrieveFromDb()" type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="<html:msg key="sysTable.button.addSelected.title"/>"><html:msg key="dbTables.button.retrieveFromDb"/></button>
 		
 		<hr class="thin bg-grayLighter">
 		

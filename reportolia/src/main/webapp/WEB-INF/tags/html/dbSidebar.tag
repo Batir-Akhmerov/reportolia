@@ -5,15 +5,28 @@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	attribute name="activeId" rtexprvalue="true"%>
 
-<!-- DB SIDEBAR BEGIN -->	
+<!--  SIDEBAR BEGIN -->	
+
+	<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+		<ul class="nav nav-pills flex-column">
+			<li class="nav-item">
+				<a class="nav-link <c:if test="${activeId == 'reportList'}">active</c:if>" href="#" onclick="openReportList()"><spring:message code="reports.title" /></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link <c:if test="${activeId == 'tableList'}">active</c:if>" href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link <c:if test="${activeId == 'relationshipMap'}">active</c:if>" href="#" onclick="openRelationshipMap()"><spring:message code="dataModelMap.title" /></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link <c:if test="${activeId == 'variableList'}">active</c:if>" href="#" onclick="openVariableList()"><spring:message code="variable.title" /></a>
+			</li>
+		</ul>
+	
+	</nav>
+<%-- 
 <ul class="sidebar">
-<%--
-    <li><a href="#">
-        <span class="mif-chart-line icon"></span>
-        <span class="title"><spring:message code="reports.title" /></span>
-        <span class="counter">0</span>
-    </a></li>
-     --%>
+
      
     <li <c:if test="${activeId == 'reportList'}">class="active"</c:if>><a href="#" onclick="openReportList()">
         <span class="mif-table icon"></span>
@@ -37,4 +50,5 @@
         <span class="title"><spring:message code="settings.title" /></span>
     </a></li>
 </ul>
-<!-- DB SIDEBAR ENDS -->	
+--%>
+<!--  SIDEBAR ENDS -->	

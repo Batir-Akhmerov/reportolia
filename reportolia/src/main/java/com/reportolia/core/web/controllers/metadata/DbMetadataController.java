@@ -33,6 +33,11 @@ public class DbMetadataController {
 		return "metadata/metadataList";
 	}
 	
+	@RequestMapping(value = "/r3pDbMetadataPopulateShow")
+	public String populateTablesShow(Model model) {		
+		return "metadata/metadataPopulate";
+	}
+	
 	@ResponseBody	
 	@RequestMapping(value = "/r3pDbMetadataLoad")
 	public JsonDatatableResult<SysTable> sysTablesLoad(JsonForm form, Model model) {

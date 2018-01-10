@@ -51,7 +51,7 @@ public class TableListAjaxController  extends BaseJsonController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/r3pTableSave")
+	@RequestMapping(value = "/r3pTableSaveAjax")
 	public DbTable tableSave(@RequestBody DbTable bean) {
 		return this.dbHandler.saveTable(bean);
 	}

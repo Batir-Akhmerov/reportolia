@@ -54,8 +54,8 @@
 	            toolbar: {
 				    items: [{
 				        text: BTN_RETRIEVE,
-				        click: function () {
-				            openDlgMetadata();
+				        click: function () {				            
+							openDbMetadataPopulator(FWD_RELATIONSHIPS);
 				        }
 				    }]
 				}
@@ -79,7 +79,7 @@
 		function retrieveFromDb() {
 			var dlgButtons = {};
 			dlgButtons[BTN_RETRIEVE] = function() {
-				openDlgMetadata();
+				openDbMetadataPopulator(FWD_RELATIONSHIPS);
 				r3p.closeDlg(this);
 			};
 			dlgButtons[BTN_ADD_MANUALLY] = function() {

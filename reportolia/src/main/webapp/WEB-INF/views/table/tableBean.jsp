@@ -5,11 +5,10 @@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
 %><html:page icon="mif-table">
-	<jsp:attribute name="pageTitle"><html:msg key="dbTable.title" /></jsp:attribute>
+	<jsp:attribute name="pageTitle"><html:msg key="dbTable.title" />: ${fn:escapeXml(dbTable.name)}</jsp:attribute>
+	<jsp:attribute name="panelTitle"><html:msg key="dbTable.title" />: <span class="text-primary">${fn:escapeXml(dbTable.name)}</span></jsp:attribute>
 	
-	<jsp:attribute name="scripts">
-		js/reportolia/metadata/dlgMetadata.js
-	</jsp:attribute>
+	<jsp:attribute name="scripts"></jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		
@@ -28,23 +27,11 @@
 			MSG_ADD_SELECTED = '<html:msg key="msg.addSelected" />';
 		
 		function onLoad() {
-			/*
-			var tbConf = {
-		        ajax: 'r3pTablesLoad.go',
-		        r3pAjaxSave: 'r3pTableSave.go',
-		        r3pAjaxDelete: 'r3pTableDelete.go',
-		        r3pAjaxOpen: 'r3pTableShow.go',
-		        columns: [
-		        	{data: 'id', r3p: 'KEY'},
-		            {data: 'label', r3pLabel: r3pMsg.LBL_LABEL},
-		            {data: 'secured', r3p: 'LBL_CHECK', r3pLabel: LBL_IS_SECURED},
-		            {data: 'securityFilter', r3p: 'LBL_CHECK', r3pLabel: LBL_HAS_SECURITY_FILTER}
-		        ]
-		    };
 			
-			
-			self.tblList = r3pDtb.init('tableListDiv', tbConf);
-			*/
+		}
+		
+		function saveMe() {
+			$('#beanForm')[0].submit();
 		}
 		
 	</jsp:attribute>
@@ -55,18 +42,33 @@
 	</jsp:attribute>
 	
 	<jsp:attribute name="body">
-		<button class="button primary" onclick="createTable()"><span class="mif-plus"></span> <html:msg key="button.create"/></button>
-		<button class="button success" onclick="pushMessage('success')"><span class="mif-save"></span> <html:msg key="button.save"/></button>
-		<button class="button warning" onclick="openDlgMetadata(loadTableList)"><span class="mif-loop2"></span> <html:msg key="dbTables.button.retrieveFromDb"/></button>
-		
+		<button onclick="saveMe()" type="button" class="btn btn-success"><html:msg key="button.save"/></button>
 		
 		<hr class="thin bg-grayLighter">
-		<form:form method="POST" commandName="dbTable">
 		
-			<label><html:msg key="dbTable.title" /></label>
-			<div class="input-control text">
-				<form:input path="name" />
-			</div> 
+		<form:form method="POST" id="beanForm" action="r3pTableSave.go" commandName="dbTable">
+			<form:hidden path="id" />
+			
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label"><html:msg key="form.label.label" /></label>
+				<div class="col-sm-10">
+					<form:input path="label" class="form-control"/>	
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label"><html:msg key="form.description.label" /></label>
+				<div class="col-sm-10">
+					<form:textarea path="description" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label"></label>
+				<div class="col-sm-10">
+					
+				</div>
+			</div>
+			
+			
 		</form:form>
 	        
 	</jsp:attribute>

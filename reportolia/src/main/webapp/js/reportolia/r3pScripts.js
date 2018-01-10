@@ -1,6 +1,7 @@
 	var URL_HOME = '/reportolia',
 		URL_SHOW_DB_META = 'r3pDbMetadataShow.go',
 		URL_SAVE_DB_META = 'r3pDbMetadataSave.go',
+		URL_SHOW_DB_META_POPULATOR = 'r3pDbMetadataPopulateShow.go',
 		URL_SHOW_TABLES = 'r3pTableListShow.go',
 		URL_SHOW_TABLE  = 'r3pTableShow.go',
 		URL_SHOW_TABLE_COLUMNS = 'r3pTableColumnListShow.go',
@@ -8,6 +9,7 @@
 		URL_SHOW_REPORT_LIST = 'r3pReportListShow.go',
 		URL_SHOW_REPORT = 'r3pReportShow.go',
 		URL_SHOW_REPORT_COLUMN = 'r3pReportColumnShow.go',
+		
 		URL_ = '';
 		
 
@@ -32,9 +34,15 @@
 		r3p.navigate(URL_SHOW_REPORT_COLUMN + '?id=' + id);
 	}
 	
-	
+
 	function openDbMetadata() {
 		r3p.navigate(URL_SHOW_DB_META);
+	}
+
+	var FWD_TABLES = 'TBL',
+		FWD_RELATIONSHIPS = 'REL';
+	function openDbMetadataPopulator(forwardTo) {
+		r3p.navigate(URL_SHOW_DB_META_POPULATOR + '?p=' +forwardTo);
 	}
 	
 	

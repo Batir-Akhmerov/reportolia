@@ -7,9 +7,7 @@
 %><html:page icon="mif-table">
 	<jsp:attribute name="pageTitle"><html:msg key="dbTable.column.list.title" /></jsp:attribute>
 	
-	<jsp:attribute name="scripts">
-		js/reportolia/metadata/dlgMetadata.js
-	</jsp:attribute>
+	<jsp:attribute name="scripts"></jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		

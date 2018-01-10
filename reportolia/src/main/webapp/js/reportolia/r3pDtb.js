@@ -347,7 +347,7 @@ var r3pCol = ( function(){
 		LBL_CHECK: {
 			render: function(data, type, full, meta){
 	    		var isChecked = data == true;
-	    		return isChecked ? '<span class="mif-checkmark"></span>' : '';
+	    		return isChecked ? '<span class="oi oi-check"></span>' : '';
 	    	} 
 		},
 		LBL_RADIO : {
@@ -464,7 +464,7 @@ var r3pCol = ( function(){
 			orderable:      false,
 			data:           null,
 			width: 30,
-			defaultContent: r3p.strFormat(r3p.TMPL_BTN_CELL_HINT, 'cellBtn cellBtnExpander mif-plus', r3pMsg.BTN_INFO_EXPAND),
+			defaultContent: r3p.strFormat(r3p.TMPL_BTN_CELL_HINT, 'cellBtn cellBtnExpander oi oi-caret-right', r3pMsg.BTN_INFO_EXPAND),
 			r3p: {
 				type: 'BTN_EXPAND',
 				isButton: true,
@@ -472,11 +472,11 @@ var r3pCol = ( function(){
 				tooltip: r3pMsg.BTN_INFO_EXPAND_COLLAPSE,
 				handler: function(td, cell, colConf, _tb, _dtbl){
 					var spanBtn = td.find('span.cellBtnExpander');
-					spanBtn.toggleClass('mif-plus');
-					spanBtn.toggleClass('mif-minus');
+					spanBtn.toggleClass('oi-caret-right');
+					spanBtn.toggleClass('oi-caret-bottom');
 					var spanHint = td.find('span.cellBtnHint');
-					if (spanBtn.hasClass('mif-plus')) spanHint.prop('data-hint', r3pMsg.BTN_INFO_EXPAND);
-					else spanHint.prop('data-hint', r3pMsg.BTN_INFO_COLLAPSE);
+					if (spanBtn.hasClass('oi-caret-right')) spanHint.prop('title', r3pMsg.BTN_INFO_EXPAND);
+					else spanHint.prop('title', r3pMsg.BTN_INFO_COLLAPSE);
 					
 					if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
 	    		}

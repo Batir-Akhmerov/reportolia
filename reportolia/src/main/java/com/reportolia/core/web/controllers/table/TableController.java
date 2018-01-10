@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.reportolia.core.handler.db.DbHandler;
 import com.reportolia.core.model.table.DbTable;
@@ -45,6 +46,13 @@ public class TableController  extends BaseController {
 		List<DbTableColumn> list = this.tableColumnRepository.findByDbTable(dbTable);
 		model.addAttribute("columnList", CollectionUtils.isEmpty(list));
 		return "table/tableBean";
+	}
+	
+	@RequestMapping(value = "/r3pTableSave")
+	public String save( @ModelAttribute("dbTable") DbTable dbTable, RedirectAttributes redir) {
+		this.dbHandler.saveTable(dbTable);
+		redir.addAttribute("id", dbTable.getId());
+		return "redirect:r3pTableShow.go";
 	}
 
 	

@@ -1,0 +1,4 @@
+
+# Vendoring JS and CSS files
+reportolia/src/main/webapp/js/reportolia/* linguist-vendored=true
+reportolia/src/main/webapp/css/reportolia/* linguist-vendored=true

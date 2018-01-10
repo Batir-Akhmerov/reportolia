@@ -97,38 +97,7 @@ var r3p = (function(){
 		showConfirm: function(msg, btnConf, dlgConf, title) {
 			var dfd  = $.Deferred();
 			btnConf = btnConf || {};
-			
-			/*
-			var defaultBtnConf = {
-				noCancelBtn: true,
-				buttons: [{
-						label: btnConf.yesBtnLabel || r3pMsg.BTN_YES,
-						cssClass: btnConf.yesBtnClass,
-	  					handler: function() {
-	  						dfd.resolve(true);
-	  						if (btnConf.fnYes) btnConf.fnYes();
-	  						r3p.closeDialog(this);
-	  					}
-	  				},
-	  				{
-	  					label: btnConf.noBtnLabel || r3pMsg.BTN_NO,
-	  					cssClass: btnConf.noBtnClass,
-	  					handler: function() {
-	  						dfd.resolve(false);
-	  						if (btnConf.fnNo) btnConf.fnNo();
-	  						r3p.closeDialog(this);
-	  					}
-	  				}
-	  			]
-			};
-			btnConf = $.extend({}, defaultBtnConf, btnConf);
-			var id = 'dlg-confirm',
-				div = r3p.createDialogDiv(id, title || r3pMsg.TLT_CONFIRM, msg, dlgConf, btnConf);
 						
-			r3p.showDialog(id, div);
-			*/
-			
-			
 			showBSModal({
 			    title: title || r3pMsg.TLT_CONFIRM,
 			    body: msg,
@@ -146,7 +115,7 @@ var r3p = (function(){
 			        cssClass: 'btn-danger',
 			        onClick: function(e){
 			        	dfd.resolve(false);
-  						if (btnConf.fnYes) btnConf.fnYes();
+  						if (btnConf.fnYes) btnConf.fnYes(); 
   						r3p.closeModal(e);
 			        }
 			    }]
@@ -190,26 +159,7 @@ var r3p = (function(){
 		},
 		
 		showError: function(msg, dlgConf, btnConf, title) {
-			var dfd  = $.Deferred(),
-				id = 'dlg-error';
-			/*
-			dlgConf = $.extend({}, {'data-type': 'alert'}, dlgConf);
-			
-			var defaultBtnConf = {
-				noCancelBtn: true,
-				buttons: [{
-					label: r3pMsg.BTN_CLOSE,
-  					handler: function() {
-						dfd.resolve(true);
-						r3p.closeDialog(this);
-					}
-				}]
-			};
-			btnConf = $.extend({}, defaultBtnConf, btnConf);
-			var div = r3p.createDialogDiv(id, title || r3pMsg.TLT_ERROR, msg, dlgConf, btnConf);
-			
-			r3p.showDialog(id, div);
-			*/
+			var dfd  = $.Deferred();
 			
 			showBSModal({
 			    title: title || r3pMsg.TLT_ERROR,
@@ -229,97 +179,6 @@ var r3p = (function(){
 			return dfd.promise();
 		},
 		
-		showDialog: function(id, div) {
-			var div = div || r3p.jq(id);
-			if (!div.prop('isDlgInitialized')) {
-				div.prop('isDlgInitialized', true);
-				$.Metro.initWidgets(div);
-			}
-			var dlg = div.data('dialog');
-			if (!dlg) {
-				alert('Cannot find dialog ' + id);
-				return;
-			}
-			if (div.prop('overlay')) div.prop('overlay').show();
-			dlg.open();
-		},
-		
-		closeDialog: function(obj) {
-			var btn = null;
-			if (!obj || obj.target) btn = $(this);
-			else btn = $(obj);
-			var div = btn.closest('[data-role="dialog"]');
-			if (div.prop('overlay')) div.prop('overlay').hide();
-			hideMetroDialog(div);
-		},
-		
-		
-		
-		createDialogDiv: function (id, title, dlgContent, dlgConf, btnConf) {
-			var div = r3p.jq(id);
-			if (r3p.isNullJq(div)) {
-				btnConf = btnConf || {}; 
-				var defaultConf = {
-					id: id, 
-					'data-role': 'dialog'
-				};
-				dlgConf = $.extend({}, defaultConf, dlgConf);				
-				var overlay = r3p.createOverlay(dlgConf.id);
-				div = r3p.createEl('div', 'body', dlgConf, null, 'padding20');
-				div.prop('overlay', overlay);
-				if (title) r3p.createEl('h3', div, null, null, 'text-light');
-				r3p.createEl('div', div).addClass('clsDialogContent');
-				r3p.createEl('div', div).addClass('clsDialogButtons');
-			}
-			else {
-				$('body').append(div.prop('overlay')).append(div);
-			}
-			if (title) div.children('h3').html(title);
-			var contentPanel = div.children('div.clsDialogContent');
-			if (dlgContent instanceof jQuery) {
-				contentPanel.empty();
-				contentPanel.append(dlgContent);
-			}
-			else div.children('div.clsDialogContent').html(dlgContent);
-			
-			// buttons
-			var btnDiv = div.children('div.clsDialogButtons').empty();				
-			if (btnConf.buttons) {
-				$.each(btnConf.buttons, function(i, btn){
-					r3p.createDialogButton(btnDiv, btn);
-				});
-			}
-			if (!btnConf.noCancelBtn) {
-				r3p.createDialogButton(btnDiv, {
-					label: btnConf.cancelBtnLabel || r3pMsg.BTN_CANCEL,
-					handler: r3p.closeDialog
-				});
-			}
-			
-			return div;
-		},
-		changeDialogDiv: function (id, title, msg) {
-			var div = r3p.jq(id);
-			if (r3p.isNullJq(div)) return;
-			if (title) div.children('h1').html(title);
-			if (msg) div.children('div.clsDialogContent').html(msg);			
-		},
-		createOverlay: function(dlgId){
-	        var overlayId = dlgId + '_overlay';
-	        var overlay = r3p.jq(overlayId);
-
-	        if (overlay.length === 0) {
-	            overlay = $("<div/>").attr('id', overlayId).addClass('clsOverlay').appendTo('body');
-	        }
-	        
-	        return overlay;
-	    },
-		createDialogButton: function(div, btn) {
-			var btnEl = r3p.createEl('button', div).html(btn.label);
-			 btnEl.addClass('button');
-			if (btn.cssClass) btnEl.addClass(btn.cssClass);
-			if (btn.handler) btnEl.click(btn.handler);
-		},
 		
 		
 		
@@ -425,7 +284,7 @@ var r3p = (function(){
                      	'<input type="text" name="{0}" value="{1}" {4}>' +
                      '</div>',
                                                  
-        TMPL_LINK_HINT: '<span class="cellBtnHint" data-role="hint" data-hint-position="top" data-hint="{3}">' 
+        TMPL_LINK_HINT: '<span title="{3}">' 
         		+'<a href="{1}" onClick="{2}" >{0}</a></span>',                     
                      
         TMPL_SELECT: '<label>{2}</label>' +

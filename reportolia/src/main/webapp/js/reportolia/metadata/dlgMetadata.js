@@ -1,29 +1,4 @@
-	function openDlgMetadata(fnAfterSave) {
-		
-		if (self.dlgMetadataInitialized) {
-			r3p.showDialog('dlgShowMetadata');
-			return;
-		}
-		
-		// create dialog
-		var btnConf = {
-			buttons: [{
-  					label: r3pMsg.BTN_ADD_SELECTED,
-  					cssClass: 'success',
-  					handler: function() {
-  						var that = this;
-  						retrieveMetadata(function(){
-  							r3p.closeDialog(that);
-  							if (fnAfterSave) fnAfterSave();
-  						});
-  					}
-  				}
-  			]
-		};
-		r3p.createDialogDiv('dlgShowMetadata', DLG_METADATA_TITLE, '<div id="metadataDiv"/></div>', {
-			'data-windows-style': 'true'
-		}, btnConf);
-		
+	function initMetadataTable() {
 		
 		var tbConf = { 
 		        ajax: 'r3pDbMetadataLoad.go',
@@ -48,14 +23,12 @@
 	        			itemSelector: 'tr', 
 	        				idField: 'name',
 	        				fnAddToList: selectedRowsToJson
-	        		});
-					r3p.showDialog('dlgShowMetadata');					
+	        		});				
 			    }
 		    };
 			
 		self.metadataList = r3pDtb.init('metadataDiv', tbConf);
 		
-		self.dlgMetadataInitialized = true;
 	}
 	
 	var childCounter = 0;
@@ -112,7 +85,7 @@
 	
 		
 	function selectedRowsToJson() {		
-		var rows = self.metadataList.row('.selected');
+		var rows = self.metadataList.rows('.selected');
 		
 		var jsonList = [];
 		
@@ -132,7 +105,7 @@
         	}
 	        
 	        if (childId) {
-	        	var colRows = r3p.jq(childId + 'List').DataTable().row('.selected');
+	        	var colRows = r3p.jq(childId + 'List').DataTable().rows('.selected');
 	        	if (colRows.length > 0) {
 	        		colRows.every( function () {
 		    		    var childRecord = this.data();
@@ -149,13 +122,14 @@
 		return {selected: true, name: name, columnList: []};
 	}
 	
-	function retrieveMetadata(fnOnSafeSuccess) {
-		var dlgAddSelected = this;
-		
-		r3p.showConfirm(MSG_ADD_SELECTED)
-			.then(function(confirmed){				
-				if (confirmed) self.formMetadata.save(fnOnSafeSuccess);
-			});
+	function retrieveMetadata(forwardTo) {		
+		r3p.showConfirm(MSG_ADD_SELECTED, {
+			fnYes: function(){
+				self.formMetadata.save(function(){
+					if(forwardTo == 'TBL') openTableList();
+				});
+			}
+		});
 	}
 
 	
