@@ -6,7 +6,7 @@
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
 %><html:page icon="mif-table">
 	<jsp:attribute name="pageTitle"><html:msg key="reports.title" /></jsp:attribute>
-	
+	<jsp:attribute name="topMenuId">reportList</jsp:attribute>
 	<jsp:attribute name="scripts">
 		js/reportolia/metadata/dlgMetadata.js
 	</jsp:attribute>

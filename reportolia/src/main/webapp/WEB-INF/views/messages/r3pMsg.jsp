@@ -17,7 +17,6 @@ var r3pMsg = {
 	BTN_YES:    '<html:msg key="button.yes" />',
 	
 	BTN_TBL_FROM_DB: '<html:msg key="dbTables.button.retrieveFromDb" />',
-	BTN_TBL_ADD_MANUALLY: '<html:msg key="dbTables.button.addManually" />',
 	
 	BTN_INFO_COLLAPSE:'<html:msg key="button.info.collapse" />',
 	BTN_INFO_COPY:    '<html:msg key="button.info.copy" />',	

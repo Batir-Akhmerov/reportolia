@@ -4,9 +4,9 @@
 	taglib uri="http://www.springframework.org/tags/form" prefix="form"%><%@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
-%><html:page icon="mif-table">
+%><html:page>
 	<jsp:attribute name="pageTitle"><html:msg key="dbTable.column.list.title" /></jsp:attribute>
-	
+	<jsp:attribute name="topMenuId">tableList</jsp:attribute>
 	<jsp:attribute name="scripts"></jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
@@ -58,13 +58,12 @@
 		
 	</jsp:attribute>
 	
-	<jsp:attribute name="breadcrumbs">
-		<li><a href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li>
-		<%-- <li><a href="#" onclick="openTable(${dbTable.id})">${dbTable.name}</a></li> --%>
-		<li>${dbTable.name}</li> 
-		<li><a href="#" onclick="openTableColumns(${dbTable.id})"><spring:message code="dbTable.column.list.name" /></a></li>
+	<jsp:attribute name="breadcrumbs">		
+		<li class="breadcrumb-item"><a href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a></li> 
+		<li class="breadcrumb-item active"><a href="#" onclick="openTableColumns(${dbTable.id})">${dbTable.name} <spring:message code="dbTable.column.list.name" /></a></li>
 	</jsp:attribute>
 	
+		
 	<jsp:attribute name="body">
 				 
 		<div id="columnListDiv"></div>

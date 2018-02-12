@@ -30,15 +30,7 @@ public class RelationshipAjaxController extends BaseJsonController {
 	@Resource protected DbTableRepository tableRepository;
 	@Resource protected DbTableRelationshipRepository tableRelationshipRepository;
 	
-	/*
-	@RequestMapping(value = "/r3pTableRelationshipsShow")
-	public ModelAndView relationshipsShow(long tableId, ModelAndView mav) {
-		mav.setViewName("table/relationshipList");
-		mav.getModel().put("currentTable", this.tableRepository.findById(tableId));
-		return mav;
-	}
-	*/
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/r3pTableRelationshipsLoad")
 	public JsonDatatableResult<RelationshipInfo> relationshipsLoad(long tableId, JsonForm form) {

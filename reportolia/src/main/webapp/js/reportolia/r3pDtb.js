@@ -5,6 +5,16 @@
 var r3pDtb = (function(){
 	
 	var defaultConf = {
+			/*dom:
+				"<'row db-toolbar'<'col-sm-12 col-md-4'<'db-buttons'>> <'col-sm-12 col-md-8 db-sys'ilp>>" +
+				"<'row'<'col-sm-12'tr>>",
+				*/
+				dom:
+					"<'row'<'col-sm-12 col-md-8'<'db-buttons'>><'col-sm-12 col-md-4 text-right'i>>" +
+					"<'row'<'col-sm-12'tr>>" +
+					"<'row'<'col-sm-12 col-md-5'l><'col-sm-12 col-md-7'p>>",
+				
+			//pagingType: "full"
 	};
 	
 	function _prepareColumns(id, dbConf) {
@@ -58,14 +68,15 @@ var r3pDtb = (function(){
 		var div = r3p.jq(containerId),
 			cssClass = (dbConf.r3pIsStriped != false ? ' striped ' : '') + (dbConf.r3pIsHovered != false ? ' hovered ' : '') + (dbConf.r3pCssClass ? ' ' + dbConf.r3pCssClass : '');
 		// button toolbar
-		if (dbConf.r3pAjaxSave && dbConf.r3pNewRow) {
-			var	btnNew = $( r3p.strFormat(r3p.TMPL_BTN, r3pMsg.BTN_CREATE, 'mif-plus', 'primary') )
-				.appendTo(div);
+		var divBtns = $('.page-buttons');
+		if (dbConf.r3pAjaxSave && dbConf.r3pNewRow) {			
+			var	btnNew = $( r3p.strFormat(r3p.TMPL_BTN, r3pMsg.BTN_CREATE, 'oi oi-plus', 'btn btn-primary') )
+				.appendTo(divBtns);
 			var newRowData = $.isPlainObject(dbConf.r3pNewRow) ? dbConf.r3pNewRow : {id: 0};	
 			btnNew.click(function(){
 				r3pDtb.openRowForm(newRowData, dbConf.r3pAjaxSave, r3p.jq(id).DataTable());
 			});		
-			$('<hr class="thin bg-grayLighter">').appendTo(div);
+			//$('<hr>').appendTo(div);
 		}
 		
 		var	tbl = r3p.createEl('table', div, {id: id, 'data-autowidth': false, style: 'width:100%'}, null, 'dataTable table ' + cssClass);
@@ -97,9 +108,16 @@ var r3pDtb = (function(){
 		
 		_dtbl.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
 		    var rec = this.data(),
-		    	tr = this.node();
-		    $(tr).on( 'click', 'td input[type=checkbox].clsRowSelector', __checkboxCkicker);
-		    if (hasButtons) $(tr).on( 'click', 'td > span > span.cellBtn',__buttonClicker);
+		    	tr = this.node(),
+		    	$tr = $(tr);
+		    
+		    if ($tr.attr('isRowInitialized') == 'true') return true;
+		    
+		    $tr.on( 'click', 'td input[type=checkbox].clsRowSelector', __checkboxCkicker);
+		    if (hasButtons) {
+		    	$tr.on( 'click', 'td > span > span.cellBtn',__buttonClicker);
+		    }
+		    $tr.attr('isRowInitialized', true);
 		});
 	}
 	
@@ -151,12 +169,12 @@ var r3pDtb = (function(){
 			ajaxUrl = r3pConf.selectUrl,
 			optionValue = trData[tbColConf.data],
 			optionLabel = tbColConf.render ? tbColConf.render(optionValue, type, trData) : optionValue;
-		$(r3p.strFormat(r3p.TMPL_SELECT, fldName, optionValue, label, optionLabel, 'clsBlock clsMarginBottom20')).appendTo($panel);
+		$(r3p.strFormat(r3p.TMPL_SELECT, fldName, optionValue, label, optionLabel, '')).appendTo($panel);
 		
 	    afterShowCallbackList.push(function(){
 	    	var sel = r3p.jq(fldName),
 				widgetDiv = sel.closest('.input-control');
-	    	$.Metro.initWidgets(widgetDiv);
+	    	//$.Metro.initWidgets(widgetDiv);
 	    	r3p.initSelect(sel, r3pConf.selectUrl, r3pConf);
 	    });
 	}
@@ -282,24 +300,36 @@ var r3pDtb = (function(){
 				else _inputRenderer($panel, trData, tbColConf, label, r3pConf, afterShowCallbackList, tbColConf.readOnly);
 			}
 			
-			r3p.showDetail('row-form', dlgTitle, $panel, null, null,
-    			function(dlg){							
-					var jsonData = r3p.form2js($panel.get(0));
-					r3p.ajax(
-						{url: saveUrl, json: jsonData}, 
-						function(resp){
-							if (r3p.isAjaxErrorShown(resp)) return;
-							r3p.setPageModified();
-							_dtbl.ajax.reload();
-							r3p.closeDialog(dlg);
-						},
-						r3p.ajaxErrorCallback
-					);
+			r3p.showDetail('row-form', dlgTitle, $panel, {
+    				fnSave: function(dlg, e, dfd){							
+						var jsonData = r3p.form2js($panel.get(0));
+						r3p.ajax(
+							{url: saveUrl, json: jsonData}, 
+							function(resp){
+								if (r3p.isAjaxErrorShown(resp)) return;
+								r3p.setPageModified();
+								_dtbl.ajax.reload();
+								dfd.resolve(true);
+								r3p.closeModal(e);
+							},
+							function(resp){
+								dfd.resolve(false);
+								r3p.closeModal(e);
+								r3p.ajaxErrorCallback(resp);
+								
+							}
+						);
+						return false;
+					}
 				}
 			); 
-			for(var i = 0, size = afterShowCallbackList.length; i < size; i++) {
-				afterShowCallbackList[i].call();
-			}
+			
+			r3p.getSafeTimeout(function(){
+				for(var i = 0, size = afterShowCallbackList.length; i < size; i++) {
+					afterShowCallbackList[i].call();
+				}
+			}, {delay: 300}).call();
+			
 		}
 	};
 }());
@@ -344,13 +374,23 @@ var r3pCol = ( function(){
 		LBL: {
 				
 		},
-		LBL_CHECK: {
+		
+		LBL_CHECK: {						
+			className: 'text-center',
 			render: function(data, type, full, meta){
 	    		var isChecked = data == true;
 	    		return isChecked ? '<span class="oi oi-check"></span>' : '';
 	    	} 
 		},
+		LBL_NUMBER: {						
+			className: 'text-right',
+			render: function(data, type, full, meta){
+	    		// TODO: format number
+	    		return data;
+	    	} 
+		},
 		LBL_RADIO : {
+			className: 'text-center',
 			render: function(data, type, full, meta) {
 				var colConf = _getColConf(meta);
 				if (!colConf.r3p || r3p.getSize(colConf.r3p.options) == 0) return data;
@@ -362,8 +402,8 @@ var r3pCol = ( function(){
 		
 	// FIELDS
 		FLD_CHECK: {
-			orderable: false,
-			width: 30,
+			orderable: false,			
+			className: 'text-center',
 			r3p: {
 				type: 'FLD_CHECK',
 				isField: true,
@@ -401,7 +441,9 @@ var r3pCol = ( function(){
 				isButton: true,
 				onClick: null
 			},
-			width: 30,
+			orderable: false,
+			width: 20,
+			className: 'text-center',
 			render: _btnRenderer
 		},
 		
@@ -410,7 +452,7 @@ var r3pCol = ( function(){
 				type: 'BTN_COPY', 
 				templateType: '_BTN_TEMPLATE',
 				tooltip: r3pMsg.BTN_INFO_COPY,
-				icon: 'mif-stack2',
+				icon: 'oi oi-layers',
 				handler: function(td, cell, colConf){
 	    			alert('copy?');
 	    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
@@ -422,10 +464,10 @@ var r3pCol = ( function(){
 				type: 'BTN_DELETE',
 				templateType: '_BTN_TEMPLATE',
 				tooltip: r3pMsg.BTN_INFO_DELETE,
-				icon: 'mif-bin',
+				icon: 'oi oi-trash',
 				handler: function(td, cell, colConf, tb, dtbl) {
 					var row = dtbl.row(td.closest('tr'));
-					r3p.showConfirm(r3pMsg.BTN_INFO_DELETE, {yesBtnClass: 'danger'})
+					r3p.showConfirm(r3pMsg.BTN_INFO_DELETE, {yesBtnClass: 'btn btn-danger'})
 						.then(function(confirm){
 							if (!confirm) return;
 							r3p.ajax({
@@ -449,7 +491,7 @@ var r3pCol = ( function(){
 				type: 'BTN_EDIT',
 				templateType: '_BTN_TEMPLATE',
 				tooltip: r3pMsg.BTN_INFO_EDIT,
-				icon: 'mif-pencil',
+				icon: 'oi oi-pencil',
 				handler: function(td, cell, colConf, _tb, _dtbl){	    			
 	    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);
 	    			var trData = _dtbl.row($(td).closest('tr')).data();
@@ -462,8 +504,7 @@ var r3pCol = ( function(){
 		BTN_EXPAND: {
 			className:      'details-control',
 			orderable:      false,
-			data:           null,
-			width: 30,
+			data:           null,			
 			defaultContent: r3p.strFormat(r3p.TMPL_BTN_CELL_HINT, 'cellBtn cellBtnExpander oi oi-caret-right', r3pMsg.BTN_INFO_EXPAND),
 			r3p: {
 				type: 'BTN_EXPAND',
@@ -487,7 +528,7 @@ var r3pCol = ( function(){
 				type: 'BTN_OPEN',
 				templateType: '_BTN_TEMPLATE',				
 				tooltip: r3pMsg.BTN_INFO_OPEN,
-				icon: 'mif-chevron-thin-right',
+				icon: 'oi oi-chevron-right',
 				handler: function(td, cell, colConf, _tb, _dtbl){
 	    			alert('open?');
 	    			if (colConf.r3p.onClick) colConf.r3p.onClick(td, cell, colConf);

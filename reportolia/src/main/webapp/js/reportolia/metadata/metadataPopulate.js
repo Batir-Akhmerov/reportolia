@@ -13,7 +13,7 @@
 		            		onClick: expandColumns
 		            	}
 		            },
-		            {data: 'name', r3pLabel: r3pMsg.LBL_NAME},
+		            {data: 'name', r3pLabel: COL_TABLE_NAME},
 		            {data: 'type', r3pLabel: COL_TYPE}, 
 		            {data: 'schema', r3pLabel: COL_SCHEMA}
 		        ],
@@ -56,7 +56,7 @@
 	            },
 	            {data: 'name', r3pLabel: COL_COLUMNS},
 	            {data: 'type', r3pLabel: COL_DATA_TYPE},
-	            {data: 'size', r3pLabel: COL_LENGTH},
+	            {data: 'size', r3pLabel: COL_LENGTH, r3p: { type: 'LBL_NUMBER' }},
 	            {data: 'tableName', visible: false, searchable: false},
 	            {data: 'isColumn', visible: false, searchable: false, defaultValue: 'true'}	           
 	        ]

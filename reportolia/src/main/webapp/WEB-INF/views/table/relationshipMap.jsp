@@ -5,29 +5,20 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<html:page icon="mif-tree">
-
+<html:page>
+	<jsp:attribute name="pageTitle"><html:msg key="dbTable.relationship.map.tab.name" /></jsp:attribute>
+	<jsp:attribute name="topMenuId">dataModelMap</jsp:attribute>
 	<jsp:attribute name="scripts">
+		js/reportolia/table/relationshipMap.js,
 		js/reportolia/jquery/plugins/springy/springy.js,
-		js/reportolia/jquery/plugins/springy/springyui.js,
-		js/reportolia/table/dlgRelationshipList.js
+		js/reportolia/jquery/plugins/springy/springyui.js
 	</jsp:attribute>
 
-	<jsp:attribute name="pageTitle"><html:msg key="dbTable.relationship.map.tab.name" /></jsp:attribute>
-	
-
-	
 	<jsp:attribute name="scriptBody">
 		
-		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
-			;
-			
-		var REL_PAGE_TITLE = '<html:msg key="dbTable.relationship.manage.title" />',
-			REL_PAGE_INFO = '<html:msg key="dbTable.relationship.manage.instructions" />',
-			TITLE_CURRENT_TABLE = '',
-			TH_COLUMN = '<html:msg key="form.column.name" />',
+		var //REL_PAGE_TITLE = '<html:msg key="dbTable.relationship.manage.title" />',
+			//REL_PAGE_INFO = '<html:msg key="dbTable.relationship.manage.instructions" />',
+			//TITLE_CURRENT_TABLE = '',
 			TH_LINKED_TABLE = '<html:msg key="dbTable.relationship.linkedTable.name" />',
 			TH_LINKED_COLUMN = '<html:msg key="dbTable.relationship.linkedColumn.name" />',
 			LBL_LINK_TO_FILTER = '<html:msg key="dbTable.relationship.isLinkToFilter.name" />',
@@ -46,7 +37,7 @@
 			FONT_TB_FILTER = '14px Impact'; 
 		
 		function showMe() {
-			openDlg_TableRelationshipList(this.id, this.label);
+			openTableRelationships(this.id);
 		}
 		
 		function onLoad() {
@@ -117,10 +108,6 @@
 			openRelationshipMap();
 		}
 		
-	</jsp:attribute>
-	
-	<jsp:attribute name="sidebar">
-		<html:dbSidebar activeId="relationshipMap" />
 	</jsp:attribute>
 	
 	<jsp:attribute name="body">

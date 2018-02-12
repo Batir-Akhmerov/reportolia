@@ -104,7 +104,7 @@ var r3p = (function(){
 			   // size: 'small',
 			    actions: [{
 			        label: btnConf.noBtnLabel || r3pMsg.BTN_NO,
-			        cssClass: 'btn-success',
+			        cssClass: btnConf.noBtnClass || 'btn btn-outline-secondary',
 			        onClick: function(e){
 			        	dfd.resolve(false);
   						if (btnConf.fnNo) btnConf.fnNo();
@@ -112,7 +112,7 @@ var r3p = (function(){
 			        }
 			    },{
 			        label: btnConf.yesBtnLabel || r3pMsg.BTN_YES,
-			        cssClass: 'btn-danger',
+			        cssClass: btnConf.yesBtnClass || 'btn btn-success',
 			        onClick: function(e){
 			        	dfd.resolve(false);
   						if (btnConf.fnYes) btnConf.fnYes(); 
@@ -124,36 +124,34 @@ var r3p = (function(){
 			return dfd.promise();
 		},
 		
-		showDetail: function(dlgId, title, $panel, btnConf, dlgConf, fnSave, fnCancel) {
+		showDetail: function(dlgId, title, $panel, btnConf, dlgConf) {
 			var dfd  = $.Deferred();
 			btnConf = btnConf || {};
-			var defaultBtnConf = {
-				noCancelBtn: true,
-				buttons: [{
-						label: btnConf.yesBtnLabel || r3pMsg.BTN_SAVE,
-						cssClass: btnConf.yesBtnClass || 'success',
-	  					handler: function() {
-	  						dfd.resolve(true);
-	  						if (fnSave && !fnSave(this)) return;
-	  						r3p.closeDialog(this);
-	  					}
-	  				},
-	  				{
-	  					label: btnConf.noBtnLabel || r3pMsg.BTN_CANCEL,
-	  					cssClass: btnConf.noBtnClass,
-	  					handler: function() {
-	  						dfd.resolve(false);
-	  						if (fnCancel && !fnCancel(this)) return;
-	  						r3p.closeDialog(this);
-	  					}
-	  				}
-	  			]
-			};
-			btnConf = $.extend({}, defaultBtnConf, btnConf);
-			var id = 'dlg-detail-' + (dlgId || '_'),
-				div = r3p.createDialogDiv(id, title, $panel, dlgConf, btnConf);
-						
-			r3p.showDialog(id, div);
+			dlgConf = dlgConf || {};
+			
+			showBSModal({
+			    title: title || r3pMsg.TLT_CONFIRM,
+			    body: $panel,
+			    size: dlgConf.size,
+			    actions: [{
+			    	label: btnConf.yesBtnLabel || r3pMsg.BTN_SAVE,
+			    	cssClass: btnConf.yesBtnClass || 'btn-success',
+			        onClick: function(e){			        	
+			        	if (btnConf.fnSave && !btnConf.fnSave(this, e, dfd)) return;
+			        	dfd.resolve(true);
+  						r3p.closeModal(e);
+			        }
+			    },{
+			    	label: btnConf.noBtnLabel || r3pMsg.BTN_CANCEL,
+			    	cssClass: btnConf.noBtnClass || 'btn btn-outline-secondary',			       
+			        onClick: function(e){			        	
+			        	if (btnConf.fnCancel && !btnConf.fnCancel(this, e, dfd)) return;
+			        	dfd.resolve(false);
+  						r3p.closeModal(e);
+			        }
+			    }]
+			});
+			
 			
 			return dfd.promise();
 		},
@@ -180,9 +178,64 @@ var r3p = (function(){
 		},
 		
 		
+		/*
+		createDialogDiv: function (id, title, dlgContent, dlgConf, btnConf) {
+			var div = r3p.jq(id);
+			if (r3p.isNullJq(div)) {
+				btnConf = btnConf || {}; 
+				var defaultConf = {
+					id: id, 
+					'data-role': 'dialog'
+				};
+				dlgConf = $.extend({}, defaultConf, dlgConf);				
+				div = r3p.createEl('div', 'body', dlgConf, null, 'padding20');
+				
+				if (title) r3p.createEl('h3', div, null, null, 'text-light');
+				r3p.createEl('div', div).addClass('clsDialogContent');
+				r3p.createEl('div', div).addClass('clsDialogButtons');
+			}
+			else {
+				//$('body').append(div);
+			}
+			if (title) div.children('h3').html(title);
+			var contentPanel = div.children('div.clsDialogContent');
+			if (dlgContent instanceof jQuery) {
+				contentPanel.empty();
+				contentPanel.append(dlgContent);
+			}
+			else div.children('div.clsDialogContent').html(dlgContent);
+			
+			// buttons
+			var btnDiv = div.children('div.clsDialogButtons').empty();				
+			if (btnConf.buttons) {
+				$.each(btnConf.buttons, function(i, btn){
+					r3p.createDialogButton(btnDiv, btn);
+				});
+			}
+			if (!btnConf.noCancelBtn) {
+				r3p.createDialogButton(btnDiv, {
+					label: btnConf.cancelBtnLabel || r3pMsg.BTN_CANCEL,
+					handler: r3p.closeDialog
+				});
+			}
+			
+			return div;
+		},
+		changeDialogDiv: function (id, title, msg) {
+			var div = r3p.jq(id);
+			if (r3p.isNullJq(div)) return;
+			if (title) div.children('h1').html(title);
+			if (msg) div.children('div.clsDialogContent').html(msg);			
+		},
+		*/
 		
-		
-		
+		adjustTableButtons: function() {
+			var pageButtons = $('.page-buttons'),
+				dbButtons = $('.db-buttons');
+			if (!pageButtons.is(':empty') && dbButtons.length > 0) {
+				dbButtons.append(pageButtons.children());
+			}
+		},
 		
 		/******************************************/
 	    /**   FORM   ***************************/
@@ -215,6 +268,8 @@ var r3p = (function(){
 				minimumInputLength: 0,
 				templateResult: r3p.formatSelectOption, 
 				templateSelection: r3p.formatSelectOption,
+				
+				theme: "bootstrap4",
 				
 				// r3p options
 				pageSize: 30,
@@ -279,20 +334,25 @@ var r3p = (function(){
 				
 		TMPL_HIDDEN: '<input type="hidden" name="{0}" value="{1}" />',
 		
-		TMPL_INPUT: '<label>{2}</label>' +
-                     '<div class="input-control text {3}">' +
-                     	'<input type="text" name="{0}" value="{1}" {4}>' +
+		TMPL_INPUT: '<div class="form-group row">' + 
+						'<label class="col-sm-4 col-form-label">{2}</label>' +
+	                     '<div class="col-sm-8">' +
+	                     		'<input type="text" class="form-control {3}" name="{0}" value="{1}" {4}>' +
+	                     '</div>'+
                      '</div>',
                                                  
         TMPL_LINK_HINT: '<span title="{3}">' 
         		+'<a href="{1}" onClick="{2}" >{0}</a></span>',                     
-                     
-        TMPL_SELECT: '<label>{2}</label>' +
-        				'<div class="input-control {4}" data-role="select">' +
-			        	'<select name="{0}">' +
-			        		'<option value="{1}" selected="selected">{3}</option>' +
-			        	'</select>' +
-			        	'</div>', 
+                
+        		
+        TMPL_SELECT: '<div class="form-group row">' + 
+        				'<label class="col-sm-4 col-form-label">{2}</label>' + 
+        				'<div class="col-sm-8">' +
+				        	'<select class="form-control {4}" name="{0}">' +
+				        		'<option value="{1}" selected="selected">{3}</option>' +
+				        	'</select>' +
+			        	'</div>' +
+			        '</div>', 
 	
 		TMPL_CHECKBOX: '<label class="input-control checkbox {3}">' +
 						    '<input type="checkbox" name="{0}" {1} {4}>' +
@@ -300,11 +360,11 @@ var r3p = (function(){
 						    '<span class="caption"> {2}</span>' +
 						'</label>',
 		
-		TMPL_RADIO: '<label class="input-control radio small-check {4}" {5}>' +
-					    '<input type="radio" name="{0}" value="{1}" {3}>' +
-					    '<span class="check"></span>' +
-					    '<span class="caption"> {2}</span>' +
-					'</label>',
+						
+				        						
+		TMPL_RADIO: '<input type="radio" class="form-check-input" name="{0}" id="chk{0}" value="{1}" {3}>' +
+					'<label class="form-check-label {4}" for="chk{0}" {5}>{2}</label>',
+					
 		createEl: function(tag, parent, attrs, props, cls) {
 	    	var el = $('<' + tag + '></' + tag + '>');
 	    	if (parent) el.appendTo(parent);
@@ -632,8 +692,20 @@ window.showBSModal = function self(options) {
 
     self.$modal.data('bs.modal', false);
     self.$modal.find('.modal-dialog').removeClass().addClass('modal-dialog ' + (modalClass[options.size] || ''));
-    self.$modal.find('.modal-content').html(
-    		htmlContent.replace('${title}', options.title).replace('${body}', options.body).replace('${headerCss}', options.headerCss));
+    
+        
+    var _html = htmlContent.replace('${title}', options.title).replace('${headerCss}', options.headerCss);
+    if (options.body instanceof jQuery) {
+    	_html =_html.replace('${body}', '');
+	}
+    else _html = _html.replace('${body}', options.body);
+    
+    
+    self.$modal.find('.modal-content').html(_html);
+    if (options.body instanceof jQuery) {
+    	self.$modal.find('.modal-body').append(options.body);
+	}
+    
 
     var footer = self.$modal.find('.modal-footer');
     if (Object.prototype.toString.call(options.actions) == "[object Array]") {

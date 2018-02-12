@@ -138,6 +138,9 @@ body {
 /********************************/
 /** DATATABLE  **********************/
 /********************************/
+table.dataTable {
+	border-spacing: 0;
+}
 .table .input-control.checkbox {
     line-height: 1;
     min-height: 0;
@@ -174,11 +177,16 @@ body {
 	opacity: 1;
 }
 
-.dataTable .cellBtnExpander {
+.dataTable .cellBtn {
     cursor: pointer;
 }
 
 .dataTable .childContainer {
 	margin-left: 60px;
+}
+
+
+div.dataTables_wrapper .dataTables_info {
+    padding-top: 0.3em !important;
 }
 

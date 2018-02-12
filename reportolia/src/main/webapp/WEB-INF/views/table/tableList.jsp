@@ -5,15 +5,15 @@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" 
 %><html:page>
-	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>
-	
+	<jsp:attribute name="pageTitle"><html:msg key="dbTables.title" /></jsp:attribute>	
+	<jsp:attribute name="topMenuId">tableList</jsp:attribute>
 	<jsp:attribute name="scripts"></jsp:attribute>
 	
 	<jsp:attribute name="scriptBody">
 		
 		var MSG_RETRIEVE = '<html:msg key="msg.confirm.metadata.retrieve" />',
-			BTN_RETRIEVE = '<html:msg key="dbTables.button.retrieveFromDb" />',
-			BTN_ADD_MANUALLY = '<html:msg key="dbTables.button.addManually" />'
+			MSG_BLANK_DATA_MODEL = '<html:msg key="msg.confirm.metadata.blankModel" />',
+			
 			LBL_IS_SECURED = '<html:msg key="dbTables.isSecured" />',
 			LBL_HAS_SECURITY_FILTER = '<html:msg key="dbTables.hasSecurityFilter" />';
 		
@@ -31,7 +31,7 @@
 		function onLoad() {
 			var tbConf = {
 		        ajax: 'r3pTablesLoad.go',
-		        r3pAjaxSave: 'r3pTableSave.go',
+		        r3pAjaxSave: 'r3pTableSaveAjax.go',
 		        r3pAjaxDelete: 'r3pTableDelete.go',
 		        r3pGetFormTitle: function(rowData) {
 		        	return rowData.name;
@@ -55,7 +55,7 @@
 		
 		function afterLoad() {
 			 <c:if test="${isTableListEmpty}">
-				retrieveFromDb();
+				retrieveFromDb(MSG_BLANK_DATA_MODEL);
 			</c:if>
 			
 		}
@@ -64,13 +64,9 @@
 			self.tblList.ajax.reload();
 		}
 		
-		function retrieveFromDb() {
-			var btnConf = {
-				yesBtnLabel: BTN_RETRIEVE,
-				yesBtnClass: 'success',
-				noBtnLabel: BTN_ADD_MANUALLY
-			};
-			r3p.showConfirm(MSG_RETRIEVE, btnConf)
+		function retrieveFromDb(msgPrefix) {
+			if (r3p.isBlank(msgPrefix)) msgPrefix = ''; 
+			r3p.showConfirm(msgPrefix + MSG_RETRIEVE)
 				.then(function(confirmed){
 					openDbMetadataPopulator(FWD_TABLES);
 				}
@@ -79,11 +75,13 @@
 		}
 	</jsp:attribute>
 	
+	
+	<jsp:attribute name="buttons">
+		<button onclick="retrieveFromDb()" type="button" class="btn btn-outline-danger" title="<html:msg key="dbTables.button.retrieveFromDb.title"/>"><html:msg key="dbTables.button.retrieveFromDb"/></button> 
+	</jsp:attribute>
+	
 	<jsp:attribute name="body">		
-		<button onclick="retrieveFromDb()" type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="<html:msg key="sysTable.button.addSelected.title"/>"><html:msg key="dbTables.button.retrieveFromDb"/></button>
-		
-		<hr class="thin bg-grayLighter">
-		
+				
 		<div id="tableListDiv"></div> 
 	        
 	</jsp:attribute>

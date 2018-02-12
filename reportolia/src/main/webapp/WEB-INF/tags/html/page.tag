@@ -6,17 +6,19 @@
 	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
 	
 	attribute name="pageTitle" fragment="true" %><%@ 
-	attribute name="panelTitle" fragment="true"%><%@ 
+	attribute name="bodyTitle" fragment="true"%><%@ 
 	attribute name="icon" rtexprvalue="true"%><%@ 
 	attribute name="styles" rtexprvalue="true"%><%@ 
 	attribute name="scriptsBefore" rtexprvalue="true"%><%@ 
 	attribute name="scripts" rtexprvalue="true"%><%@ 
+	attribute name="topMenuId" rtexprvalue="true"%><%@ 
 	attribute name="head" fragment="true" %><%@ 
 	attribute name="scriptBody" fragment="true" %><%@ 
 	attribute name="body" fragment="true" %><%@ 
 	attribute name="sidebar" fragment="true" %><%@ 
+	attribute name="buttons" fragment="true" %><%@ 
 	attribute name="breadcrumbs" fragment="true" %><c:set var="_pageTitle"><jsp:invoke fragment="pageTitle" /></c:set
-><c:set var="_panelTitle"><jsp:invoke fragment="panelTitle" /></c:set
+><c:set var="_bodyTitle"><jsp:invoke fragment="bodyTitle" /></c:set
 ><c:set var="_homeUrl">/reportolia</c:set
 ><html lang="en">
 	<head>
@@ -40,6 +42,9 @@
 		<link href="css/reportolia/r3pStyles.css" rel="stylesheet" type="text/css" />
 		<link href="css/reportolia/datatable/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
 		<link href="open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+		<link href="js/reportolia/jquery/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+		<link href="js/reportolia/jquery/plugins/select2/css/select2-bootstrap4.min.css" rel="stylesheet" type="text/css" />
+		
 		
 		
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -48,6 +53,8 @@
 		
 		<script type="text/javascript" src="js/reportolia/jquery/plugins/datatable/jquery.dataTables.js"></script>
 		<script type="text/javascript" src="js/reportolia/jquery/plugins/datatable/dataTables.bootstrap4.js"></script>
+		<script type="text/javascript" src="js/reportolia/jquery/plugins/select2/js/select2.min.js"></script>
+		
 		
 		<%-- 
 		<script type="text/javascript" src="js/reportolia/metro-ui-css/js/jquery-2.1.3.min.js"></script>
@@ -71,6 +78,9 @@
 				// $('[data-toggle="tooltip"]').tooltip();
 				if (self.beforeInit) self.beforeInit();
 				if (self.onLoad) self.onLoad();
+				
+				r3p.adjustTableButtons();
+				
 			});
 		
 			$(window).on('load', function () {
@@ -83,7 +93,7 @@
 	</head>
 	
 <body>
-    <html:header />
+    <html:header activeId="${topMenuId }" />
     
 	<div class="container-fluid">
 		<div class="row">
@@ -96,14 +106,30 @@
 			<jsp:invoke fragment="sidebar" />
 			 
 			<main role="main" class="col-sm-9 ${leftMargin} col-md-10 pt-3">
-				<c:if test="${_panelTitle == null}">
-					<h1>${_pageTitle}</h1> "${_panelTitle}"
+				<c:if test="${breadcrumbs != null}">
+					<nav aria-label="breadcrumb">
+						 <ol class="breadcrumb">
+						 	<%--<li class="breadcrumb-item"><a href="${_homeUrl}">Home</a></li> --%>							
+							<jsp:invoke fragment="breadcrumbs" />
+						</ol>
+					</nav>
 				</c:if>
-				<c:if test="${_panelTitle != null}">
-					<h1>${_panelTitle}</h1>
+				<c:if test="${empty _bodyTitle}">
+					<h2 class="mb-5">${_pageTitle}</h2> 
 				</c:if>
+				<c:if test="${_bodyTitle != null}">
+					<h2 class="mb-5">${_bodyTitle}</h2>
+				</c:if>
+				
+				<div class="page-buttons <c:if test="${buttons != null}">mb-3</c:if>">
+					<c:if test="${buttons != null}">
+		          		<jsp:invoke fragment="buttons" />
+		          	</c:if>
+	          	</div>
+				
 				<jsp:invoke fragment="body" />
-	          
+	          	          
+	          	
 	        </main>
 			
 		

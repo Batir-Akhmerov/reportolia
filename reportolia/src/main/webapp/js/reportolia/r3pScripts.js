@@ -5,6 +5,7 @@
 		URL_SHOW_TABLES = 'r3pTableListShow.go',
 		URL_SHOW_TABLE  = 'r3pTableShow.go',
 		URL_SHOW_TABLE_COLUMNS = 'r3pTableColumnListShow.go',
+		URL_SHOW_TABLE_RELATIONSHIPS = 'r3pTableRelationshipsShow.go',
 		URL_SHOW_RELATIONSHIPS_MAP = 'r3pRelationshipMapShow.go',
 		URL_SHOW_REPORT_LIST = 'r3pReportListShow.go',
 		URL_SHOW_REPORT = 'r3pReportShow.go',
@@ -54,6 +55,9 @@
 	}
 	function openTableColumns(tableId) {
 		r3p.navigate(URL_SHOW_TABLE_COLUMNS + '?id=' + tableId);
+	}
+	function openTableRelationships(tableId) {
+		r3p.navigate(URL_SHOW_TABLE_RELATIONSHIPS + '?id=' + tableId);
 	}
 	
 	

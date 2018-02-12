@@ -2,7 +2,8 @@
 	tag body-content="empty" language="java" pageEncoding="ISO-8859-1" %><%@ 
 	taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%@ 
 	taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%@
-	taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+	taglib uri="http://www.springframework.org/tags" prefix="spring"%><%@ 
+	attribute name="activeId" rtexprvalue="true"%>
 	
 <!-- HEADER BEGIN -->
 
@@ -15,23 +16,28 @@
 	
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
+				<li class="nav-item <c:if test="${activeId == 'home'}">active</c:if>">
 					<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item <c:if test="${activeId == 'reportList'}">active</c:if>">
 					<a class="nav-link" href="#" onclick="openReportList()"><spring:message code="reports.title" /></a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item <c:if test="${activeId == 'tableList'}">active</c:if>">
 					<a class="nav-link" href="#" onclick="openTableList()"><spring:message code="dbTables.title" /></a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item <c:if test="${activeId == 'dataModelMap'}">active</c:if>">
+					<a class="nav-link" href="#" onclick="openRelationshipMap()"><spring:message code="dataModelMap.title" /></a>
+				</li>
+				<li class="nav-item <c:if test="${activeId == 'help'}">active</c:if>">
 					<a class="nav-link" href="#">Help</a>
 				</li>
 			</ul>
+			<%--
 			<form class="form-inline mt-2 mt-md-0" wtx-context="2B709C27-E36C-426D-8A8F-B37B03865FAB">
 				<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" wtx-context="775C147E-7FE6-46B4-AA2E-1A3913CDE218">
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 			</form>
+			 --%>
 		</div>
 	</nav>
 </header>
